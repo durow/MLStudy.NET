@@ -5,41 +5,20 @@ using System.Text;
 
 namespace MLSharp.Math
 {
-    public class Vector<T>
+    public class Vector
     {
-        private T[] data;
-        public VectorDirection Direction { get; private set; } = VectorDirection.Column;
-        public int Dimension { get { return data == null ? 0 : data.Length; } }
-
-        public Vector(IEnumerable<T> data)
+        public readonly double[] Values;
+        public double this[int index]
         {
-            this.data = data.ToArray();
+            get
+            {
+                return Values[index];
+            }
         }
 
-        public Vector(params T[] data)
+        public Vector(double[] values)
         {
-            this.data = data;
-        }
-
-        public static Vector<T> operator +(Vector<T> a, Vector<T> b)
-        {
-            if (a.Dimension != b.Dimension)
-                throw new VectorException("向量维数不同，无法相加!");
-
-            return new Vector<T>();
-        }
-    }
-
-    public enum VectorDirection
-    {
-        Row,
-        Column
-    }
-
-    public class VectorException:Exception
-    {
-        public VectorException(string msg):base(msg)
-        {
+            Values = values;
         }
     }
 }
