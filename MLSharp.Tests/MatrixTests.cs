@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using MLSharp;
+using MLStudy;
 
-namespace MLSharp.Tests
+namespace MLStudy.Tests
 {
     public class MatrixTests
     {
@@ -35,6 +35,13 @@ namespace MLSharp.Tests
             var a = new Matrix(new double[,]{
                 { 1, 2, 3 },
                 { 4, 5, 6 }});
+            var expected = new Matrix(new double[,]{
+                { 1, 4 },
+                { 2, 5 },
+                { 3, 6 } });
+            var actual = a.Transpose();
+
+            Assert.Equal(expected, actual);
         }
 
         [Fact]

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLSharp", "MLSharp\MLSharp.csproj", "{9D9ADFC3-D8BD-43B0-8155-4D2C3ADF618D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLStudy", "MLSharp\MLStudy.csproj", "{9D9ADFC3-D8BD-43B0-8155-4D2C3ADF618D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLSharp.Tests", "MLSharp.Tests\MLSharp.Tests.csproj", "{2EEEE15A-614B-4143-9781-155133A820F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLStudy.Tests", "MLSharp.Tests\MLStudy.Tests.csproj", "{2EEEE15A-614B-4143-9781-155133A820F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

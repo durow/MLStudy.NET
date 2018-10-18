@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 
 
-namespace MLSharp
+namespace MLStudy
 {
-    public static class Tensor
+    public class Tensor
     {
         public static double[] GetRow(double[,] matrix, int index)
         {
@@ -94,101 +94,95 @@ namespace MLSharp
 
         #region Matrix Operations
 
+        public static Matrix Add(Matrix m, double b)
+        {
+            var result = new double[m.Rows, m.Columns];
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Columns; j++)
+                {
+                    result[i, j] = m[i, j] + b;
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static Matrix Add(Matrix a, Matrix b)
+        {
+            CheckMatrixShape(a, b);
+
+            var result = new double[a.Rows, a.Columns];
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = a[i, j] + b[i, j];
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static Matrix Multiple(Matrix m, double b)
+        {
+            var result = new double[m.Rows, m.Columns];
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Columns; j++)
+                {
+                    result[i, j] = m[i, j] * b;
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static Matrix Multiple(Matrix a, Matrix b)
+        {
+            if (a.Columns != b.Rows)
+                throw new Exception($"a.Columns={a.Columns} and b.Rows={b.Rows} are not equal!");
+
+            var result = new double[a.Rows, b.Columns];
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < b.Columns; j++)
+                {
+                    result[i, j] = 0;
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j] += (a[i, k] * b[k, j]);
+                    }
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static Matrix Multiple(Matrix a, Vector v)
+        {
+            var m = v.ToMatrix(true);
+            return Multiple(a, m);
+        }
+
+        public static Matrix Multiple(Vector v, Matrix a)
+        {
+            var m = v.ToMatrix();
+            return Multiple(m, a);
+        }
+
         #endregion
 
-        public static double Sum(double[,] matrix)
-        {
-            var result = 0d;
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    result += matrix[i,j];
-                }
-            }
-            return result;
-        }
+        #region Helper Functions
 
-        public static double[] Add(double[] vector, double b)
-        {
-            var len = vector.Length;
-            var result = new double[len];
-            for (int i = 0; i < len; i++)
-            {
-                result[i] = vector[i] + b;
-            }
-
-            return result;
-        }
-
-        public static double[,] Add(double[,] matrix, double b)
-        {
-            var rows = matrix.GetLength(0);
-            var columns = matrix.GetLength(1);
-
-            var result = new double[rows, columns];
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
-                    result[i, j] = matrix[i, j] + b;
-                }
-            }
-
-            return result;
-        }
-
-        public static double[] Add(double[] vector1, double[] vector2)
-        {
-            if (vector1.Length != vector2.Length)
-                throw new Exception("vector1 and vector2 are not the same length!");
-
-            var result = new double[vector1.Length];
-
-            for (int i = 0; i < vector1.Length; i++)
-            {
-                result[i] = vector1[i] + vector2[i];
-            }
-
-            return result;
-        }
-
-        public static double[,] Add(double[,] matrix1, double[,] matrix2)
-        {
-            if (matrix1.GetLength(0) != matrix2.GetLength(0) || matrix1.GetLength(1) != matrix2.GetLength(1))
-                throw new Exception("matrix1 and matrix2 are not the same shape!");
-
-            var rows = matrix1.GetLength(0);
-            var columns = matrix2.GetLength(1);
-
-            var result = new double[rows, columns];
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
-                    result[i, j] = matrix1[i, j] + matrix2[i, j];
-                }
-            }
-
-            return result;
-        }
-
-        public static double[] Multiple(double[] vector, double b)
-        {
-            var len = vector.Length;
-            var result = new double[len];
-            for (int i = 0; i < len; i++)
-            {
-                result[i] = vector[i] * b;
-            }
-
-            return result;
-        }
-
-        private static void CheckVectorLength(Vector a, Vector b)
+        public static void CheckVectorLength(Vector a, Vector b)
         {
             if (a.Length != b.Length)
-                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not the same!");
+                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not the equal!");
         }
+
+        public static void CheckMatrixShape(Matrix a, Matrix b)
+        {
+            if(a.Rows != b.Rows || a.Columns != b.Columns)
+                throw new Exception($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
+        }
+
+        #endregion
     }
 }

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MLSharp
+namespace MLStudy
 {
-    public class Vector
+    public struct Vector
     {
         private double[] values;
 
@@ -42,6 +42,30 @@ namespace MLSharp
         public double Mean()
         {
             return values.Average();
+        }
+
+        public Matrix ToMatrix(bool verticalVector = false)
+        {
+            double[,] result;
+
+            if(verticalVector)
+            {
+                result = new double[Length, 1];
+                for (int i = 0; i < Length; i++)
+                {
+                    result[i, 0] = values[i];
+                }
+            }
+            else
+            {
+                result = new double[1, Length];
+                for (int i = 0; i < Length; i++)
+                {
+                    result[0, i] = values[i];
+                }
+            }
+
+            return new Matrix(result);
         }
 
         public override string ToString()

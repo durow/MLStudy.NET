@@ -1,9 +1,9 @@
 using System;
 using Xunit;
-using MLSharp;
+using MLStudy;
 
 
-namespace MLSharp.Tests
+namespace MLStudy.Tests
 {
     public class TensorTests
     {
@@ -25,6 +25,40 @@ namespace MLSharp.Tests
             var a = new Vector(1, 2, 3, 4, 5, 6);
             var b = new Vector(7, 8, 9, 10, 11, 12);
             var expected = new Vector(8, 10, 12, 14, 16, 18);
+
+            var actual = Tensor.Add(a, b);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void AddMatrixScalar()
+        {
+            var a = new Matrix(new double[,]{
+                { 1, 2, 3 },
+                { 4, 5, 6 }});
+            var b = 10d;
+            var expected = new Matrix(new double[,]{
+                { 11, 12, 13 },
+                { 14, 15, 16 }});
+
+            var actual = Tensor.Add(a, b);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void AddMatrixMatrix()
+        {
+            var a = new Matrix(new double[,]{
+                { 1, 2, 3 },
+                { 4, 5, 6 }});
+            var b = new Matrix(new double[,]{
+                { 7, 8, 9 },
+                { 10, 11, 12 }});
+            var expected = new Matrix(new double[,]{
+                { 8, 10, 12 },
+                { 14, 16, 18 }});
 
             var actual = Tensor.Add(a, b);
 
@@ -68,68 +102,66 @@ namespace MLSharp.Tests
         }
 
         [Fact]
-        public void GetRowTest()
+        public void MultipleMatrixScalar()
         {
-            double[,] test = { 
-                { 1, 2, 3 }, 
-                { 4, 5, 6 },
-                { 7, 8, 9 },
-                { 10, 11, 12 }};
-            double[] expected = { 10, 11, 12 };
-            var actual = Tensor.GetRow(test, 3);
-            for (int i = 0; i < actual.Length; i++)
-            {
-                Assert.Equal(expected[i], actual[i]);
-            }
-        }
-
-        [Fact]
-        public void GetColumnTest()
-        {
-            double[,] test = {
+            var a = new Matrix(new double[,]{
                 { 1, 2, 3 },
-                { 4, 5, 6 },
-                { 7, 8, 9 },
-                { 10, 11, 12 }};
-            double[] expected = { 3, 6, 9, 12};
-            var actual = Tensor.GetColumn(test, 2);
-            for (int i = 0; i < actual.Length; i++)
-            {
-                Assert.Equal(expected[i], actual[i]);
-            }
+                { 4, 5, 6 }});
+            var b = 10d;
+            var expected = new Matrix(new double[,]{
+                { 10, 20, 30 },
+                { 40, 50, 60 }});
+
+            var actual = Tensor.Multiple(a, b);
+
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void AddTestD1()
+        public void MultipleMatrixMatrix()
         {
-            double[] a = { 1, 2, 3, 4, 5, 6 };
-            double[] b = { 7, 8, 9, 10, 11, 12 };
-            double[] expected = { 8, 10, 12, 14, 16, 18 };
+            var a = new Matrix(new double[,]{
+                { 1, 2, 3 },
+                { 4, 5, 6 }});
+            var b = new Matrix(new double[,]{
+                { 7, 8 },
+                { 9, 10 },
+                { 11, 12 } });
+            var expected = new Matrix(new double[,]{
+                { 58, 64 },
+                { 139, 154 }});
+            var actual = Tensor.Multiple(a, b);
 
-            var actual = Tensor.Add(a, b);
-
-            for (int i = 0; i < actual.Length; i++)
-            {
-                Assert.Equal(expected[i], actual[i]);
-            }
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void AddTestD2()
+        public void MultipleMatrixVector()
         {
-            double[,] a = { { 1, 2, 3 }, { 4, 5, 6 } };
-            double[,] b = { { 11, 12, 13 }, { 14, 15, 16 } };
-            double[,] expected = { { 12, 14, 16 }, { 18, 20, 22 } };
+            var a = new Matrix(new double[,]{
+                { 1, 2, 3 },
+                { 4, 5, 6 }});
+            var v = new Vector(7, 8, 9);
+            var expected = new Matrix(new double[,]{
+                { 50 },
+                { 122 }});
+            var actual = Tensor.Multiple(a, v);
 
-            var actual = Tensor.Add(a, b);
+            Assert.Equal(expected, actual);
+        }
 
-            for (int i = 0; i < a.GetLength(0); i++)
-            {
-                for (int j = 0; j < a.GetLength(1); j++)
-                {
-                    Assert.Equal(expected[i, j], actual[i, j]);
-                }
-            }
+        [Fact]
+        public void MultipleVectorMatrix()
+        {
+            var a = new Matrix(new double[,]{
+                { 1, 2, 3 },
+                { 4, 5, 6 }});
+            var v = new Vector(7, 8);
+            var expected = new Matrix(new double[,]{
+                { 39, 54, 69 }});
+            var actual = Tensor.Multiple(v, a);
+
+            Assert.Equal(expected, actual);
         }
     }
 }

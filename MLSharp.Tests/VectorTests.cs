@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using MLSharp;
+using MLStudy;
 
-namespace MLSharp.Tests
+namespace MLStudy.Tests
 {
     public class VectorTests
     {
@@ -65,6 +65,23 @@ namespace MLSharp.Tests
             Assert.Equal(expected12, actual2);
             Assert.Equal(expected34, actual3);
             Assert.Equal(expected34, actual4);
+        }
+
+        [Fact]
+        public void ToMatrix()
+        {
+            var a = new Vector(1, 2, 3, 4, 5);
+            var expected1 = new Matrix(new double[,] {
+                {1,2,3,4,5 }
+            });
+            var expected2 = new Matrix(new double[,] {
+                {1 },{2 },{3 },{4 },{5 } 
+            });
+            var actual1 = a.ToMatrix();
+            var actual2 = a.ToMatrix(true);
+
+            Assert.Equal(expected1, actual1);
+            Assert.Equal(expected2, actual2);
         }
     }
 }

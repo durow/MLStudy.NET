@@ -2,15 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MLSharp
+namespace MLStudy
 {
-    public class Matrix
+    public struct Matrix
     {
         private double[,] values;
 
         public int Length { get { return values.Length; } }
         public int Rows { get { return values.GetLength(0); } }
         public int Columns { get { return values.GetLength(1); } }
+        public int[] Shape
+        {
+            get
+            {
+                return new int[] { Rows, Columns };
+            }
+        }
 
         public double this[int row, int column]
         {
@@ -139,5 +146,11 @@ namespace MLSharp
 
             return new Matrix(result);
         }
+
+        #region Operations
+
+
+
+        #endregion
     }
 }

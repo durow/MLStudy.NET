@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MLSharp
+namespace MLStudy
 {
     public static class Functions
     {
