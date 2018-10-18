@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
@@ -31,15 +32,69 @@ namespace MLSharp
             return result;
         }
 
-        public static double Sum(double[] vector)
+        #region Vector Operations
+
+        public static Vector Add(Vector v, double b)
         {
-            var result = 0d;
-            for (int i = 0; i < vector.Length; i++)
+            var result = new double[v.Length];
+            for (int i = 0; i < v.Length; i++)
             {
-                result += vector[i];
+                result[i] = v[i] + b;
             }
-            return result;
+            return new Vector(result);
         }
+
+        public static Vector Add(Vector a, Vector b)
+        {
+            CheckVectorLength(a, b);
+
+            var result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                result[i] = a[i] + b[i];
+            }
+            return new Vector(result);
+        }
+
+        public static Vector Multiple(Vector v, double b)
+        {
+            var result = new double[v.Length];
+            for (int i = 0; i < v.Length; i++)
+            {
+                result[i] = v[i] * b;
+            }
+            return new Vector(result);
+        }
+
+        public static double MultipleAsMatrix(Vector a, Vector b)
+        {
+            CheckVectorLength(a, b);
+
+            var result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                result[i] = a[i] * b[i];
+            }
+            return result.Sum();
+        }
+
+        public static Vector Multiple(Vector a, Vector b)
+        {
+            CheckVectorLength(a, b);
+
+            var result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                result[i] = a[i] * b[i];
+            }
+            return new Vector(result);
+        }
+
+        #endregion
+
+        #region Matrix Operations
+
+        #endregion
 
         public static double Sum(double[,] matrix)
         {
@@ -128,6 +183,12 @@ namespace MLSharp
             }
 
             return result;
+        }
+
+        private static void CheckVectorLength(Vector a, Vector b)
+        {
+            if (a.Length != b.Length)
+                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not the same!");
         }
     }
 }
