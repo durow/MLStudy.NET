@@ -149,7 +149,46 @@ namespace MLStudy
 
         #region Operations
 
+        public static Matrix operator +(Matrix m, double a)
+        {
+            return Tensor.Add(m, a);
+        }
 
+        public static Matrix operator +(double a, Matrix m)
+        {
+            return Tensor.Add(m, a);
+        }
+
+
+        public static Matrix operator +(Matrix a, Matrix b)
+        {
+            return Tensor.Add(a, b);
+        }
+
+        public static Matrix operator *(Matrix m, double b)
+        {
+            return Tensor.Multiple(m, b);
+        }
+
+        public static Matrix operator *(double b, Matrix m)
+        {
+            return Tensor.Multiple(m, b);
+        }
+
+        public static Matrix operator *(Matrix m, Vector v)
+        {
+            return Tensor.Multiple(m, v);
+        }
+
+        public static Matrix operator *(Vector v, Matrix m)
+        {
+            return Tensor.Multiple(v, m);
+        }
+
+        public static Matrix operator *(Matrix a, Matrix b)
+        {
+            return Tensor.Multiple(a, b);
+        }
 
         #endregion
     }

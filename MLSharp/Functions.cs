@@ -11,15 +11,33 @@ namespace MLStudy
             return 1 / (1 + System.Math.Pow(System.Math.E, -x));
         }
 
-        public static double[] Sigmoid(double[] vector)
+        public static Vector Sigmoid(Vector v)
         {
-            var len = vector.Length;
+            var len = v.Length;
             var result = new double[len];
             for (int i = 0; i < len; i++)
             {
-                result[i] = Sigmoid(vector[i]);
+                result[i] = Sigmoid(v[i]);
             }
-            return result;
+            return new Vector(result);
+        }
+
+        public static Matrix Sigmoid(Matrix m)
+        {
+            var result = new double[m.Rows, m.Columns];
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Columns; j++)
+                {
+                    result[i, j] = Sigmoid(m[i, j]);
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static double ReLU(double x)
+        {
+            return Math.Max(0, x);
         }
     }
 }
