@@ -8,7 +8,7 @@ namespace MLStudy
     {
         public static double Sigmoid(double x)
         {
-            return 1 / (1 + System.Math.Pow(System.Math.E, -x));
+            return 1 / (1 + Math.Pow(System.Math.E, -x));
         }
 
         public static Vector Sigmoid(Vector v)
