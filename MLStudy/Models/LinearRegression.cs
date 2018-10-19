@@ -10,6 +10,8 @@ namespace MLStudy
         public double Bias { get; private set; }
         public double LearningRate { get; set; } = 0.01;
         public LinearRegularization Regularization { get; set; } = LinearRegularization.None;
+        public double RegressionWeight { get; set; } = 0.1;
+        public int StepCounter { get; private set; } = 0;
 
         public void Train(Matrix X, Vector y)
         { }
@@ -33,17 +35,23 @@ namespace MLStudy
         {
             return 0;
         }
+
+        public void ResetStepCounter()
+        {
+            StepCounter = 0;
+        }
     }
 
     public class LinearStepInfo
     {
+        public int StepCounter { get; internal set; }
         public Vector OldWeights { get; internal set; }
         public Vector NewWeights { get; internal set; }
         public double OldBias { get; internal set; }
         public double NewBias { get; internal set; }
-        public Vector Y { get; set; }
-        public Vector YHat { get; set; }
-        public double Error { get; set; }
+        public Vector Y { get; internal set; }
+        public Vector YHat { get; internal set; }
+        public double Error { get; internal set; }
     }
 
     public enum LinearRegularization

@@ -147,6 +147,20 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public Matrix ApplyFunction(Func<double,double> func)
+        {
+            var result = new double[Rows, Columns];
+
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    result[i, j] = func(values[i, j]);
+                }
+            }
+            return new Matrix(result);
+        }
+
         #region Operations
 
         public static Matrix operator +(Matrix m, double a)

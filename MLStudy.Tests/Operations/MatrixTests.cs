@@ -167,5 +167,17 @@ namespace MLStudy.Tests
 
             Assert.Equal(expected, actual);
         }
+
+        [Fact]
+        public void ApplyFunction()
+        {
+            var m = new Matrix(new double[,] {
+            { 1,2,3}, { 4,5,6} });
+            var expected = new Matrix(new double[,] {
+            { 1,4,9}, { 16,25,36} });
+            var actual = m.ApplyFunction(x => x * x);
+
+            Assert.Equal(expected, actual);
+        }
     }
 }
