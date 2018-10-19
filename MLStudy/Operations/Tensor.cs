@@ -56,6 +56,28 @@ namespace MLStudy
             return new Vector(result);
         }
 
+        public static Vector Minus(Vector v, double b)
+        {
+            var result = new double[v.Length];
+            for (int i = 0; i < v.Length; i++)
+            {
+                result[i] = v[i] - b;
+            }
+            return new Vector(result);
+        }
+
+        public static Vector Minus(Vector a, Vector b)
+        {
+            CheckVectorLength(a, b);
+
+            var result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                result[i] = a[i] - b[i];
+            }
+            return new Vector(result);
+        }
+
         public static Vector Multiple(Vector v, double b)
         {
             var result = new double[v.Length];
@@ -90,6 +112,16 @@ namespace MLStudy
             return new Vector(result);
         }
 
+        public static Vector Divide(Vector v, double b)
+        {
+            var result = new double[v.Length];
+            for (int i = 0; i < v.Length; i++)
+            {
+                result[i] = v[i] / b;
+            }
+            return new Vector(result);
+        }
+
         #endregion
 
         #region Matrix Operations
@@ -117,6 +149,34 @@ namespace MLStudy
                 for (int j = 0; j < a.Columns; j++)
                 {
                     result[i, j] = a[i, j] + b[i, j];
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static Matrix Minus(Matrix m, double b)
+        {
+            var result = new double[m.Rows, m.Columns];
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Columns; j++)
+                {
+                    result[i, j] = m[i, j] - b;
+                }
+            }
+            return new Matrix(result);
+        }
+
+        public static Matrix Minus(Matrix a, Matrix b)
+        {
+            CheckMatrixShape(a, b);
+
+            var result = new double[a.Rows, a.Columns];
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = a[i, j] - b[i, j];
                 }
             }
             return new Matrix(result);
@@ -165,6 +225,19 @@ namespace MLStudy
         {
             var m = v.ToMatrix();
             return Multiple(m, a);
+        }
+
+        public static Matrix Divide(Matrix m, double b)
+        {
+            var result = new double[m.Rows, m.Columns];
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Columns; j++)
+                {
+                    result[i, j] = m[i, j] / b;
+                }
+            }
+            return new Matrix(result);
         }
 
         #endregion

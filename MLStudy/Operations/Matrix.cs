@@ -165,6 +165,11 @@ namespace MLStudy
             return Tensor.Add(a, b);
         }
 
+        public static Matrix operator -(Matrix m, double a)
+        {
+            return Tensor.Minus(m, a);
+        }
+
         public static Matrix operator *(Matrix m, double b)
         {
             return Tensor.Multiple(m, b);
@@ -188,6 +193,11 @@ namespace MLStudy
         public static Matrix operator *(Matrix a, Matrix b)
         {
             return Tensor.Multiple(a, b);
+        }
+
+        public static Matrix operator /(Matrix m, double a)
+        {
+            return Tensor.Divide(m, a);
         }
 
         #endregion
