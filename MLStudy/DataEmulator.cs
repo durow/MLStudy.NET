@@ -26,6 +26,14 @@ namespace MLStudy
             return D1ToD2(rand, rows, columns);
         }
 
+        public List<double[]> RandomList(int rows, int columns)
+        {
+            var len = rows * columns;
+            var result = new double[rows, columns];
+            var rand = RandomArray(len);
+            return D1ToList(rand, rows, columns);
+        }
+
         public double[] RandomArrayGaussian(int length, double mean = 0, double variance = 1)
         {
             var len = length / 2 + length % 2;
@@ -111,6 +119,27 @@ namespace MLStudy
                     result[i, j] = data[counter];
                     counter++;
                 }
+            }
+            return result;
+        }
+
+        private List<double[]> D1ToList(double[] data, int rows, int columns)
+        {
+            if (data.Length != rows * columns)
+                throw new Exception("can't change!");
+
+            var result = new List<double[]>(rows);
+            var counter = 0;
+
+            for (int i = 0; i < rows; i++)
+            {
+                var row = new double[columns];
+                for (int j = 0; j < columns; j++)
+                {
+                    row[j] = data[counter];
+                    counter++;
+                }
+                result.Add(row);
             }
             return result;
         }
