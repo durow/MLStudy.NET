@@ -68,6 +68,18 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public Vector ApplyFunction(Func<double,double> func)
+        {
+            var result = new double[Length];
+
+            for (int i = 0; i < Length; i++)
+            {
+                result[i] = func(values[i]);
+            }
+
+            return new Vector(result);
+        }
+
         public override string ToString()
         {
             var result = string.Join(",", values);

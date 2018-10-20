@@ -158,6 +158,7 @@ namespace MLStudy
                     result[i, j] = func(values[i, j]);
                 }
             }
+
             return new Matrix(result);
         }
 
