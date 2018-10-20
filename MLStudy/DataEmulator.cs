@@ -1,19 +1,25 @@
-﻿using System;
+﻿/* 
+ * Description:This class is used to generate test data.
+ * Author:AYX
+ * date:2018.10.19
+ */
+
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 namespace MLStudy
 {
     public class DataEmulator
     {
+        private static Random rand1 = new Random((int)DateTime.Now.Ticks);
+        private static Random rand2 = new Random((int)DateTime.Now.Ticks);
+
         public double[] RandomArray(int length)
         {
-            var rand = new Random((int)DateTime.Now.Ticks);
             var result = new double[length];
             for (int i = 0; i < length; i++)
             {
-                result[i] = rand.NextDouble();
+                result[i] = rand1.NextDouble();
             }
             return result;
         }
@@ -38,12 +44,11 @@ namespace MLStudy
         {
             var len = length / 2 + length % 2;
             var result = new double[length];
-            var r1 = new Random((int)DateTime.Now.Ticks);
-            var r2 = new Random(DateTime.Now.Second);
+
             for (int i = 0; i < len; i++)
             {
-                var u = r1.NextDouble();
-                var v = r2.NextDouble();
+                var u = rand1.NextDouble();
+                var v = rand2.NextDouble();
                 var randg = RandomGaussian(u, v, mean, variance);
                 result[i * 2] = randg[0];
                 if (length > i * 2 + 1)
