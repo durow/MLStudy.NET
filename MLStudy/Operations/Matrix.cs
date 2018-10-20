@@ -147,6 +147,16 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public Vector ToVector()
+        {
+            if (Rows == 1)
+                return GetRow(0);
+            if (Columns == 1)
+                return GetColumn(0);
+
+            throw new Exception($"This matrix [{Rows},{Columns}] can't convert to Vector!");
+        }
+
         public Matrix ApplyFunction(Func<double,double> func)
         {
             var result = new double[Rows, Columns];
