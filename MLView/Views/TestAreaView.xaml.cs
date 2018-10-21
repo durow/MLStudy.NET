@@ -116,7 +116,8 @@ namespace MLView
         public static readonly DependencyProperty TestSizeProperty =
             DependencyProperty.Register("TestSize", typeof(int), typeof(TestAreaView), new PropertyMetadata(10));
 
-
+        LinearRegression lr;
+        Trainer trainer;
 
         public TestAreaView()
         {
@@ -138,32 +139,69 @@ namespace MLView
 
             TextOut($"True Weight:{Weight},True Bias:{Bias}");
 
-            var lr = new LinearRegression
+            lr = new LinearRegression
             {
                 LearningRate = LearningRate,
             };
             lr.InitWeights(0);
             lr.InitBias(0);
 
+            trainer = new Trainer(lr, Loss.MeanSquareError)
+            {
+                MaxStep = TrainCount,
+                NotifySteps = ReportStep,
+                StepWait = 50,
+            };
+            trainer.Started += Trainer_Started;
+            trainer.Stopped += Trainer_Stopped;
+            trainer.Notify += Trainer_Notify;
 
             var matrixX = X.ToMatrix(true);
             var matrixTestX = testX.ToMatrix(true);
 
             ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
 
-            for (int i = 1; i <= TrainCount; i++)
-            {
-                lr.Step(matrixX, y);
-                if (i % ReportStep == 0)
-                {
-                    ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
-                }
-            }
+            trainer.Train(matrixX, y);
+
+            //for (int i = 1; i <= TrainCount; i++)
+            //{
+            //    lr.Step(matrixX, y);
+            //    if (i % ReportStep == 0)
+            //    {
+            //        ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
+            //    }
+            //}
 
             if (lr.StepCounter % ReportStep != 0)
             {
                 ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
             }
+        }
+
+        private void Trainer_Notify(object sender, EventArgs e)
+        {
+            var t = sender as Trainer;
+            if (t == null) return;
+
+            TextOutCross($"Step:{t.StepCounter} Notify!");
+        }
+
+        private void Trainer_Stopped(object sender, EventArgs e)
+        {
+            TextOutCross("Stopped! "+trainer.State);
+        }
+
+        private void Trainer_Started(object sender, EventArgs e)
+        {
+            TextOutCross("Started!");
+        }
+
+        private void TextOutCross(string text)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                TextOut(text);
+            });
         }
 
         private void TextOut(string text)
@@ -183,6 +221,26 @@ namespace MLView
             var trainError = Loss.MeanSquareError(yHat, y);
             var testError = Loss.MeanSquareError(testYHat, testY);
             TextOut($"step:{lr.StepCounter},weight:{lr.Weights}, bias:{lr.Bias}, trainError:{trainError}, testError:{testError}");
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ContinueButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

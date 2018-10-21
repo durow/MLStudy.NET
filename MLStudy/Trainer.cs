@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MLStudy
@@ -21,18 +22,6 @@ namespace MLStudy
 
         public int StepCounter { get; private set; } = 0;
         public TrainerState State { get; private set; }
-        public DateTime? StartTime { get; private set; }
-        public DateTime? StopTime { get; private set; }
-        public TimeSpan TrainedTime
-        {
-            get
-            {
-                if (State == TrainerState.Training)
-                    return DateTime.Now - StartTime.Value;
-                else
-                    return new TimeSpan(0);
-            }
-        }
 
         public event EventHandler Notify;
         public event EventHandler Started;
@@ -88,8 +77,8 @@ namespace MLStudy
                     if (error <= ErrorLimit)
                         State = TrainerState.ErrorLimitStopped;
                 }
-                if (MaxTime >= TrainedTime)
-                    State = TrainerState.TimeLimitStopped;
+
+                Thread.Sleep(StepWait);
             }
 
             Stopped?.Invoke(this, null);
@@ -162,7 +151,6 @@ namespace MLStudy
         Paused,
         MaxStepsStopped,
         ErrorLimitStopped,
-        TimeLimitStopped,
         UserStopped,
         ErrorStopped,
     }

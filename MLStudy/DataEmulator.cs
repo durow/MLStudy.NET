@@ -14,6 +14,11 @@ namespace MLStudy
         private static Random rand1 = new Random((int)DateTime.Now.Ticks);
         private static Random rand2 = new Random((int)DateTime.Now.Ticks);
 
+        public (Matrix,Vector,Matrix,Vector) GetTrainTestData(int rows, int count, double min, double max)
+        {
+
+        }
+
         public double[] RandomArray(int length)
         {
             var result = new double[length];

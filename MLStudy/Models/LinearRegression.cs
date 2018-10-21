@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class LinearRegression
+    public class LinearRegression:IMachine
     {
         public Vector Weights { get; private set; } = new Vector(0);
         public double Bias { get; private set; }
