@@ -14,9 +14,21 @@ namespace MLStudy
         private static Random rand1 = new Random((int)DateTime.Now.Ticks);
         private static Random rand2 = new Random((int)DateTime.Now.Ticks);
 
-        public (Matrix,Vector,Matrix,Vector) GetTrainTestData(int rows, int count, double min, double max)
+        public (Matrix,Vector,Matrix,Vector) GetTrainTestData(int rows, int columns, int testSize, double min, double max, Func<Matrix,Vector> F)
         {
+            Matrix trainX, testX;
+            Vector trainY, testY;
+            (trainX, trainY) = GetTrainData(rows, columns, min, max, F);
+            (testX, testY) = GetTrainData(testSize, columns, min, max, F);
 
+            return (trainX, trainY, testX, testY);
+        }
+
+        public (Matrix, Vector) GetTrainData(int rows, int columns, double min, double max, Func<Matrix, Vector> F)
+        {
+            var trainX = RandomMatrix(rows, columns) * (max - min) + min;
+            var trainY = F(trainX);
+            return (trainX, trainY);
         }
 
         public double[] RandomArray(int length)
@@ -75,9 +87,19 @@ namespace MLStudy
             return new Vector(RandomArray(length));
         }
 
+        public Vector RandomVector(int length, double min, double max)
+        {
+            return RandomVector(length) * (max - min) + min;
+        }
+
         public Matrix RandomMatrix(int rows, int columns)
         {
             return new Matrix(RandomArray(rows,columns));
+        }
+
+        public Matrix RandomMatrix(int rows, int columns, double min, double max)
+        {
+            return RandomMatrix(rows, columns) * (max - min) + min;
         }
 
         public Vector RandomVectorGaussian(int length, double mean = 0, double variance = 1)
