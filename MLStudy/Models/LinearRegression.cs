@@ -6,29 +6,46 @@ namespace MLStudy
 {
     public class LinearRegression
     {
-        public Vector Weights { get; private set; }
+        public Vector Weights { get; private set; } = new Vector(0);
         public double Bias { get; private set; }
-        public double LearningRate { get; set; } = 0.01;
+        public double LearningRate { get; set; } = 0.0001;
         public LinearRegularization Regularization { get; set; } = LinearRegularization.None;
         public double RegressionWeight { get; set; } = 0.1;
-        public int StepCounter { get; private set; } = 0;
 
-        public void Train(Matrix X, Vector y)
-        { }
+        public int StepCounter { get; private set; } = 0;
+        public Vector LastYHat { get; private set; }
+        public double LastError { get; private set; }
+
+        public void InitWeights(params double[] weights)
+        {
+            Weights = new Vector(weights);
+        }
+
+        public void InitBias(double bias)
+        {
+            Bias = bias;
+        }
 
         public void Step(Matrix X, Vector y)
         {
-            var yHat = Predict(X);
-            var weightsGradient = Gradient.LinearWeights(X, yHat, y);
-            var biasGradient = Gradient.LinearBias(yHat, y);
+            if(Weights.Length != X.Columns)
+            {
+                AutoInitWeight(X.Columns);
+            }
+
+            LastYHat = Predict(X);
+            var weightsGradient = Gradient.LinearWeights(X, LastYHat, y);
+            var biasGradient = Gradient.LinearBias(LastYHat, y);
             Weights -= LearningRate * weightsGradient;
             Bias -= LearningRate * biasGradient;
+
+            StepCounter++;
         }
 
         public Vector Predict(Matrix X)
         {
             var result = X * Weights + Bias;
-            return result.GetColumn(1);
+            return result.ToVector();
         }
 
         public double Predict(Vector x)
@@ -39,6 +56,12 @@ namespace MLStudy
         public void ResetStepCounter()
         {
             StepCounter = 0;
+        }
+
+        private void AutoInitWeight(int length)
+        {
+            var emu = new DataEmulator();
+            Weights = emu.RandomVector(length);
         }
     }
 
