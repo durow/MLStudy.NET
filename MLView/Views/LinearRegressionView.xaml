@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="MLView.Views.LinearRegressionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MLView.Views"
+             xmlns:con="clr-namespace:MLView.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="600">
+    <DockPanel>
+        <con:TrainerControlPanel x:Name="TrainerControl" DockPanel.Dock="Top"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Width="230" Orientation="Vertical">
+                <GroupBox Header="LinearRegression Config" Margin="5">
+                    <con:LinearRegressionPanel x:Name="LiearRegConfig" Margin="5"/>
+                </GroupBox>
+                <GroupBox Header="Trainer Config" Margin="5">
+                    <con:TrainerConfigPanel x:Name="TrainerConfig" Margin="5"/>
+                </GroupBox>
+                <GroupBox Header="Data Config" Margin="5">
+                    <con:DataConfigPanel x:Name="DataConfig" Margin="5"/>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+        <TextBox x:Name="LogText" Margin="5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+    </DockPanel>
+</UserControl>

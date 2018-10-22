@@ -150,7 +150,7 @@ namespace MLView
             {
                 MaxStep = TrainCount,
                 NotifySteps = ReportStep,
-                StepWait = 50,
+                StepWait = 5,
             };
             trainer.Started += Trainer_Started;
             trainer.Stopped += Trainer_Stopped;
@@ -161,29 +161,24 @@ namespace MLView
 
             ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
 
-            trainer.Train(matrixX, y);
-
-            //for (int i = 1; i <= TrainCount; i++)
-            //{
-            //    lr.Step(matrixX, y);
-            //    if (i % ReportStep == 0)
-            //    {
-            //        ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
-            //    }
-            //}
-
-            if (lr.StepCounter % ReportStep != 0)
+            Task.Factory.StartNew(() =>
             {
-                ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
-            }
+                trainer.StartTrain(matrixX, y);
+                if (trainer.MaxStep % trainer.NotifySteps != 0)
+                {
+                    var yHat = trainer.Machine.Predict(matrixX);
+                    var error = Loss.MeanSquareError(yHat, y);
+                    TextOutCross($"Step:{trainer.StepCounter}, error:{error}!");
+                }
+            });
         }
 
-        private void Trainer_Notify(object sender, EventArgs e)
+        private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
-            var t = sender as Trainer;
-            if (t == null) return;
+            var yHat = e.Machine.Predict(e.X);
+            var error = Loss.MeanSquareError(yHat, e.Y);
 
-            TextOutCross($"Step:{t.StepCounter} Notify!");
+            TextOutCross($"Step:{e.Step}, error:{error}!");
         }
 
         private void Trainer_Stopped(object sender, EventArgs e)
@@ -220,7 +215,7 @@ namespace MLView
             var testYHat = lr.Predict(testX);
             var trainError = Loss.MeanSquareError(yHat, y);
             var testError = Loss.MeanSquareError(testYHat, testY);
-            TextOut($"step:{lr.StepCounter},weight:{lr.Weights}, bias:{lr.Bias}, trainError:{trainError}, testError:{testError}");
+            TextOutCross($"step:{lr.StepCounter},weight:{lr.Weights}, bias:{lr.Bias}, trainError:{trainError}, testError:{testError}");
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -230,17 +225,20 @@ namespace MLView
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-
+            trainer?.Stop();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-
+            trainer?.Pause();
         }
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-
+            Task.Factory.StartNew(() =>
+            {
+                trainer?.Continue();
+            });
         }
     }
 }

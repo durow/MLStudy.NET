@@ -55,9 +55,44 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\DataConfigPanel.xaml.cs">
+      <DependentUpon>DataConfigPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LinearRegressionPanel.xaml.cs">
+      <DependentUpon>LinearRegressionPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrainerConfigPanel.xaml.cs">
+      <DependentUpon>TrainerConfigPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrainerControlPanel.xaml.cs">
+      <DependentUpon>TrainerControlPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataConfig.cs" />
+    <Compile Include="Models\LinearRegressionConfig.cs" />
+    <Compile Include="Models\TrainerConfig.cs" />
+    <Compile Include="MVVM\NotificationObject.cs" />
+    <Compile Include="Views\LinearRegressionView.xaml.cs">
+      <DependentUpon>LinearRegressionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TestAreaView.xaml.cs">
       <DependentUpon>TestAreaView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\DataConfigPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LinearRegressionPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TrainerConfigPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TrainerControlPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,6 +105,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\LinearRegressionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TestAreaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -107,5 +146,6 @@
       <Name>MLStudy</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

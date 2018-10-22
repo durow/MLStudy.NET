@@ -9,23 +9,25 @@ namespace MLStudy
     public class Trainer
     {
         public readonly IMachine Machine;
-        private Matrix X;
-        private Vector y;
+        public Matrix X { get; private set; }
+        public Vector y { get; private set; }
 
         public int BatchSize { get; set; }
         public int MaxStep { get; set; }
         public double ErrorLimit { get; set; } = 0;
         public int NotifySteps { get; set; } = 100;
         public int StepWait { get; set; } = 0;
-        public TimeSpan MaxTime { get; set; } = TimeSpan.FromDays(365);
         public Func<Vector, Vector, double> ErrorFunction { get; set; }
 
         public int StepCounter { get; private set; } = 0;
         public TrainerState State { get; private set; }
 
-        public event EventHandler Notify;
+        public event EventHandler<NotifyEventArgs> Notify;
         public event EventHandler Started;
         public event EventHandler Stopped;
+        public event EventHandler Paused;
+        public event EventHandler Continued;
+        public event EventHandler ErrorOut;
 
         public Trainer(IMachine machine, Func<Vector,Vector,double> errorFunction)
         {
@@ -34,23 +36,44 @@ namespace MLStudy
             State = TrainerState.Ready;
         }
 
-        public void Train(Matrix X, Vector y)
+        public void SetTrainData(Matrix X, Vector y)
+        {
+            CheckTraningData(X, y);
+            this.X = X;
+            this.y = y;
+        }
+
+        public void Start()
+        {
+            if (State == TrainerState.Training)
+                return;
+            if (State == TrainerState.Paused)
+                Continue();
+            else
+            {
+                StepCounter = 0;
+                Started?.Invoke(this, null);
+
+                TrainFunction();
+            }
+        }
+
+        public void StartTrain(Matrix X, Vector y)
         {
             if (State == TrainerState.Training)
                 return;
 
-            CheckTraningData(X, y);
-            this.X = X;
-            this.y = y;
+            SetTrainData(X, y);
 
-            Task.Factory.StartNew(TrainingThread);
+            StepCounter = 0;
+            Started?.Invoke(this, null);
+
+            TrainFunction();
         }
 
-        private void TrainingThread()
+        private void TrainFunction()
         {
-            StepCounter = 0;
             State = TrainerState.Training;
-            Started?.Invoke(this, null);
 
             Matrix batchX;
             Vector batchY;
@@ -58,30 +81,53 @@ namespace MLStudy
 
             while (State == TrainerState.Training)
             {
-                var batchStart = StepCounter % X.Rows;
-                (batchX, batchY) = GetBatchX(X, y, batchStart, BatchSize);
-                Machine.Step(batchX, batchY);
-
-
-                StepCounter++;
-                if (StepCounter % NotifySteps == 0)
-                    Notify?.Invoke(this, null);
-
-                if (StepCounter >= MaxStep)
-                    State = TrainerState.MaxStepsStopped;
-
-                if (ErrorLimit > 0 && ErrorFunction != null)
+                try
                 {
-                    var yHat = Machine.Predict(batchX);
-                    error = ErrorFunction(yHat, batchY);
-                    if (error <= ErrorLimit)
-                        State = TrainerState.ErrorLimitStopped;
+                    var batchStart = StepCounter % X.Rows;
+                    (batchX, batchY) = GetBatchX(X, y, batchStart, BatchSize);
+                    Machine.Step(batchX, batchY);
+
+
+                    StepCounter++;
+                    if (StepCounter % NotifySteps == 0)
+                        Notify?.Invoke(this, new NotifyEventArgs
+                        {
+                            Machine = Machine,
+                            X = X,
+                            Y = y,
+                            BatchX = batchX,
+                            BatchY = batchY,
+                            Step = StepCounter,
+                        });
+
+                    if (StepCounter >= MaxStep)
+                        State = TrainerState.MaxStepsStopped;
+
+                    if (ErrorLimit > 0 && ErrorFunction != null)
+                    {
+                        var yHat = Machine.Predict(batchX);
+                        error = ErrorFunction(yHat, batchY);
+                        if (error <= ErrorLimit)
+                            State = TrainerState.ErrorLimitStopped;
+                    }
+                }
+                catch(Exception e)
+                {
+                    if (ErrorOut != null)
+                    {
+                        ErrorOut(this, null);
+                    }
+                    else
+                        throw e;
                 }
 
                 Thread.Sleep(StepWait);
             }
 
-            Stopped?.Invoke(this, null);
+            if (State == TrainerState.Paused)
+                Paused?.Invoke(this, null);
+            else
+                Stopped?.Invoke(this, null);
         }
 
         public void Pause()
@@ -97,15 +143,27 @@ namespace MLStudy
             if (State != TrainerState.Paused)
                 return;
 
-            Task.Factory.StartNew(TrainingThread);
+            Continued?.Invoke(this, null);
+            TrainFunction();
         }
 
         public void Stop()
         {
-            if (State != TrainerState.Training)
+            if (State == TrainerState.Training)
+                State = TrainerState.UserStopped;
+            else if (State == TrainerState.Paused)
+            {
+                State = TrainerState.UserStopped;
+                Notify?.Invoke(this, new NotifyEventArgs
+                {
+                    Machine = Machine,
+                    Step = StepCounter,
+                    X = X,
+                    Y = y,
+                });
+            }
+            else
                 return;
-
-            State = TrainerState.UserStopped;
         }
 
         public double Predict(Vector x)
@@ -142,6 +200,16 @@ namespace MLStudy
             if (X.Rows != y.Length)
                 throw new Exception($"the number of training samples in X must equal to number of labels in y!X.Rows:{X.Rows},y.Length:{y.Length}");
         }
+    }
+
+    public class NotifyEventArgs:EventArgs
+    {
+        public IMachine Machine { get; internal set; }
+        public Matrix X { get; internal set; }
+        public Matrix BatchX { get; internal set; }
+        public Vector Y { get; internal set; }
+        public Vector BatchY { get; internal set; }
+        public int Step { get; internal set; }
     }
 
     public enum TrainerState
