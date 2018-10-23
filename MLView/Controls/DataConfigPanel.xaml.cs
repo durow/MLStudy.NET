@@ -21,7 +21,7 @@ namespace MLView.Controls
     /// </summary>
     public partial class DataConfigPanel : UserControl
     {
-
+        #region DependencyProperties
 
         public double TextBlockWidth
         {
@@ -33,7 +33,7 @@ namespace MLView.Controls
         public static readonly DependencyProperty TextBlockWidthProperty =
             DependencyProperty.Register("TextBlockWidth", typeof(double), typeof(DataConfigPanel), new PropertyMetadata(90d));
 
-
+        #endregion
 
         public DataConfig Config
         {

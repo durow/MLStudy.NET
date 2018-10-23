@@ -10,18 +10,25 @@ namespace MLStudy
         public double Bias { get; private set; }
         public double LearningRate { get; set; } = 0.0001;
         public LinearRegularization Regularization { get; set; } = LinearRegularization.None;
-        public double RegressionWeight { get; set; } = 0.1;
+        public double RegularizationWeight { get; set; } = 0.01;
+        private Dictionary<LinearRegularization, Func<Vector, double, Vector>> regularizationGradient = new Dictionary<LinearRegularization, Func<Vector, double, Vector>>();
 
         public int StepCounter { get; private set; } = 0;
         public Vector LastYHat { get; private set; }
-        public double LastError { get; private set; }
 
-        public void InitWeights(params double[] weights)
+        public LinearRegression()
+        {
+            regularizationGradient.Add(LinearRegularization.L1, Gradient.LinearL1);
+            regularizationGradient.Add(LinearRegularization.L2, Gradient.LinearL2);
+            regularizationGradient.Add(LinearRegularization.None, (a,b)=>new Vector(a.Length));
+        }
+
+        public void SetWeights(params double[] weights)
         {
             Weights = new Vector(weights);
         }
 
-        public void InitBias(double bias)
+        public void SetBias(double bias)
         {
             Bias = bias;
         }
@@ -34,8 +41,9 @@ namespace MLStudy
             }
 
             LastYHat = Predict(X);
-            var weightsGradient = Gradient.LinearWeights(X, LastYHat, y);
+            var weightsGradient = Gradient.LinearWeights(X, LastYHat, y) + regularizationGradient[Regularization](Weights, RegularizationWeight);
             var biasGradient = Gradient.LinearBias(LastYHat, y);
+
             Weights -= LearningRate * weightsGradient;
             Bias -= LearningRate * biasGradient;
 

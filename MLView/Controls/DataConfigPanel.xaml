@@ -38,5 +38,17 @@
             <TextBlock Text="Test Size:"/>
             <TextBox Text="{Binding ElementName=Self,Path=Config.TestSize}"/>
         </DockPanel>
+        <DockPanel>
+            <TextBlock Text="Add Noise:"/>
+            <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=Self,Path=Config.IsNoise}"/>
+        </DockPanel>
+        <DockPanel>
+            <TextBlock Text="Noise Mean:"/>
+            <TextBox Text="{Binding ElementName=Self,Path=Config.NoiseMean}"/>
+        </DockPanel>
+        <DockPanel>
+            <TextBlock Text="Noise Var:"/>
+            <TextBox Text="{Binding ElementName=Self,Path=Config.NoiseVar}"/>
+        </DockPanel>
     </StackPanel>
 </UserControl>

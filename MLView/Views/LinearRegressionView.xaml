@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MLView.Views"
              xmlns:con="clr-namespace:MLView.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="600">
+             d:DesignHeight="650" d:DesignWidth="900">
     <DockPanel>
         <con:TrainerControlPanel x:Name="TrainerControl" DockPanel.Dock="Top"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -22,6 +22,20 @@
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>
-        <TextBox x:Name="LogText" Margin="5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="LogText" Grid.RowSpan="2" BorderThickness="1" BorderBrush="LightGray" Margin="5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            <Grid Background="Blue" Grid.Row="0" Grid.Column="1" />
+            <Grid Background="Green" Grid.Row="0" Grid.Column="2"/>
+            <Grid Background="Purple" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+        </Grid>
     </DockPanel>
 </UserControl>

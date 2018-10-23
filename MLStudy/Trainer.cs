@@ -23,6 +23,7 @@ namespace MLStudy
         public TrainerState State { get; private set; }
 
         public event EventHandler<NotifyEventArgs> Notify;
+        public event EventHandler BeforeStart;
         public event EventHandler Started;
         public event EventHandler Stopped;
         public event EventHandler Paused;
@@ -51,9 +52,8 @@ namespace MLStudy
                 Continue();
             else
             {
+                BeforeStart?.Invoke(this, null);
                 StepCounter = 0;
-                Started?.Invoke(this, null);
-
                 TrainFunction();
             }
         }
@@ -64,10 +64,8 @@ namespace MLStudy
                 return;
 
             SetTrainData(X, y);
-
+            BeforeStart?.Invoke(this, null);
             StepCounter = 0;
-            Started?.Invoke(this, null);
-
             TrainFunction();
         }
 
@@ -78,6 +76,8 @@ namespace MLStudy
             Matrix batchX;
             Vector batchY;
             var error = double.MaxValue;
+
+            Started?.Invoke(this, null);
 
             while (State == TrainerState.Training)
             {
@@ -90,6 +90,7 @@ namespace MLStudy
 
                     StepCounter++;
                     if (StepCounter % NotifySteps == 0)
+                    {
                         Notify?.Invoke(this, new NotifyEventArgs
                         {
                             Machine = Machine,
@@ -99,6 +100,8 @@ namespace MLStudy
                             BatchY = batchY,
                             Step = StepCounter,
                         });
+                        Thread.Sleep(StepWait);
+                    }
 
                     if (MaxStep > 0 && StepCounter >= MaxStep)
                         State = TrainerState.MaxStepsStopped;
@@ -120,8 +123,6 @@ namespace MLStudy
                     else
                         throw e;
                 }
-
-                Thread.Sleep(StepWait);
             }
 
             if (State == TrainerState.Paused)

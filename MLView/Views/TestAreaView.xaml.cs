@@ -143,8 +143,8 @@ namespace MLView
             {
                 LearningRate = LearningRate,
             };
-            lr.InitWeights(0);
-            lr.InitBias(0);
+            lr.SetWeights(0);
+            lr.SetBias(0);
 
             trainer = new Trainer(lr, Loss.MeanSquareError)
             {

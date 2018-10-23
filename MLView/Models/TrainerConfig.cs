@@ -1,4 +1,5 @@
-﻿using MLView.MVVM;
+﻿using MLStudy;
+using MLView.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,5 +86,13 @@ namespace MLView.Models
         }
 
 
+        public void SetToTrainer(Trainer trainer)
+        {
+            trainer.BatchSize = BatchSize;
+            trainer.ErrorLimit = ErrorLimit;
+            trainer.MaxStep = MaxSteps;
+            trainer.NotifySteps = NotifySteps;
+            trainer.StepWait = StepWait;
+        }
     }
 }

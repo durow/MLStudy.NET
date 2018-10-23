@@ -6,6 +6,8 @@ namespace MLStudy
 {
     public class Gradient
     {
+        #region Linear Regression
+
         //weightGradient = X^T(yHat-y)/y.Length
         public static Vector LinearWeights(Matrix X, Vector yHat, Vector y)
         {
@@ -13,11 +15,23 @@ namespace MLStudy
             return gradient.GetColumn(0);
         }
 
+        public static Vector LinearL1(Vector weights, double eta)
+        {
+            return (new Vector(weights.Length) + 1) * eta;
+        }
+
+        public static Vector LinearL2(Vector weights, double eta)
+        {
+            return weights * eta;
+        }
+
         //biasGradient = (yHat-y)/SampleNumber
         public static double LinearBias(Vector yHat, Vector y)
         {
             return (yHat - y).Mean();
         }
+
+        #endregion
 
         public static double LeastSquareError(Matrix X, Vector yHat, Vector y)
         {

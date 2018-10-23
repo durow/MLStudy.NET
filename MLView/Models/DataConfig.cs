@@ -39,7 +39,7 @@ namespace MLView.Models
             }
         }
 
-        private int trainSize = 100;
+        private int trainSize = 20;
 
         public int TrainSize
         {
@@ -65,6 +65,51 @@ namespace MLView.Models
                 {
                     testSize = value;
                     RaisePropertyChanged("TestSize");
+                }
+            }
+        }
+
+        private bool isNoise = false;
+
+        public bool IsNoise
+        {
+            get { return isNoise; }
+            set
+            {
+                if (isNoise != value)
+                {
+                    isNoise = value;
+                    RaisePropertyChanged("IsNoise");
+                }
+            }
+        }
+
+        private double noiseMean = 0;
+
+        public double NoiseMean
+        {
+            get { return noiseMean; }
+            set
+            {
+                if (noiseMean != value)
+                {
+                    noiseMean = value;
+                    RaisePropertyChanged("NoiseMean");
+                }
+            }
+        }
+
+        private double noiseVar = 1;
+
+        public double NoiseVar
+        {
+            get { return noiseVar; }
+            set
+            {
+                if (noiseVar != value)
+                {
+                    noiseVar = value;
+                    RaisePropertyChanged("NoiseVar");
                 }
             }
         }
