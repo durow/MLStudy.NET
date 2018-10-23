@@ -14,26 +14,29 @@
             <Setter Property="Width" Value="{Binding ElementName=Self,Path=TextBlockWidth}"/>
         </Style>
         <Style TargetType="TextBox">
-            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
             <Setter Property="BorderBrush" Value="LightGray"/>
+        </Style>
+        <Style TargetType="DockPanel">
+            <Setter Property="Margin" Value="1"/>
         </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <DockPanel>
             <TextBlock Text="Learning Rate:"/>
-            <TextBox Text="{Binding ElementName=Self,Path=Config.TestSize}"/>
+            <TextBox Text="{Binding ElementName=Self,Path=Config.LearningRate}"/>
         </DockPanel>
         <DockPanel>
             <TextBlock Text="Is Reg:"/>
-            <TextBox Text="{Binding ElementName=Self,Path=Config.Min}"/>
+            <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=Self,Path=Config.IsRegularization}"/>
         </DockPanel>
         <DockPanel>
             <TextBlock Text="Reg Type:"/>
-            <TextBox Text="{Binding ElementName=Self,Path=Config.Max}"/>
+            <TextBox Text="{Binding ElementName=Self,Path=Config.Regularization}"/>
         </DockPanel>
         <DockPanel>
             <TextBlock Text="Reg Weight:"/>
-            <TextBox Text="{Binding ElementName=Self,Path=Config.TrainSize}" Style="{x:Null}" BorderBrush="LightGray" BorderThickness="1"/>
+            <TextBox Text="{Binding ElementName=Self,Path=Config.RegularizationWeight}" Style="{x:Null}" BorderBrush="LightGray" BorderThickness="1"/>
         </DockPanel>
     </StackPanel>
 </UserControl>

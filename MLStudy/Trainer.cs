@@ -100,7 +100,7 @@ namespace MLStudy
                             Step = StepCounter,
                         });
 
-                    if (StepCounter >= MaxStep)
+                    if (MaxStep > 0 && StepCounter >= MaxStep)
                         State = TrainerState.MaxStepsStopped;
 
                     if (ErrorLimit > 0 && ErrorFunction != null)

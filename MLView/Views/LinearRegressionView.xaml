@@ -12,7 +12,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Width="230" Orientation="Vertical">
                 <GroupBox Header="LinearRegression Config" Margin="5">
-                    <con:LinearRegressionPanel x:Name="LiearRegConfig" Margin="5"/>
+                    <con:LinearRegressionPanel x:Name="LinearRegConfig" Margin="5"/>
                 </GroupBox>
                 <GroupBox Header="Trainer Config" Margin="5">
                     <con:TrainerConfigPanel x:Name="TrainerConfig" Margin="5"/>

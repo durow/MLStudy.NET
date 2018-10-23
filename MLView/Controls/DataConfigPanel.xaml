@@ -13,6 +13,13 @@
             <Setter Property="Padding" Value="0,0,5,0"/>
             <Setter Property="Width" Value="{Binding ElementName=Self,Path=TextBlockWidth}"/>
         </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+            <Setter Property="BorderBrush" Value="LightGray"/>
+        </Style>
+        <Style TargetType="DockPanel">
+            <Setter Property="Margin" Value="1"/>
+        </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <DockPanel>
