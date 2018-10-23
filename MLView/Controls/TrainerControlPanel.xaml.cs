@@ -61,8 +61,11 @@ namespace MLView.Controls
 
         private void Trainer_Started(object sender, EventArgs e)
         {
-            StopButton.IsEnabled = true;
-            PauseButton.IsEnabled = true;
+            Dispatcher.Invoke(() =>
+            {
+                StopButton.IsEnabled = true;
+                PauseButton.IsEnabled = true;
+            });
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -76,7 +79,10 @@ namespace MLView.Controls
 
         private void Trainer_Stopped(object sender, EventArgs e)
         {
-            StartButton.IsEnabled = true;
+            Dispatcher.Invoke(() =>
+            {
+                StartButton.IsEnabled = true;
+            });
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
@@ -89,8 +95,11 @@ namespace MLView.Controls
 
         private void Trainer_Paused(object sender, EventArgs e)
         {
-            ContinueButton.IsEnabled = true;
-            StopButton.IsEnabled = true;
+            Dispatcher.Invoke(() =>
+            {
+                ContinueButton.IsEnabled = true;
+                StopButton.IsEnabled = true;
+            });
         }
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
@@ -106,7 +115,11 @@ namespace MLView.Controls
 
         private void Trainer_Continued(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Dispatcher.Invoke(() =>
+            {
+                StopButton.IsEnabled = true;
+                PauseButton.IsEnabled = true;
+            });
         }
     }
 }

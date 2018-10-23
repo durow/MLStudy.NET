@@ -6,8 +6,8 @@ namespace MLStudy
 {
     public class LinearRegression:IMachine
     {
-        public Vector Weights { get; private set; } = new Vector(0);
-        public double Bias { get; private set; }
+        public Vector Weights { get; private set; } = new Vector();
+        public double Bias { get; private set; } = 1;
         public double LearningRate { get; set; } = 0.0001;
         public LinearRegularization Regularization { get; set; } = LinearRegularization.None;
         public double RegularizationWeight { get; set; } = 0.01;

@@ -35,15 +35,18 @@ namespace MLView.Controls
 
 
 
+
+
         public TrainerConfig Config
         {
-            get { return (TrainerConfig)GetValue(InfoProperty); }
-            set { SetValue(InfoProperty, value); }
+            get { return (TrainerConfig)GetValue(ConfigProperty); }
+            set { SetValue(ConfigProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Info.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty InfoProperty =
-            DependencyProperty.Register("Info", typeof(TrainerConfig), typeof(TrainerConfigPanel), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for Config.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConfigProperty =
+            DependencyProperty.Register("Config", typeof(TrainerConfig), typeof(TrainerConfigPanel), new PropertyMetadata(null));
+
 
 
 

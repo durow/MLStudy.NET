@@ -1,4 +1,5 @@
-﻿using MLView.MVVM;
+﻿using MLStudy;
+using MLView.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace MLView.Models
 {
     public class DataConfig : NotificationObject
     {
+        private DataEmulator emu = new DataEmulator();
+
         private double min = 0;
 
         public double Min
@@ -114,5 +117,27 @@ namespace MLView.Models
             }
         }
 
+        public (Matrix,Vector,Matrix,Vector) GetEmuData(int features, Func<Matrix,Vector> mapping)
+        {
+            var trainX = emu.RandomMatrix(trainSize, features, Min, Max);
+            var trainY = mapping(trainX);
+
+            if(IsNoise)
+            {
+                var noise = emu.RandomVectorGaussian(trainY.Length, NoiseMean, NoiseVar);
+                trainY += noise;
+            }
+
+            Matrix testX;
+            Vector testY;
+
+            if (TestSize > 0)
+            {
+                testX = emu.RandomMatrix(TestSize, features, Min, Max);
+                testY = mapping(testX);
+            }
+
+            return (trainX, trainY, testX, testY);
+        }
     }
 }

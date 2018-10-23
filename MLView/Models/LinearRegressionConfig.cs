@@ -1,4 +1,5 @@
-﻿using MLView.MVVM;
+﻿using MLStudy;
+using MLView.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace MLView.Models
 {
     public class LinearRegressionConfig : NotificationObject
     {
-        private double learningRate;
+        private double learningRate = 0.0001;
 
         public double LearningRate
         {
@@ -20,21 +21,6 @@ namespace MLView.Models
                 {
                     learningRate = value;
                     RaisePropertyChanged("LearningRate");
-                }
-            }
-        }
-
-        private bool isRegularization;
-
-        public bool IsRegularization
-        {
-            get { return isRegularization; }
-            set
-            {
-                if (isRegularization != value)
-                {
-                    isRegularization = value;
-                    RaisePropertyChanged("IsRegularization");
                 }
             }
         }
@@ -54,7 +40,7 @@ namespace MLView.Models
             }
         }
 
-        private double regularizationWeight;
+        private double regularizationWeight = 0.01;
 
         public double RegularizationWeight
         {
@@ -69,5 +55,20 @@ namespace MLView.Models
             }
         }
 
+        public void SetToModel(LinearRegression lr)
+        {
+            lr.LearningRate = LearningRate;
+            lr.Regularization = GetRegType(Regularization);
+            lr.RegularizationWeight = RegularizationWeight;
+        }
+
+        private LinearRegularization GetRegType(string regString)
+        {
+            if (regString == "L1")
+                return LinearRegularization.L1;
+            if (regString == "L2")
+                return LinearRegularization.L2;
+            return LinearRegularization.None;
+        }
     }
 }

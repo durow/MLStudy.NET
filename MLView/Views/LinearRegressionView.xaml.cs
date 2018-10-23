@@ -28,13 +28,17 @@ namespace MLView.Views
         Matrix trainX, testX;
         Vector trainY, testY;
 
+        DataConfig dataConfig = new DataConfig();
+        TrainerConfig trainerConfig = new TrainerConfig();
+        LinearRegressionConfig lrConfig = new LinearRegressionConfig();
+
         public LinearRegressionView()
         {
             InitializeComponent();
 
-            TrainerConfig.Config =new TrainerConfig();
-            DataConfig.Config = new DataConfig();
-            LinearRegConfig.Config = new LinearRegressionConfig();
+            TrainerConfig.Config = trainerConfig;
+            DataConfig.Config = dataConfig;
+            LinearRegConfig.Config = lrConfig;
             lr = new LinearRegression();
             trainer = new Trainer(lr, Loss.MeanSquareError);
             TrainerControl.Trainer = trainer;
@@ -49,63 +53,54 @@ namespace MLView.Views
 
         private void Trainer_BeforeStart(object sender, EventArgs e)
         {
-            var trainX = emu.RandomMatrix(DataConfig.Config.TrainSize, 1);
-            var trainY = (trainX * 3 + 5).ToVector();
-            
-            if(DataConfig.Config.IsNoise)
-            {
-                var noise = emu.RandomVectorGaussian(trainY.Length, DataConfig.Config.NoiseMean, DataConfig.Config.NoiseVar);
-                trainY += noise;
-            }
-
             lr.SetWeights(0);
             lr.SetBias(1);
-            
+
+            Dispatcher.Invoke(() =>
+            {
+                lrConfig.SetToModel(lr);
+                trainerConfig.SetToTrainer(trainer);
+                (trainX, trainY, testX, testY) = dataConfig.GetEmuData(1, m =>
+                {
+                    return (m * 3 + 5).ToVector();
+                });
+                trainer.SetTrainData(trainX, trainY);
+            });
         }
 
         private void Trainer_Continued(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            TextOutCross($"Continued!");
         }
 
         private void Trainer_Paused(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            TextOutCross($"Paused!");
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
-            throw new NotImplementedException();
+            var error = Loss.MeanSquareError(lr.Predict(e.X), e.Y);
+            TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
 
         private void Trainer_Stopped(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            TextOutCross($"Stopped!{trainer.State}!");
         }
 
         private void Trainer_Started(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            TextOutCross($"Started!");
         }
 
-        private void ConfigModel(LinearRegressionConfig config)
+        private void TextOutCross(string text)
         {
-            lr.SetWeights(0);
-            lr.SetBias(1);
-            lr.LearningRate = config.LearningRate;
-            lr.Regularization = (LinearRegularization)Enum.Parse(typeof(LinearRegularization), config.Regularization);
-            lr.RegularizationWeight = config.RegularizationWeight;
+            Dispatcher.Invoke(() =>
+            {
+                LogText.Text += text + "\n";
+                LogText.ScrollToEnd();
+            });
         }
-
-        private void ConfigTrainer(TrainerConfig config)
-        {
-            trainer.BatchSize = config.BatchSize;
-            trainer.ErrorLimit = config.ErrorLimit;
-            trainer.MaxStep = config.MaxSteps;
-            trainer.NotifySteps = config.NotifySteps;
-        }
-
-        private void SetData(DataConfig config)
-        { }
     }
 }

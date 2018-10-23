@@ -10,7 +10,7 @@ namespace MLView.Models
 {
     public class TrainerConfig : NotificationObject
     {
-        private int maxSteps;
+        private int maxSteps = 0;
 
         public int MaxSteps
         {
@@ -25,7 +25,7 @@ namespace MLView.Models
             }
         }
 
-        private int batchSize;
+        private int batchSize = 0;
 
         public int BatchSize
         {
@@ -40,7 +40,7 @@ namespace MLView.Models
             }
         }
 
-        private double errorLimit;
+        private double errorLimit = 0;
 
         public double ErrorLimit
         {
@@ -70,7 +70,7 @@ namespace MLView.Models
             }
         }
 
-        private int stepWait;
+        private int stepWait = 0;
 
         public int StepWait
         {
