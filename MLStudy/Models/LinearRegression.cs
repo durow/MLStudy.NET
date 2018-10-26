@@ -6,15 +6,15 @@ namespace MLStudy
 {
     public class LinearRegression:IMachine
     {
-        public Vector Weights { get; private set; } = new Vector();
-        public double Bias { get; private set; } = 1;
+        public Vector Weights { get; protected set; } = new Vector();
+        public double Bias { get; protected set; } = 1;
         public double LearningRate { get; set; } = 0.0001;
         public LinearRegularization Regularization { get; set; } = LinearRegularization.None;
         public double RegularizationWeight { get; set; } = 0.01;
-        private Dictionary<LinearRegularization, Func<Vector, double, Vector>> regularizationGradient = new Dictionary<LinearRegularization, Func<Vector, double, Vector>>();
+        protected Dictionary<LinearRegularization, Func<Vector, double, Vector>> regularizationGradient = new Dictionary<LinearRegularization, Func<Vector, double, Vector>>();
 
         public int StepCounter { get; private set; } = 0;
-        public Vector LastYHat { get; private set; }
+        public Vector LastYHat { get; protected set; }
 
         public LinearRegression()
         {
@@ -33,7 +33,7 @@ namespace MLStudy
             Bias = bias;
         }
 
-        public void Step(Matrix X, Vector y)
+        public virtual void Step(Matrix X, Vector y)
         {
             if(Weights.Length != X.Columns)
             {
@@ -41,24 +41,29 @@ namespace MLStudy
             }
 
             LastYHat = Predict(X);
-            var weightsGradient = Gradient.LinearWeights(X, LastYHat, y) + regularizationGradient[Regularization](Weights, RegularizationWeight);
-            var biasGradient = Gradient.LinearBias(LastYHat, y);
+            var (gradientWeights, gradientBias) = Gradient.LinearRegression(X, y, LastYHat);
+            gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
 
-            Weights -= LearningRate * weightsGradient;
-            Bias -= LearningRate * biasGradient;
+            Weights -= LearningRate * gradientWeights;
+            Bias -= LearningRate * gradientBias;
 
             StepCounter++;
         }
 
-        public Vector Predict(Matrix X)
+        public virtual Vector Predict(Matrix X)
         {
             var result = X * Weights + Bias;
             return result.ToVector();
         }
 
-        public double Predict(Vector x)
+        public virtual double Predict(Vector x)
         {
             return 0;
+        }
+
+        public virtual double Loss(Vector yHat, Vector y)
+        {
+            return LossFunctions.MeanSquareError(yHat, y);
         }
 
         public void ResetStepCounter()
@@ -66,7 +71,7 @@ namespace MLStudy
             StepCounter = 0;
         }
 
-        private void AutoInitWeight(int length)
+        protected void AutoInitWeight(int length)
         {
             var emu = new DataEmulator();
             Weights = emu.RandomVector(length);

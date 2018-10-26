@@ -5,12 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-//using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -18,11 +16,11 @@ using System.Windows.Shapes;
 namespace MLView.Views
 {
     /// <summary>
-    /// LinearRegressionView.xaml 的交互逻辑
+    /// LogisticRegressionView.xaml 的交互逻辑
     /// </summary>
-    public partial class LinearRegressionView : UserControl
+    public partial class LogisticRegressionView : UserControl
     {
-        LinearRegression lr;
+        LogisticRegression lr;
         Trainer trainer;
         DataEmulator emu = new DataEmulator();
         Matrix trainX, testX;
@@ -32,14 +30,14 @@ namespace MLView.Views
         TrainerConfig trainerConfig = new TrainerConfig();
         LinearConfig lrConfig = new LinearConfig();
 
-        public LinearRegressionView()
+        public LogisticRegressionView()
         {
             InitializeComponent();
 
             TrainerConfig.Config = trainerConfig;
             DataConfig.Config = dataConfig;
             LinearRegConfig.Config = lrConfig;
-            lr = new LinearRegression();
+            lr = new LogisticRegression();
             trainer = new Trainer(lr);
             TrainerControl.Trainer = trainer;
 
@@ -50,6 +48,7 @@ namespace MLView.Views
             trainer.Paused += Trainer_Paused;
             trainer.Continued += Trainer_Continued;
         }
+
 
         private void Trainer_BeforeStart(object sender, EventArgs e)
         {
@@ -73,29 +72,20 @@ namespace MLView.Views
             TextOutCross($"Continued!");
         }
 
-        private void Trainer_Paused(object sender, NotifyEventArgs e)
+        private void Trainer_Paused(object sender, EventArgs e)
         {
-            var error = e.Machine.Loss(lr.Predict(e.X), e.Y);
             TextOutCross($"Paused!");
-            TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
-            var error = e.Machine.Loss(lr.Predict(e.X), e.Y);
+            var error = LossFunctions.MeanSquareError(lr.Predict(e.X), e.Y);
             TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
 
-        private void Trainer_Stopped(object sender, NotifyEventArgs e)
+        private void Trainer_Stopped(object sender, EventArgs e)
         {
-            var error = e.Machine.Loss(lr.Predict(e.X), e.Y);
             TextOutCross($"Stopped!{trainer.State}!");
-            TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
-        }
-
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            LogText.Clear();
         }
 
         private void Trainer_Started(object sender, EventArgs e)

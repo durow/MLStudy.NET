@@ -6,13 +6,24 @@ namespace MLStudy
 {
     public class Gradient
     {
-        #region Linear Regression
+        #region Linear Models
 
-        //weightGradient = X^T(yHat-y)/y.Length
-        public static Vector LinearWeights(Matrix X, Vector yHat, Vector y)
+        public static (Vector, double) LinearRegression(Matrix X, Vector y, Vector yHat)
         {
-            var gradient = X.Transpose() * (yHat - y) / y.Length;
-            return gradient.GetColumn(0);
+            //weightGradient = X^T(yHat-y)/y.Length
+            var gradientWeights = X.Transpose() * (yHat - y) / y.Length;
+            //biasGradient = (yHat-y)/SampleNumber
+            var gradientBias = (yHat - y).Mean();
+            return (gradientWeights.ToVector(), gradientBias);
+        }
+
+        public static (Vector, double) LogisticRegression(Matrix X, Vector y, Vector yHat)
+        {
+            //gradient of weights = X^T*(yHat-y)/m     m is sample number
+            var gradientWeights = (X.Transpose() * (yHat - y)) / y.Length;
+            //biasGradient = (yHat-y)/SampleNumber
+            var gradientBias = (yHat - y).Mean();
+            return (gradientWeights.ToVector(), gradientBias);
         }
 
         public static Vector LinearL1(Vector weights, double eta)
@@ -23,12 +34,6 @@ namespace MLStudy
         public static Vector LinearL2(Vector weights, double eta)
         {
             return weights * eta;
-        }
-
-        //biasGradient = (yHat-y)/SampleNumber
-        public static double LinearBias(Vector yHat, Vector y)
-        {
-            return (yHat - y).Mean();
         }
 
         #endregion

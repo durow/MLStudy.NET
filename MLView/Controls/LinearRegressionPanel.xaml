@@ -27,10 +27,6 @@
             <TextBox Text="{Binding ElementName=Self,Path=Config.LearningRate}"/>
         </DockPanel>
         <DockPanel>
-            <TextBlock Text="Is Reg:"/>
-            <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=Self,Path=Config.IsRegularization}"/>
-        </DockPanel>
-        <DockPanel>
             <TextBlock Text="Reg Type:"/>
             <TextBox Text="{Binding ElementName=Self,Path=Config.Regularization}"/>
         </DockPanel>

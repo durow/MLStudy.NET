@@ -146,7 +146,7 @@ namespace MLView
             lr.SetWeights(0);
             lr.SetBias(0);
 
-            trainer = new Trainer(lr, Loss.MeanSquareError)
+            trainer = new Trainer(lr)
             {
                 MaxStep = TrainCount,
                 NotifySteps = ReportStep,
@@ -167,7 +167,7 @@ namespace MLView
                 if (trainer.MaxStep % trainer.NotifySteps != 0)
                 {
                     var yHat = trainer.Machine.Predict(matrixX);
-                    var error = Loss.MeanSquareError(yHat, y);
+                    var error = LossFunctions.MeanSquareError(yHat, y);
                     TextOutCross($"Step:{trainer.StepCounter}, error:{error}!");
                 }
             });
@@ -176,7 +176,7 @@ namespace MLView
         private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
             var yHat = e.Machine.Predict(e.X);
-            var error = Loss.MeanSquareError(yHat, e.Y);
+            var error = LossFunctions.MeanSquareError(yHat, e.Y);
 
             TextOutCross($"Step:{e.Step}, error:{error}!");
         }
@@ -213,8 +213,8 @@ namespace MLView
         {
             var yHat = lr.Predict(X);
             var testYHat = lr.Predict(testX);
-            var trainError = Loss.MeanSquareError(yHat, y);
-            var testError = Loss.MeanSquareError(testYHat, testY);
+            var trainError = LossFunctions.MeanSquareError(yHat, y);
+            var testError = LossFunctions.MeanSquareError(testYHat, testY);
             TextOutCross($"step:{lr.StepCounter},weight:{lr.Weights}, bias:{lr.Bias}, trainError:{trainError}, testError:{testError}");
         }
 

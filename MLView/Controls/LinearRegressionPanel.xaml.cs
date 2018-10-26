@@ -36,15 +36,15 @@ namespace MLView.Controls
 
 
 
-        public LinearRegressionConfig Config
+        public LinearConfig Config
         {
-            get { return (LinearRegressionConfig)GetValue(ConfigProperty); }
+            get { return (LinearConfig)GetValue(ConfigProperty); }
             set { SetValue(ConfigProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Config.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConfigProperty =
-            DependencyProperty.Register("Config", typeof(LinearRegressionConfig), typeof(LinearRegressionPanel), new PropertyMetadata(null));
+            DependencyProperty.Register("Config", typeof(LinearConfig), typeof(LinearRegressionPanel), new PropertyMetadata(null));
 
 
 

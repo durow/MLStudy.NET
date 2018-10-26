@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MLView.Models
 {
-    public class LinearRegressionConfig : NotificationObject
+    public class LinearConfig : NotificationObject
     {
         private double learningRate = 0.0001;
 

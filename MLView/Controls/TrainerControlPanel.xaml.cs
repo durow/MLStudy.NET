@@ -81,6 +81,9 @@ namespace MLView.Controls
         {
             Dispatcher.Invoke(() =>
             {
+                StopButton.IsEnabled = false;
+                PauseButton.IsEnabled = false;
+                ContinueButton.IsEnabled = false;
                 StartButton.IsEnabled = true;
             });
         }

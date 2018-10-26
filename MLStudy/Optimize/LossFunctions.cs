@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class Loss
+    public class LossFunctions
     {
         public static double StandardError(Vector yHat, Vector y)
         {
@@ -22,9 +22,17 @@ namespace MLStudy
             return Tensor.MultipleAsMatrix(error, error);
         }
 
-        public static double CrossEntropy(Vector yHat, Vector y)
+        public static double CrossEntropy(double[] p, double[] pHat)
         {
-            return 0;
+            var result = 0d;
+
+            for (int i = 0; i < p.Length; i++)
+            {
+                var temp = -p[i] * Math.Log(pHat[i]);
+                result += temp;
+            }
+
+            return result;
         }
     }
 }

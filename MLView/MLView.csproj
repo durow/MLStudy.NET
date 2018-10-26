@@ -68,11 +68,14 @@
       <DependentUpon>TrainerControlPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\DataConfig.cs" />
-    <Compile Include="Models\LinearRegressionConfig.cs" />
+    <Compile Include="Models\LinearConfig.cs" />
     <Compile Include="Models\TrainerConfig.cs" />
     <Compile Include="MVVM\NotificationObject.cs" />
     <Compile Include="Views\LinearRegressionView.xaml.cs">
       <DependentUpon>LinearRegressionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LogisticRegressionView.xaml.cs">
+      <DependentUpon>LogisticRegressionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TestAreaView.xaml.cs">
       <DependentUpon>TestAreaView.xaml</DependentUpon>
@@ -106,6 +109,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\LinearRegressionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LogisticRegressionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

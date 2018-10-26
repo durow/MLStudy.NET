@@ -17,7 +17,6 @@ namespace MLStudy
         public double ErrorLimit { get; set; } = 0;
         public int NotifySteps { get; set; } = 100;
         public int StepWait { get; set; } = 0;
-        public Func<Vector, Vector, double> ErrorFunction { get; set; }
 
         public int StepCounter { get; private set; } = 0;
         public TrainerState State { get; private set; }
@@ -25,15 +24,14 @@ namespace MLStudy
         public event EventHandler<NotifyEventArgs> Notify;
         public event EventHandler BeforeStart;
         public event EventHandler Started;
-        public event EventHandler Stopped;
-        public event EventHandler Paused;
+        public event EventHandler<NotifyEventArgs> Stopped;
+        public event EventHandler<NotifyEventArgs> Paused;
         public event EventHandler Continued;
         public event EventHandler ErrorOut;
 
-        public Trainer(IMachine machine, Func<Vector,Vector,double> errorFunction)
+        public Trainer(IMachine machine)
         {
             Machine = machine;
-            ErrorFunction = errorFunction;
             State = TrainerState.Ready;
         }
 
@@ -73,8 +71,8 @@ namespace MLStudy
         {
             State = TrainerState.Training;
 
-            Matrix batchX;
-            Vector batchY;
+            Matrix batchX = new Matrix();
+            Vector batchY = new Vector();
             var error = double.MaxValue;
 
             Started?.Invoke(this, null);
@@ -91,25 +89,17 @@ namespace MLStudy
                     StepCounter++;
                     if (StepCounter % NotifySteps == 0)
                     {
-                        Notify?.Invoke(this, new NotifyEventArgs
-                        {
-                            Machine = Machine,
-                            X = X,
-                            Y = y,
-                            BatchX = batchX,
-                            BatchY = batchY,
-                            Step = StepCounter,
-                        });
+                        Notify?.Invoke(this, GetNotifyEventArgs(batchX, batchY));
                         Thread.Sleep(StepWait);
                     }
 
                     if (MaxStep > 0 && StepCounter >= MaxStep)
                         State = TrainerState.MaxStepsStopped;
 
-                    if (ErrorLimit > 0 && ErrorFunction != null)
+                    if (ErrorLimit > 0 )
                     {
                         var yHat = Machine.Predict(batchX);
-                        error = ErrorFunction(yHat, batchY);
+                        error = Machine.Loss(yHat, batchY);
                         if (error <= ErrorLimit)
                             State = TrainerState.ErrorLimitStopped;
                     }
@@ -126,9 +116,9 @@ namespace MLStudy
             }
 
             if (State == TrainerState.Paused)
-                Paused?.Invoke(this, null);
+                Paused?.Invoke(this, GetNotifyEventArgs(batchX, batchY));
             else
-                Stopped?.Invoke(this, null);
+                Stopped?.Invoke(this, GetNotifyEventArgs(batchX, batchY));
         }
 
         public void Pause()
@@ -200,6 +190,19 @@ namespace MLStudy
         {
             if (X.Rows != y.Length)
                 throw new Exception($"the number of training samples in X must equal to number of labels in y!X.Rows:{X.Rows},y.Length:{y.Length}");
+        }
+
+        private NotifyEventArgs GetNotifyEventArgs(Matrix batchX, Vector batchY)
+        {
+            return new NotifyEventArgs
+            {
+                Machine = Machine,
+                X = X,
+                Y = y,
+                BatchX = batchX,
+                BatchY = batchY,
+                Step = StepCounter,
+            };
         }
     }
 
