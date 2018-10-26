@@ -8,29 +8,6 @@ namespace MLStudy
 {
     public class Tensor
     {
-        public static double[] GetRow(double[,] matrix, int index)
-        {
-            var columns = matrix.GetLength(1);
-            var result = new double[columns];
-            for (int i = 0; i < columns; i++)
-            {
-                result[i] = matrix[index, i];
-            }
-
-            return result;
-        }
-
-        public static double[] GetColumn(double[,] matrix, int index)
-        {
-            var rows = matrix.GetLength(0);
-            var result = new double[rows];
-            for (int i = 0; i < rows; i++)
-            {
-                result[i] = matrix[i, index];
-            }
-
-            return result;
-        }
 
         #region Vector Operations
 
@@ -152,6 +129,40 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public static Matrix Add(Matrix a, Vector b)
+        {
+            if (a.Rows != b.Length)
+                throw new Exception("not the same size!");
+
+            var result = new Matrix(a.Rows, a.Columns);
+            for (int i = 0; i < a.Columns; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    result[j, i] = a[j, i] + b[j];
+                }
+            }
+
+            return result;
+        }
+
+        public static Matrix Add(Vector a, Matrix b)
+        {
+            if (b.Rows != a.Length)
+                throw new Exception("not the same size!");
+
+            var result = new Matrix(b.Rows, b.Columns);
+            for (int i = 0; i < b.Rows; i++)
+            {
+                for (int j = 0; j < b.Columns; j++)
+                {
+                    result[i, j] = a[j] + b[i, j];
+                }
+            }
+
+            return result;
         }
 
         public static Matrix Minus(Matrix m, double b)
