@@ -26,7 +26,7 @@ namespace MLView.Views
         Matrix trainX, testX;
         Vector trainY, testY;
 
-        DataConfig dataConfig = new DataConfig { TrainSize = 200 };
+        DataConfig dataConfig = new DataConfig { TrainSize = 200, TestSize = 50 };
         TrainerConfig trainerConfig = new TrainerConfig();
         LinearConfig lrConfig = new LinearConfig { LearningRate = 0.1 };
 
