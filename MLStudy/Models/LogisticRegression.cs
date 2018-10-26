@@ -39,12 +39,29 @@ namespace MLStudy
 
         public override double Loss(Vector yHat, Vector y)
         {
+            yHat = (yHat - 0.5).ApplyFunction(Functions.IndicatorFunction);
+
             var sum = 0d;
 
             for (int i = 0; i < y.Length; i++)
             {
-                var crossEntropy = -y[i] * Math.Log(yHat[i]) - (1 - y[i]) * Math.Log(1 - y[i]);
+                var crossEntropy = -y[i] * Math.Log(yHat[i]) - (1 - y[i]) * Math.Log(1 - yHat[i]);
                 sum += crossEntropy;
+            }
+
+            return sum / y.Length;
+        }
+
+        public override double Error(Vector yHat, Vector y)
+        {
+            yHat = (yHat - 0.5).ApplyFunction(Functions.IndicatorFunction);
+
+            var sum = 0d;
+
+            for (int i = 0; i < yHat.Length; i++)
+            {
+                if (yHat[i] != y[i])
+                    sum++;
             }
 
             return sum / y.Length;

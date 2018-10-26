@@ -6,6 +6,11 @@ namespace MLStudy
 {
     public static class Functions
     {
+        public static double IndicatorFunction(double d)
+        {
+            return d >= 0 ? 1 : 0;
+        }
+
         public static double Sigmoid(double x)
         {
             return 1 / (1 + Math.Pow(System.Math.E, -x));

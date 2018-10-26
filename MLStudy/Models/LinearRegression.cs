@@ -66,6 +66,11 @@ namespace MLStudy
             return LossFunctions.MeanSquareError(yHat, y);
         }
 
+        public virtual double Error(Vector yHat, Vector y)
+        {
+            return LossFunctions.MeanSquareError(yHat, y);
+        }
+
         public void ResetStepCounter()
         {
             StepCounter = 0;
@@ -76,6 +81,7 @@ namespace MLStudy
             var emu = new DataEmulator();
             Weights = emu.RandomVector(length);
         }
+
     }
 
     public class LinearStepInfo

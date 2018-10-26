@@ -49,10 +49,10 @@ namespace MLView.Models
             get { return trainSize; }
             set
             {
-                if (max != value)
+                if (trainSize != value)
                 {
-                    max = value;
-                    RaisePropertyChanged("Max");
+                    trainSize = value;
+                    RaisePropertyChanged("TrainSize");
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace MLView.Models
             }
         }
 
-        public (Matrix,Vector,Matrix,Vector) GetEmuData(int features, Func<Matrix,Vector> mapping)
+        public (Matrix,Vector,Matrix,Vector) GetRegressionData(int features, Func<Matrix,Vector> mapping)
         {
             var trainX = emu.RandomMatrix(trainSize, features, Min, Max);
             var trainY = mapping(trainX);
@@ -135,6 +135,31 @@ namespace MLView.Models
             {
                 testX = emu.RandomMatrix(TestSize, features, Min, Max);
                 testY = mapping(testX);
+            }
+
+            return (trainX, trainY, testX, testY);
+        }
+
+        public (Matrix, Vector, Matrix, Vector) GetClassificationData(int features, Func<Matrix,Vector> distance)
+        {
+            var trainX = emu.RandomMatrix(trainSize, features, Min, Max);
+            var trainDistance = distance(trainX);
+            if (IsNoise)
+            {
+                var noise = emu.RandomVectorGaussian(trainDistance.Length, NoiseMean, NoiseVar);
+                trainDistance += noise;
+            }
+
+            var trainY = trainDistance.ApplyFunction(Functions.IndicatorFunction);
+            
+            Matrix testX;
+            Vector testY;
+
+            if (TestSize > 0)
+            {
+                testX = emu.RandomMatrix(TestSize, features, Min, Max);
+                var testDistance = distance(testX);
+                testY = testDistance.ApplyFunction(Functions.IndicatorFunction);
             }
 
             return (trainX, trainY, testX, testY);

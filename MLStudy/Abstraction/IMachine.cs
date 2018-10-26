@@ -10,5 +10,6 @@ namespace MLStudy
         double Predict(Vector X);
         Vector Predict(Matrix X);
         double Loss(Vector yHat, Vector y);
+        double Error(Vector yHat, Vector y);
     }
 }

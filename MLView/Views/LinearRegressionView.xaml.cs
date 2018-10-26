@@ -60,7 +60,7 @@ namespace MLView.Views
             {
                 lrConfig.SetToModel(lr);
                 trainerConfig.SetToTrainer(trainer);
-                (trainX, trainY, testX, testY) = dataConfig.GetEmuData(1, m =>
+                (trainX, trainY, testX, testY) = dataConfig.GetRegressionData(1, m =>
                 {
                     return (m * 3 + 5).ToVector();
                 });

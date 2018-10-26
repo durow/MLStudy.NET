@@ -16,7 +16,7 @@
                 <views:LinearRegressionView/>
             </TabItem>
             <TabItem Header="LogisticRegression">
-
+                <views:LogisticRegressionView/>
             </TabItem>
             <TabItem Header="NeuralNetwork">
 

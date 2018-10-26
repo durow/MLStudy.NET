@@ -26,9 +26,9 @@ namespace MLView.Views
         Matrix trainX, testX;
         Vector trainY, testY;
 
-        DataConfig dataConfig = new DataConfig();
+        DataConfig dataConfig = new DataConfig { TrainSize = 200 };
         TrainerConfig trainerConfig = new TrainerConfig();
-        LinearConfig lrConfig = new LinearConfig();
+        LinearConfig lrConfig = new LinearConfig { LearningRate = 0.1 };
 
         public LogisticRegressionView()
         {
@@ -52,17 +52,18 @@ namespace MLView.Views
 
         private void Trainer_BeforeStart(object sender, EventArgs e)
         {
-            lr.SetWeights(0);
+            lr.SetWeights(0,0);
             lr.SetBias(1);
 
             Dispatcher.Invoke(() =>
             {
                 lrConfig.SetToModel(lr);
                 trainerConfig.SetToTrainer(trainer);
-                (trainX, trainY, testX, testY) = dataConfig.GetEmuData(1, m =>
+                (trainX, trainY, testX, testY) = dataConfig.GetClassificationData(2, m =>
                 {
-                    return (m * 3 + 5).ToVector();
+                    return m.GetColumn(1) - (m.GetColumn(0) * 3 + 5);
                 });
+
                 trainer.SetTrainData(trainX, trainY);
             });
         }
@@ -72,20 +73,26 @@ namespace MLView.Views
             TextOutCross($"Continued!");
         }
 
-        private void Trainer_Paused(object sender, EventArgs e)
+        private void Trainer_Paused(object sender, NotifyEventArgs e)
         {
             TextOutCross($"Paused!");
+            OutputInfo(e);
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
-            var error = LossFunctions.MeanSquareError(lr.Predict(e.X), e.Y);
-            TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
+            OutputInfo(e);
         }
 
-        private void Trainer_Stopped(object sender, EventArgs e)
+        private void Trainer_Stopped(object sender, NotifyEventArgs e)
         {
             TextOutCross($"Stopped!{trainer.State}!");
+            OutputInfo(e);
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LogText.Clear();
         }
 
         private void Trainer_Started(object sender, EventArgs e)
@@ -100,6 +107,12 @@ namespace MLView.Views
                 LogText.Text += text + "\n";
                 LogText.ScrollToEnd();
             });
+        }
+
+        private void OutputInfo(NotifyEventArgs e)
+        {
+            var error = e.Machine.Error(lr.Predict(e.X), e.Y);
+            TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
     }
 }
