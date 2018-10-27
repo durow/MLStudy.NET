@@ -22,7 +22,7 @@ namespace MLStudy
             return Tensor.MultipleAsMatrix(error, error);
         }
 
-        public static double CrossEntropy(double[] p, double[] pHat)
+        public static double CrossEntropy(Vector p, Vector pHat)
         {
             var result = 0d;
 

@@ -30,7 +30,7 @@ namespace MLStudy
             }
 
             LastYHat = Predict(X);
-            var (gradientWeights, gradientBias) = Gradient.LogisticRegression(X, y, LastYHat);
+            var (gradientWeights, gradientBias) = Gradient.LogisticRegressionLoss(X, y, LastYHat);
             gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
 
             Weights -= LearningRate * gradientWeights;

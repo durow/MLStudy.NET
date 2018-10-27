@@ -78,6 +78,11 @@ namespace MLStudy
             return values[row, column];
         }
 
+        public Matrix GetSameShape()
+        {
+            return new Matrix(Rows, Columns);
+        }
+
         public override bool Equals(object obj)
         {
             if (!(obj is Matrix m))
@@ -184,10 +189,24 @@ namespace MLStudy
             return Tensor.Add(m, a);
         }
 
+        public static Matrix operator +(Matrix m, Vector a)
+        {
+            return Tensor.Add(m, a);
+        }
+
+        public static Matrix operator +(Vector a, Matrix m)
+        {
+            return Tensor.Add(a, m);
+        }
 
         public static Matrix operator +(Matrix a, Matrix b)
         {
             return Tensor.Add(a, b);
+        }
+
+        public static Matrix operator -(Matrix a, Matrix b)
+        {
+            return Tensor.Minus(a, b);
         }
 
         public static Matrix operator -(Matrix m, double a)

@@ -41,7 +41,7 @@ namespace MLStudy
             }
 
             LastYHat = Predict(X);
-            var (gradientWeights, gradientBias) = Gradient.LinearRegression(X, y, LastYHat);
+            var (gradientWeights, gradientBias) = Gradient.LinearRegressionLoss(X, y, LastYHat);
             gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
 
             Weights -= LearningRate * gradientWeights;

@@ -20,8 +20,8 @@ namespace MLStudy
         public double Predict(Vector x)
         {
             var list = GetAllDistance(x);
-            var nearest = GetKNearestNeighbors(list);
-            return nearest.OrderByDescending(n => n.Value).First().Key;
+            var nearestK = GetKNearestNeighbors(list);
+            return FindNearest(nearestK);
         }
 
         public void Train(Matrix X, Vector y)
@@ -53,6 +53,23 @@ namespace MLStudy
                     dict[label] = 1;
             }
             return dict;
+        }
+
+        private double FindNearest(Dictionary<double,int> dict)
+        {
+            var nearestLabel = 0d;
+            var maxCount = 0;
+
+            foreach (var item in dict)
+            {
+                if(item.Value > maxCount)
+                {
+                    nearestLabel = item.Key;
+                    maxCount = item.Value;
+                }
+            }
+
+            return nearestLabel;
         }
 
         private double Distance(Vector x, Vector train)

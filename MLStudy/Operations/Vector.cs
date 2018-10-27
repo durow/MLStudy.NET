@@ -44,6 +44,11 @@ namespace MLStudy
             return values.Average();
         }
 
+        public double Max()
+        {
+            return values.Max();
+        }
+
         public Matrix ToMatrix(bool verticalVector = false)
         {
             double[,] result;
