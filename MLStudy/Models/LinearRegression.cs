@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class LinearRegression:IMachine
+    public class LinearRegression:ITrain
     {
         public Vector Weights { get; protected set; } = new Vector();
         public double Bias { get; protected set; } = 1;
@@ -50,13 +50,13 @@ namespace MLStudy
             StepCounter++;
         }
 
-        public virtual Vector Predict(Matrix X)
+        public Vector Predict(Matrix X)
         {
             var result = X * Weights + Bias;
             return result.ToVector();
         }
 
-        public virtual double Predict(Vector x)
+        public double Predict(Vector x)
         {
             return 0;
         }
@@ -67,14 +67,9 @@ namespace MLStudy
             return LossFunctions.MeanSquareError(yHat, y);
         }
 
-        public virtual double Error(Vector yHat, Vector y)
+        public double Error(Vector yHat, Vector y)
         {
             return LossFunctions.MeanSquareError(yHat, y);
-        }
-
-        public void ResetStepCounter()
-        {
-            StepCounter = 0;
         }
 
         protected void AutoInitWeight(int length)
@@ -83,18 +78,6 @@ namespace MLStudy
             Weights = emu.RandomVector(length);
         }
 
-    }
-
-    public class LinearStepInfo
-    {
-        public int StepCounter { get; internal set; }
-        public Vector OldWeights { get; internal set; }
-        public Vector NewWeights { get; internal set; }
-        public double OldBias { get; internal set; }
-        public double NewBias { get; internal set; }
-        public Vector Y { get; internal set; }
-        public Vector YHat { get; internal set; }
-        public double Error { get; internal set; }
     }
 
     public enum LinearRegularization

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class NeuralNetwork : IMachine
+    public class NeuralNetwork : ITrain
     {
         public double Error(Vector yHat, Vector y)
         {

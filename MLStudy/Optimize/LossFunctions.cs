@@ -28,6 +28,9 @@ namespace MLStudy
 
             for (int i = 0; i < p.Length; i++)
             {
+                if (p[i] == 0)
+                    continue;
+
                 var temp = -p[i] * Math.Log(pHat[i]);
                 result += temp;
             }

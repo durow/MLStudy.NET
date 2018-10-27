@@ -10,16 +10,20 @@ namespace MLStudy
         {
         }
 
-        public override double Predict(Vector x)
+        public new LogisticResult Predict(Vector x)
         {
             var a = Tensor.MultipleAsMatrix(x, Weights) + Bias;
-            return Functions.Sigmoid(a);
+            var raw = Functions.Sigmoid(a);
+            var result = Functions.IndicatorFunction(raw - 0.5);
+            return new LogisticResult(raw, result);
         }
 
-        public override Vector Predict(Matrix X)
+        public new LogisticResultMulti Predict(Matrix X)
         {
             var a = X * Weights + Bias;
-            return a.ToVector().ApplyFunction(Functions.Sigmoid);
+            var raw = a.ToVector().ApplyFunction(Functions.Sigmoid);
+            var result = ProbabilityToCategory(raw);
+            return new LogisticResultMulti(raw, result);
         }
 
         public override void Step(Matrix X, Vector y)
@@ -29,7 +33,7 @@ namespace MLStudy
                 AutoInitWeight(X.Columns);
             }
 
-            LastYHat = Predict(X);
+            LastYHat = Predict(X).RawResult;
             var (gradientWeights, gradientBias) = Gradient.LogisticRegressionLoss(X, y, LastYHat);
             gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
 
@@ -39,7 +43,7 @@ namespace MLStudy
 
         public override double Loss(Matrix X, Vector y)
         {
-            var yHat = Predict(X);
+            var yHat = Predict(X).RawResult;
 
             var sum = 0d;
             var crossEntropy = 0d;
@@ -49,15 +53,45 @@ namespace MLStudy
                     crossEntropy = -Math.Log(yHat[i]);
                 else
                     crossEntropy = -Math.Log(1 - yHat[i]);
+
                 sum += crossEntropy;
             }
             return sum / y.Length;
         }
 
-        public override double Error(Vector yHat, Vector y)
+        public double Error(Matrix X, Vector y)
         {
-            yHat = (yHat - 0.5).ApplyFunction(Functions.IndicatorFunction);
+            var yHat = Predict(X).Result;
             return LossFunctions.ErrorPercent(yHat, y); 
+        }
+
+        private Vector ProbabilityToCategory(Vector v)
+        {
+            return (v - 0.5).ApplyFunction(Functions.IndicatorFunction);
+        }
+    }
+
+    public class LogisticResult
+    {
+        public double Result { get; private set; }
+        public double RawResult { get; private set; }
+
+        public LogisticResult(double raw, double result)
+        {
+            RawResult = raw;
+            Result = result;
+        }
+    }
+
+    public class LogisticResultMulti
+    {
+        public Vector Result { get; private set; }
+        public Vector RawResult { get; private set; }
+
+        public LogisticResultMulti(Vector raw, Vector result)
+        {
+            RawResult = raw;
+            Result = result;
         }
     }
 }
