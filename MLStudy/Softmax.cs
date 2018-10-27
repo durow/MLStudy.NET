@@ -21,9 +21,9 @@ namespace MLStudy
             return LossFunctions.ErrorPercent(yHat, y);
         }
 
-        public double Loss(Vector yHat, Vector y)
+        public double Loss(Matrix yHat, Vector y)
         {
-            return LossFunctions.CrossEntropy(y, yHat);
+            return 0;
         }
 
         public double Predict(Vector x)

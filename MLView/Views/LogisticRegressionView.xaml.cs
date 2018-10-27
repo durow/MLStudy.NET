@@ -111,7 +111,7 @@ namespace MLView.Views
 
         private void OutputInfo(NotifyEventArgs e)
         {
-            var error = e.Machine.Error(lr.Predict(e.X), e.Y);
+            var error = e.Machine.Loss(e.X, e.Y);
             TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
     }

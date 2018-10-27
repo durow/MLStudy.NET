@@ -9,7 +9,7 @@ namespace MLStudy
         void Step(Matrix X, Vector y);
         double Predict(Vector X);
         Vector Predict(Matrix X);
-        double Loss(Vector yHat, Vector y);
+        double Loss(Matrix yHat, Vector y);
         double Error(Vector yHat, Vector y);
     }
 }

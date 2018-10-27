@@ -37,24 +37,27 @@ namespace MLStudy
             Bias -= LearningRate * gradientBias;
         }
 
-        public override double Loss(Vector yHat, Vector y)
+        public override double Loss(Matrix X, Vector y)
         {
-            yHat = (yHat - 0.5).ApplyFunction(Functions.IndicatorFunction);
+            var yHat = Predict(X);
 
             var sum = 0d;
-
+            var crossEntropy = 0d;
             for (int i = 0; i < y.Length; i++)
             {
-                var crossEntropy = -y[i] * Math.Log(yHat[i]) - (1 - y[i]) * Math.Log(1 - yHat[i]);
+                if (y[i] == 1)
+                    crossEntropy = -Math.Log(yHat[i]);
+                else
+                    crossEntropy = -Math.Log(1 - yHat[i]);
                 sum += crossEntropy;
             }
-
             return sum / y.Length;
         }
 
         public override double Error(Vector yHat, Vector y)
         {
-            return LossFunctions.ErrorPercent(yHat, y);
+            yHat = (yHat - 0.5).ApplyFunction(Functions.IndicatorFunction);
+            return LossFunctions.ErrorPercent(yHat, y); 
         }
     }
 }

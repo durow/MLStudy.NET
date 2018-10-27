@@ -61,8 +61,9 @@ namespace MLStudy
             return 0;
         }
 
-        public virtual double Loss(Vector yHat, Vector y)
+        public virtual double Loss(Matrix X, Vector y)
         {
+            var yHat = Predict(X);
             return LossFunctions.MeanSquareError(yHat, y);
         }
 

@@ -11,7 +11,7 @@ namespace MLStudy
             throw new NotImplementedException();
         }
 
-        public double Loss(Vector yHat, Vector y)
+        public double Loss(Matrix X, Vector y)
         {
             throw new NotImplementedException();
         }

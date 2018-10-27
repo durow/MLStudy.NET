@@ -36,8 +36,6 @@ namespace MLStudy
         }
         public static double ErrorPercent(Vector yHat, Vector y)
         {
-            yHat = (yHat - 0.5).ApplyFunction(Functions.IndicatorFunction);
-
             var sum = 0d;
 
             for (int i = 0; i < yHat.Length; i++)

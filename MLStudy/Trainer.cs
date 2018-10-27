@@ -73,7 +73,7 @@ namespace MLStudy
 
             Matrix batchX = new Matrix();
             Vector batchY = new Vector();
-            var error = double.MaxValue;
+            var loss = double.MaxValue;
 
             Started?.Invoke(this, null);
 
@@ -98,9 +98,8 @@ namespace MLStudy
 
                     if (ErrorLimit > 0 )
                     {
-                        var yHat = Machine.Predict(batchX);
-                        error = Machine.Loss(yHat, batchY);
-                        if (error <= ErrorLimit)
+                        loss = Machine.Loss(X, y);
+                        if (loss <= ErrorLimit)
                             State = TrainerState.ErrorLimitStopped;
                     }
                 }

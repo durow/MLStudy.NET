@@ -75,20 +75,20 @@ namespace MLView.Views
 
         private void Trainer_Paused(object sender, NotifyEventArgs e)
         {
-            var error = e.Machine.Loss(lr.Predict(e.X), e.Y);
+            var error = e.Machine.Loss(e.X, e.Y);
             TextOutCross($"Paused!");
             TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
-            var error = e.Machine.Loss(lr.Predict(e.X), e.Y);
+            var error = e.Machine.Loss(e.X, e.Y);
             TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
 
         private void Trainer_Stopped(object sender, NotifyEventArgs e)
         {
-            var error = e.Machine.Loss(lr.Predict(e.X), e.Y);
+            var error = e.Machine.Loss(e.X, e.Y);
             TextOutCross($"Stopped!{trainer.State}!");
             TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
         }
