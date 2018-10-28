@@ -6,5 +6,9 @@ namespace MLStudy
 {
     public class OutputLayer
     {
+        public Matrix Forward(Matrix input)
+        {
+            return new Matrix();
+        }
     }
 }
