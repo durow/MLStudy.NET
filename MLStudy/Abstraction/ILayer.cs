@@ -6,7 +6,7 @@ namespace MLStudy
 {
     public interface ILayer
     {
-        Vector Forward();
-        void Backward();
+        Matrix Forward();
+        Matrix Backward();
     }
 }

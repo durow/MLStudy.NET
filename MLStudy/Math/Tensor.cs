@@ -226,6 +226,21 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public static Matrix MultipleElementWise(Matrix a, Matrix b)
+        {
+            CheckMatrixShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = a[i, j] * b[i, j];
+                }
+            }
+            return result;
+        }
+
         public static Matrix Multiple(Matrix a, Vector v)
         {
             var m = v.ToMatrix(true);

@@ -34,7 +34,7 @@ namespace MLStudy
             }
 
             LastYHat = Predict(X).RawResult;
-            var (gradientWeights, gradientBias) = Gradient.LogisticRegressionLoss(X, y, LastYHat);
+            var (gradientWeights, gradientBias) = Gradient.LinearSigmoidCrossEntropy(X, y, LastYHat);
             gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
 
             Weights -= LearningRate * gradientWeights;

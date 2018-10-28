@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class LinearRegression:ITrain
+    public class LinearRegression:ITrainable
     {
         public Vector Weights { get; protected set; } = new Vector();
         public double Bias { get; protected set; } = 1;
@@ -41,7 +41,7 @@ namespace MLStudy
             }
 
             LastYHat = Predict(X);
-            var (gradientWeights, gradientBias) = Gradient.LinearRegressionLoss(X, y, LastYHat);
+            var (gradientWeights, gradientBias) = Gradient.LinearSquareError(X, y, LastYHat);
             gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
 
             Weights -= LearningRate * gradientWeights;

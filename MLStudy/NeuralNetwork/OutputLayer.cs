@@ -10,5 +10,10 @@ namespace MLStudy
         {
             return new Matrix();
         }
+
+        public Matrix Backward()
+        {
+            return new Matrix();
+        }
     }
 }

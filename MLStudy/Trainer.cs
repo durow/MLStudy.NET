@@ -8,7 +8,7 @@ namespace MLStudy
 {
     public class Trainer
     {
-        public readonly ITrain Machine;
+        public readonly ITrainable Machine;
         public Matrix X { get; private set; }
         public Vector y { get; private set; }
 
@@ -29,7 +29,7 @@ namespace MLStudy
         public event EventHandler Continued;
         public event EventHandler ErrorOut;
 
-        public Trainer(ITrain machine)
+        public Trainer(ITrainable machine)
         {
             Machine = machine;
             State = TrainerState.Ready;
@@ -207,7 +207,7 @@ namespace MLStudy
 
     public class NotifyEventArgs:EventArgs
     {
-        public ITrain Machine { get; internal set; }
+        public ITrainable Machine { get; internal set; }
         public Matrix X { get; internal set; }
         public Matrix BatchX { get; internal set; }
         public Vector Y { get; internal set; }

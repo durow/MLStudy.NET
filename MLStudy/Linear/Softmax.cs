@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class Softmax : ITrain
+    public class Softmax : ITrainable
     {
         public double LearningRate { get; set; }
         public Matrix Weights { get; private set; }
@@ -57,7 +57,7 @@ namespace MLStudy
             var matrixY = ExtendToMatrix(y);
             var z = Bias + X * Weights; //add Bias(a Vector) to Weights(a Matrix) row by row
             var yHat = Functions.SoftmaxByRow(z);
-            var (gradientWeights, gradientBias) = Gradient.SoftmaxLoss(X, matrixY, yHat);
+            var (gradientWeights, gradientBias) = Gradient.LinearSoftmaxCrossEntropy(X, matrixY, yHat);
             Weights -= gradientWeights * LearningRate;
             Bias -= gradientBias * LearningRate;
         }

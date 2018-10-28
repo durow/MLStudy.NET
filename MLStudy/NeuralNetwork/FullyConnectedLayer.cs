@@ -33,8 +33,15 @@ namespace MLStudy
                 activation.ActivationType = value;
             }
         }
-        public Matrix LastForward { get; private set; }
-        public Matrix LastBackward { get; private set; }
+
+        public Matrix ForwardInput { get; private set; }
+        public Matrix ForwardOutput { get; private set; }
+        //d Loss/d Input
+        public Matrix InputError { get; private set; }
+        //d Loss/d z(Linear Output)
+        public Matrix LinearError { get; private set; }
+        //d Loss/d a(Activator Output)
+        public Matrix OutputError { get; set; }
 
         public FullyConnectedLayer(int inputFeatures, int neuronCount)
         {
@@ -59,21 +66,31 @@ namespace MLStudy
             Bias = emu.RandomVectorGaussian(NeuronCount);
         }
 
-        public void Backward()
+        public Matrix Backward(Matrix outputError)
         {
-            throw new NotImplementedException();
+            OutputError = outputError;
+            ErrorBP();
+            UpdateWeightsBias();
+            return InputError;
         }
 
         private void ErrorBP()
-        { }
+        {
+            var activationDerivative = activation.Derivative(ForwardOutput);
+            LinearError = Tensor.MultipleElementWise(activationDerivative, OutputError);
+            InputError = LinearError * Weights.Transpose();
+        }
 
         private void UpdateWeightsBias()
-        { }
+        {
+        }
 
         public Matrix Forward(Matrix input)
         {
-            LastForward = Bias + input * Weights;
-            return LastForward;
+            ForwardInput = input;
+            //Add Bias(a Vector) to Matrix row by row
+            ForwardOutput = Bias + input * Weights;
+            return ForwardOutput;
         }
     }
 }
