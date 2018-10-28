@@ -166,7 +166,7 @@ namespace MLView
                 trainer.StartTrain(matrixX, y);
                 if (trainer.MaxStep % trainer.NotifySteps != 0)
                 {
-                    var yHat = trainer.Machine.Predict(matrixX);
+                    var yHat = lr.Predict(matrixX);
                     var error = LossFunctions.MeanSquareError(yHat, y);
                     TextOutCross($"Step:{trainer.StepCounter}, error:{error}!");
                 }
@@ -175,7 +175,7 @@ namespace MLView
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)
         {
-            var yHat = e.Machine.Predict(e.X);
+            var yHat = lr.Predict(e.X);
             var error = LossFunctions.MeanSquareError(yHat, e.Y);
 
             TextOutCross($"Step:{e.Step}, error:{error}!");

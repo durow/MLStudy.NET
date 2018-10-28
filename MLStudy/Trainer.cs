@@ -156,16 +156,6 @@ namespace MLStudy
                 return;
         }
 
-        public double Predict(Vector x)
-        {
-            return Machine.Predict(x);
-        }
-
-        public Vector Predict(Matrix X)
-        {
-            return Machine.Predict(X);
-        }
-
         public static (Matrix,Vector) GetBatchX(Matrix X, Vector y, int start, int count)
         {
             if (count <= 0 || count >= X.Rows)
