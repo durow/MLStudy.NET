@@ -1,32 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MLStudy
 {
     public abstract class OutputLayer
     {
-        public static Dictionary<string, Type> Dict;
+        //#region static
 
-        static OutputLayer()
-        {
-            Dict = new Dictionary<string, Type>();
-            Registor<SoftmaxOut>("Linear");
-        }
+        //public static Dictionary<string, Type> Dict;
 
-        public static void Registor<T>(string name) where T : OutputLayer
-        {
-            Dict[name] = typeof(T);
-        }
+        //static OutputLayer()
+        //{
+        //    Dict = new Dictionary<string, Type>();
+        //    Registor<LinearRegressionOut>("LinearRegression");
+        //    Registor<LogisticRegressionOut>("LogisticRegression");
+        //    Registor<SoftmaxOut>("Softmax");
+        //}
 
-        public static OutputLayer Get(string name)
-        {
-            if (Dict.ContainsKey(name))
-                return (OutputLayer)Activator.CreateInstance(Dict[name]);
-            else
-                return null;
-        }
+        //public static void Registor<T>(string name) where T : OutputLayer
+        //{
+        //    Dict[name] = typeof(T);
+        //}
+
+        //public static OutputLayer Get(string name, int inputFeatures, int neuronCount)
+        //{
+        //    if (Dict.ContainsKey(name))
+        //        return (OutputLayer)Activator.CreateInstance(Dict[name],);
+        //    else
+        //        return null;
+        //}
+
+        //#endregion
 
         public int InputFeatures { get; protected set; }
         public double LearningRate
@@ -40,7 +44,6 @@ namespace MLStudy
                 Optimizer.LearningRate = value;
             }
         }
-
         public GradientOptimizer Optimizer { get; protected set; } = new GradientOptimizer();
 
         public Matrix ForwardInput { get; protected set; }

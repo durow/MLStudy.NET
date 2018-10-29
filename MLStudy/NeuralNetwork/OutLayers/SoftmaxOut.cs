@@ -23,15 +23,32 @@ namespace MLStudy
             Bias = new Vector(CategoryCount);
         }
 
+        public override Matrix Forward(Matrix input)
+        {
+            ForwardInput = input;
+            var z = Bias + input * Weights;
+            ForwardOutput = Functions.SoftmaxByRow(z);
+            return ForwardOutput;
+        }
+
         public override Matrix Backward(Vector y)
         {
             var matrixY = ExtendSoftmaxResultToMatrix(y);
+            ComputeLoss(matrixY);
+            ErrorBP(matrixY);
+            UpdateWeightBias();
             throw new NotImplementedException();
         }
 
         private void ComputeLoss(Matrix y)
         {
-
+            var sum = 0d;
+            for (int i = 0; i < ForwardOutput.Rows; i++)
+            {
+                var ce = LossFunctions.CrossEntropy(ForwardOutput[i], y[i]);
+                sum += ce;
+            }
+            Loss = sum / y.Length;
         }
 
         private void ErrorBP(Matrix y)
@@ -51,14 +68,6 @@ namespace MLStudy
             var gradientWeights = ForwardInput.Transpose() * LinearError / LinearError.Rows;
             Weights = Optimizer.GradientDescent(Weights, gradientWeights);
             Bias = Optimizer.GradientDescent(Bias, gradientBias);
-        }
-
-        public override Matrix Forward(Matrix input)
-        {
-            ForwardInput = input;
-            var z = Bias + input * Weights;
-            ForwardOutput = Functions.SoftmaxByRow(z);
-            return ForwardOutput;
         }
 
         private Matrix ExtendSoftmaxResultToMatrix(Vector v)

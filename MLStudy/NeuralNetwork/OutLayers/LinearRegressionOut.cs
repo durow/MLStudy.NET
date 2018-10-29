@@ -4,45 +4,31 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class LinearRegressionOut
+    public class LinearRegressionOut: OutputLayer
     {
         public Matrix Weights { get; private set; }
         public double Bias { get; private set; }
-        public int InputFeatures { get; private set; }
-
-        public double LearningRate
-        {
-            get
-            {
-                return Optimizer.LearningRate;
-            }
-            set
-            {
-                Optimizer.LearningRate = value;
-            }
-        }
-
-        public GradientOptimizer Optimizer { get; set; } = new GradientOptimizer();
-
-        public Matrix ForwardInput { get; protected set; }
-        public Matrix ForwardOutput { get; protected set; }
-        public Matrix InputError { get; protected set; }
-        public Matrix LinearError { get; protected set; }
-        public double Loss { get; protected set; }
 
         public LinearRegressionOut(int inputFeatures)
         {
             InputFeatures = inputFeatures;
-            AutoInitWeightBias();
+            AutoInitWeightsBias();
         }
 
-        public virtual void AutoInitWeightBias()
+        public override void AutoInitWeightsBias()
         {
             Weights = new Matrix(InputFeatures, 1);
             Bias = 1;
         }
 
-        public virtual Matrix Backward(Vector y)
+        public override Matrix Forward(Matrix input)
+        {
+            ForwardInput = input;
+            ForwardOutput = input * Weights + Bias;
+            return ForwardOutput;
+        }
+
+        public override Matrix Backward(Vector y)
         {
             ComputeOutputError(y);
             ErrorBP(y);
@@ -69,13 +55,6 @@ namespace MLStudy
             var biasGradient = LinearError.Mean();
             Weights = Optimizer.GradientDescent(Weights, weightsGradient);
             Bias = Optimizer.GradientDescent(Bias, biasGradient);
-        }
-
-        public virtual Matrix Forward(Matrix input)
-        {
-            ForwardInput = input;
-            ForwardOutput = input * Weights + Bias;
-            return ForwardOutput;
         }
     }
 }
