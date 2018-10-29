@@ -44,6 +44,18 @@ namespace MLStudy
             values = new double[rows, columns];
         }
 
+        public Matrix(int rows, int columns, double defaultValue)
+        {
+            values = new double[rows, columns];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    values[i, j] = defaultValue;
+                }
+            }
+        }
+
         public Matrix(double[,] values)
         {
             this.values = values;

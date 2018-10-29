@@ -215,7 +215,7 @@ namespace MLView
             var testYHat = lr.Predict(testX);
             var trainError = LossFunctions.MeanSquareError(yHat, y);
             var testError = LossFunctions.MeanSquareError(testYHat, testY);
-            TextOutCross($"step:{lr.StepCounter},weight:{lr.Weights}, bias:{lr.Bias}, trainError:{trainError}, testError:{testError}");
+            TextOutCross($"step:,weight:{lr.Weights}, bias:{lr.Bias}, trainError:{trainError}, testError:{testError}");
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)

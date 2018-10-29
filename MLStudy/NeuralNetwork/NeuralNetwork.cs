@@ -68,51 +68,9 @@ namespace MLStudy
         }
     }
 
-    public class Activation
-    {
-        private static Dictionary<Activations, Func<double, double>> activationDict = new Dictionary<Activations, Func<double, double>>();
-        private static Dictionary<Activations, Func<double, double>> derivativeDict = new Dictionary<Activations, Func<double, double>>();
-        public Activations ActivationType { get; set; }
+    
 
-        static Activation()
-        {
-            activationDict.Add(Activations.None, new Func<double, double>(a => a));
-            activationDict.Add(Activations.ReLU, new Func<double, double>(Functions.ReLU));
-            activationDict.Add(Activations.Sigmoid, new Func<double, double>(Functions.Sigmoid));
-
-            derivativeDict.Add(Activations.None, new Func<double, double>(a => a));
-            activationDict.Add(Activations.ReLU, new Func<double, double>(DerivativeFunctions.ReLU));
-            activationDict.Add(Activations.Sigmoid, new Func<double, double>(DerivativeFunctions.SigmoidByResult));
-        }
-
-        public Activation(Activations activationType)
-        {
-            ActivationType = activationType;
-        }
-
-        public Matrix Derivative(Matrix outputError)
-        {
-            return outputError.ApplyFunction(derivativeDict[ActivationType]);
-        }
-
-        public Matrix Active(Matrix m)
-        {
-            return m.ApplyFunction(activationDict[ActivationType]);
-        }
-
-        public Vector Active(Vector v)
-        {
-            return v.ApplyFunction(activationDict[ActivationType]);
-        }
-    }
-
-    public enum Activations
-    {
-        ReLU,
-        Tanh,
-        Sigmoid,
-        None,
-    }
+    
 
     public enum OutputTypes
     {

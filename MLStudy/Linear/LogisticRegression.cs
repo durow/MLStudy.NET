@@ -10,14 +10,6 @@ namespace MLStudy
         {
         }
 
-        public new LogisticResult Predict(Vector x)
-        {
-            var a = Tensor.MultipleAsMatrix(x, Weights) + Bias;
-            var raw = Functions.Sigmoid(a);
-            var result = Functions.IndicatorFunction(raw - 0.5);
-            return new LogisticResult(raw, result);
-        }
-
         public new LogisticResultMulti Predict(Matrix X)
         {
             var a = X * Weights + Bias;
@@ -33,12 +25,14 @@ namespace MLStudy
                 AutoInitWeight(X.Columns);
             }
 
-            LastYHat = Predict(X).RawResult;
-            var (gradientWeights, gradientBias) = Gradient.LinearSigmoidCrossEntropy(X, y, LastYHat);
-            gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
+            var yHat = Predict(X).RawResult;
+            var (gradientWeights, gradientBias) = Gradient.LinearSigmoidCrossEntropy(X, y, yHat);
 
-            Weights -= LearningRate * gradientWeights;
-            Bias -= LearningRate * gradientBias;
+            if (Regularization.RegularType != RegularTypes.None)
+                gradientWeights += Regularization.GetValue(Weights);
+
+            Weights = Optimizer.GradientDescent(Weights, gradientWeights);
+            Bias = Optimizer.GradientDescent(Bias, gradientBias);
         }
 
         public override double Loss(Matrix X, Vector y)

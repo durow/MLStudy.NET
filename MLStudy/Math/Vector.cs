@@ -29,6 +29,15 @@ namespace MLStudy
             values = new double[length];
         }
 
+        public Vector(int length, double defaultValue)
+        {
+            values = new double[length];
+            for (int i = 0; i < length; i++)
+            {
+                values[i] = defaultValue;
+            }
+        }
+
         public Vector(params double[] values)
         {
             this.values = values;

@@ -8,20 +8,41 @@ namespace MLStudy
     {
         public Vector Weights { get; protected set; } = new Vector();
         public double Bias { get; protected set; } = 1;
-        public double LearningRate { get; set; } = 0.0001;
-        public LinearRegularization Regularization { get; set; } = LinearRegularization.None;
-        public double RegularizationWeight { get; set; } = 0.01;
-        protected Dictionary<LinearRegularization, Func<Vector, double, Vector>> regularizationGradient = new Dictionary<LinearRegularization, Func<Vector, double, Vector>>();
-
-        public int StepCounter { get; private set; } = 0;
-        public Vector LastYHat { get; protected set; }
-
-        public LinearRegression()
+        public double LearningRate
         {
-            regularizationGradient.Add(LinearRegularization.L1, Gradient.LinearL1);
-            regularizationGradient.Add(LinearRegularization.L2, Gradient.LinearL2);
-            regularizationGradient.Add(LinearRegularization.None, (a,b)=>new Vector(a.Length));
+            get
+            {
+                return Optimizer.LearningRate;
+            }
+            set
+            {
+                Optimizer.LearningRate = value;
+            }
         }
+        public GradientOptimizer Optimizer { get; private set; } = new GradientOptimizer();
+        public double RegularizationWeight
+        {
+            get
+            {
+                return Regularization.RegularizationWeight;
+            }
+            set
+            {
+                Regularization.RegularizationWeight = value;
+            }
+        }
+        public RegularTypes RegularizationType
+        {
+            get
+            {
+                return Regularization.RegularType;
+            }
+            set
+            {
+                Regularization.RegularType = value;
+            }
+        }
+        public Regularization Regularization { get; private set; } = new Regularization();
 
         public void SetWeights(params double[] weights)
         {
@@ -40,25 +61,20 @@ namespace MLStudy
                 AutoInitWeight(X.Columns);
             }
 
-            LastYHat = Predict(X);
-            var (gradientWeights, gradientBias) = Gradient.LinearSquareError(X, y, LastYHat);
-            gradientWeights += regularizationGradient[Regularization](Weights, RegularizationWeight);
+            var yHat = Predict(X);
+            var (gradientWeights, gradientBias) = Gradient.LinearSquareError(X, y, yHat);
 
-            Weights -= LearningRate * gradientWeights;
-            Bias -= LearningRate * gradientBias;
+            if (Regularization.RegularType != RegularTypes.None)
+                gradientWeights += Regularization.GetValue(Weights);
 
-            StepCounter++;
+            Weights = Optimizer.GradientDescent(Weights, gradientWeights);
+            Bias = Optimizer.GradientDescent(Bias, gradientBias);
         }
 
         public Vector Predict(Matrix X)
         {
             var result = X * Weights + Bias;
             return result.ToVector();
-        }
-
-        public double Predict(Vector x)
-        {
-            return 0;
         }
 
         public virtual double Loss(Matrix X, Vector y)
@@ -77,13 +93,5 @@ namespace MLStudy
             var emu = new DataEmulator();
             Weights = emu.RandomVector(length);
         }
-
-    }
-
-    public enum LinearRegularization
-    {
-        None,
-        L1,
-        L2
     }
 }

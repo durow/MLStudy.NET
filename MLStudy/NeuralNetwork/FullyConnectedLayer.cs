@@ -7,34 +7,15 @@ namespace MLStudy
     public class FullyConnectedLayer
     {
         private DataEmulator emu = new DataEmulator();
-        private readonly Activation activation = new Activation(Activations.ReLU);
-
-
+        public Activation Activation { get; private set; }
         public Matrix Weights { get; private set; }
         public Vector Bias { get; private set; }
         public int NeuronCount { get; private set; }
         public int InputFeatures { get; private set; }
         public double LearningRate { get; set; }
-        public Vector this[int index]
-        {
-            get
-            {
-                return Weights.GetColumn(index);
-            }
-        }
-        public Activations Activation
-        {
-            get
-            {
-                return activation.ActivationType;
-            }
-            set
-            {
-                activation.ActivationType = value;
-            }
-        }
 
         public Matrix ForwardInput { get; private set; }
+        public Matrix ForwardLinear { get; private set; }
         public Matrix ForwardOutput { get; private set; }
         //d Loss/d Input
         public Matrix InputError { get; private set; }
@@ -48,6 +29,24 @@ namespace MLStudy
             InputFeatures = inputFeatures;
             NeuronCount = neuronCount;
             AutoInitWeightsBias();
+        }
+
+        public FullyConnectedLayer UseActivation(ActivationTypes activation)
+        {
+            UseActivation(activation.ToString());
+            return this;
+        }
+
+        public FullyConnectedLayer UseActivation(string activationName)
+        {
+            Activation = Activation.Get(activationName);
+            return this;
+        }
+
+        public FullyConnectedLayer UseActivation(Activation activation)
+        {
+            Activation = activation;
+            return this;
         }
 
         public void SetWeights(Matrix weights)
@@ -76,8 +75,7 @@ namespace MLStudy
 
         private void ErrorBP()
         {
-            var activationDerivative = activation.Derivative(ForwardOutput);
-            LinearError = Tensor.MultipleElementWise(activationDerivative, OutputError);
+            LinearError = Activation.Backward(ForwardOutput, OutputError);
             InputError = LinearError * Weights.Transpose();
         }
 
@@ -89,7 +87,13 @@ namespace MLStudy
         {
             ForwardInput = input;
             //Add Bias(a Vector) to Matrix row by row
-            ForwardOutput = Bias + input * Weights;
+            ForwardLinear = Bias + input * Weights;
+
+            if (Activation != null)
+                ForwardOutput = Activation.Forward(ForwardLinear);
+            else
+                ForwardOutput = ForwardLinear;
+
             return ForwardOutput;
         }
     }
