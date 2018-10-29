@@ -11,6 +11,18 @@ namespace MLStudy
 {
     public class DataEmulator
     {
+        private static DataEmulator instance;
+        public static DataEmulator Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new DataEmulator();
+                return instance;
+            }
+
+        }
+
         private static Random rand1 = new Random((int)DateTime.Now.Ticks);
         private static Random rand2 = new Random((int)DateTime.Now.Ticks);
 

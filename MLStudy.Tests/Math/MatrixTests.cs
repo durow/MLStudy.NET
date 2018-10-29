@@ -140,6 +140,26 @@ namespace MLStudy.Tests
         }
 
         [Fact]
+        public void MultipleMatrixMatrix2()
+        {
+            var a = new Matrix(new double[,]{
+                { 1 },
+                { 2 },
+                { 3 } });
+            var b = new Matrix(new double[,]{
+                { 4, 5, 6 }});
+
+            var expected1 = new Matrix(new double[,]{
+                { 4, 5, 6 },
+                { 8, 10, 12 },
+                { 12, 15, 18 }});
+
+            var actual1 = a * b;
+
+            Assert.Equal(expected1, actual1);
+        }
+
+        [Fact]
         public void MultipleMatrixVector()
         {
             var a = new Matrix(new double[,]{

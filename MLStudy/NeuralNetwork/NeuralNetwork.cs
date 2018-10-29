@@ -49,7 +49,7 @@ namespace MLStudy
 
         private void Backward(Vector y)
         {
-            var outputError = OutLayer.Backward();
+            var outputError = OutLayer.Backward(y);
 
             for (int i = 0; i < HiddenLayers.Count; i++)
             {
