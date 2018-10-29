@@ -13,7 +13,6 @@ namespace MLStudy
         public NeuralNetwork(int inputFeatures, OutputTypes outType, params int[] hiddenLayers)
         {
             InputFeatures = inputFeatures;
-            OutLayer = new OutputLayer();
             InitHiddenLayers(hiddenLayers);
         }
 

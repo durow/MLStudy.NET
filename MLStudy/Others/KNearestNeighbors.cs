@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MLStudy
 {
-    public class KNearestNeighbor
+    public class KNearestNeighbors
     {
         public int K { get; set; } = 1;
         public Matrix X { get; private set; }

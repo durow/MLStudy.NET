@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class LinearRegressionLayer
+    public class LinearRegressionOut
     {
         public Matrix Weights { get; private set; }
         public double Bias { get; private set; }
@@ -30,7 +30,7 @@ namespace MLStudy
         public Matrix LinearError { get; protected set; }
         public double Loss { get; protected set; }
 
-        public LinearRegressionLayer(int inputFeatures)
+        public LinearRegressionOut(int inputFeatures)
         {
             InputFeatures = inputFeatures;
             AutoInitWeightBias();

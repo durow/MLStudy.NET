@@ -4,9 +4,9 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class LogisticRegressionLayer : LinearRegressionLayer
+    public class LogisticRegressionOut : LinearRegressionOut
     {
-        public LogisticRegressionLayer(int inputFeatures):base(inputFeatures)
+        public LogisticRegressionOut(int inputFeatures):base(inputFeatures)
         { }
 
         protected override void ComputeOutputError(Vector y)

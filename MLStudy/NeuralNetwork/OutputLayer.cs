@@ -4,23 +4,33 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class OutputLayer
+    public abstract class OutputLayer
     {
-        public double LearningRate { get; set; }
-
-        public Matrix Forward(Matrix input)
+        public int InputFeatures { get; protected set; }
+        public double LearningRate
         {
-            return new Matrix();
+            get
+            {
+                return Optimizer.LearningRate;
+            }
+            set
+            {
+                Optimizer.LearningRate = value;
+            }
         }
 
-        public Matrix Backward(Vector y)
-        {
-            return new Matrix();
-        }
+        public GradientOptimizer Optimizer { get; protected set; } = new GradientOptimizer();
 
-        public Vector Predict(Matrix X)
-        {
-            return new Vector();
-        }
+        public Matrix ForwardInput { get; protected set; }
+        public Matrix ForwardOutput { get; protected set; }
+        public Matrix InputError { get; protected set; }
+        public Matrix LinearError { get; protected set; }
+        public double Loss { get; protected set; }
+
+        public abstract Matrix Forward(Matrix input);
+
+        public abstract Matrix Backward(Vector y);
+
+        public abstract void AutoInitWeightsBias();
     }
 }
