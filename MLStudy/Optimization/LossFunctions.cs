@@ -37,6 +37,23 @@ namespace MLStudy
 
             return result;
         }
+
+        public static double LogisticError(Vector yHat, Vector y)
+        {
+            var sum = 0d;
+            var crossEntropy = 0d;
+            for (int i = 0; i < y.Length; i++)
+            {
+                if (y[i] == 1)
+                    crossEntropy = -Math.Log(yHat[i]);
+                else
+                    crossEntropy = -Math.Log(1 - yHat[i]);
+
+                sum += crossEntropy;
+            }
+            return sum / y.Length;
+        }
+
         public static double ErrorPercent(Vector yHat, Vector y)
         {
             var sum = 0d;

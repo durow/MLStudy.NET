@@ -24,11 +24,11 @@ namespace MLStudy
 
         public GradientOptimizer Optimizer { get; set; } = new GradientOptimizer();
 
-        public Matrix ForwardInput { get; private set; }
-        public Matrix ForwardOutput { get; private set; }
-        public Matrix InputError { get; private set; }
-        public Matrix LinearError { get; private set; }
-        public double OutputError { get; private set; }
+        public Matrix ForwardInput { get; protected set; }
+        public Matrix ForwardOutput { get; protected set; }
+        public Matrix InputError { get; protected set; }
+        public Matrix LinearError { get; protected set; }
+        public double Loss { get; protected set; }
 
         public LinearRegressionLayer(int inputFeatures)
         {
@@ -36,13 +36,13 @@ namespace MLStudy
             AutoInitWeightBias();
         }
 
-        public void AutoInitWeightBias()
+        public virtual void AutoInitWeightBias()
         {
             Weights = new Matrix(InputFeatures, 1);
             Bias = 1;
         }
 
-        public Matrix Backward(Vector y)
+        public virtual Matrix Backward(Vector y)
         {
             ComputeOutputError(y);
             ErrorBP(y);
@@ -50,20 +50,20 @@ namespace MLStudy
             return InputError;
         }
 
-        private void ComputeOutputError(Vector y)
+        protected virtual void ComputeOutputError(Vector y)
         {
             var yHat = ForwardOutput.ToVector();
-            OutputError = LossFunctions.MeanSquareError(yHat, y);
+            Loss = LossFunctions.MeanSquareError(yHat, y);
         }
 
-        private void ErrorBP(Vector y)
+        protected virtual void ErrorBP(Vector y)
         {
             var matrixY = y.ToMatrix(true);
             LinearError = ForwardOutput - matrixY;
             InputError = LinearError * Weights.Transpose();
         }
 
-        private void UpdateWeightsBias()
+        protected virtual void UpdateWeightsBias()
         {
             var weightsGradient = ForwardInput.Transpose() * LinearError / LinearError.Rows;
             var biasGradient = LinearError.Mean();
@@ -71,8 +71,9 @@ namespace MLStudy
             Bias = Optimizer.GradientDescent(Bias, biasGradient);
         }
 
-        public Matrix Forward(Matrix input)
+        public virtual Matrix Forward(Matrix input)
         {
+            ForwardInput = input;
             ForwardOutput = input * Weights + Bias;
             return ForwardOutput;
         }

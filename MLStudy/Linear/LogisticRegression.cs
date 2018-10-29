@@ -44,19 +44,7 @@ namespace MLStudy
         public override double Loss(Matrix X, Vector y)
         {
             var yHat = Predict(X).RawResult;
-
-            var sum = 0d;
-            var crossEntropy = 0d;
-            for (int i = 0; i < y.Length; i++)
-            {
-                if (y[i] == 1)
-                    crossEntropy = -Math.Log(yHat[i]);
-                else
-                    crossEntropy = -Math.Log(1 - yHat[i]);
-
-                sum += crossEntropy;
-            }
-            return sum / y.Length;
+            return LossFunctions.LogisticError(yHat, y);
         }
 
         public double Error(Matrix X, Vector y)
