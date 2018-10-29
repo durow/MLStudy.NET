@@ -57,5 +57,18 @@ namespace MLStudy
         public abstract Matrix Backward(Vector y);
 
         public abstract void AutoInitWeightsBias();
+
+        public abstract double GetLoss(Matrix yHat, Vector y);
+        public double GetLoss(Vector y)
+        {
+            return GetLoss(ForwardOutput, y);
+        }
+    }
+
+    public enum OutputTypes
+    {
+        Sigmoid,
+        Regression,
+        Softmax,
     }
 }

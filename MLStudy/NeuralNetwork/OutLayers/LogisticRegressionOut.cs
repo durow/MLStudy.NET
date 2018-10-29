@@ -9,17 +9,17 @@ namespace MLStudy
         public LogisticRegressionOut(int inputFeatures):base(inputFeatures)
         { }
 
-        protected override void ComputeOutputError(Vector y)
-        {
-            var yHat = ForwardOutput.ToVector();
-            Loss = LossFunctions.LogisticError(yHat, y);
-        }
-
         public override Matrix Forward(Matrix input)
         {
             base.Forward(input);
             ForwardOutput = ForwardOutput.ApplyFunction(Functions.Sigmoid);
             return ForwardOutput;
+        }
+
+        public override double GetLoss(Matrix yHat, Vector y)
+        {
+            var v = yHat.ToVector();
+            return LossFunctions.LogisticError(v, y);
         }
     }
 }

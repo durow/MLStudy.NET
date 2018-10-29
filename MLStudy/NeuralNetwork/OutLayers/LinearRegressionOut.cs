@@ -30,16 +30,10 @@ namespace MLStudy
 
         public override Matrix Backward(Vector y)
         {
-            ComputeOutputError(y);
+            GetLoss(y);
             ErrorBP(y);
             UpdateWeightsBias();
             return InputError;
-        }
-
-        protected virtual void ComputeOutputError(Vector y)
-        {
-            var yHat = ForwardOutput.ToVector();
-            Loss = LossFunctions.MeanSquareError(yHat, y);
         }
 
         protected virtual void ErrorBP(Vector y)
@@ -55,6 +49,12 @@ namespace MLStudy
             var biasGradient = LinearError.Mean();
             Weights = Optimizer.GradientDescent(Weights, weightsGradient);
             Bias = Optimizer.GradientDescent(Bias, biasGradient);
+        }
+
+        public override double GetLoss(Matrix yHat, Vector y)
+        {
+            var v = yHat.ToVector();
+            return LossFunctions.MeanSquareError(v, y);
         }
     }
 }
