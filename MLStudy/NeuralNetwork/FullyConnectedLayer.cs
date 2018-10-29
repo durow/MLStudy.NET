@@ -6,7 +6,6 @@ namespace MLStudy
 {
     public class FullyConnectedLayer
     {
-        private DataEmulator emu = new DataEmulator();
         public Activation Activation { get; private set; }
         public Matrix Weights { get; private set; }
         public Vector Bias { get; private set; }
@@ -61,8 +60,8 @@ namespace MLStudy
 
         public void AutoInitWeightsBias()
         {
-            Weights = emu.RandomMatrixGaussian(InputFeatures, NeuronCount);
-            Bias = emu.RandomVectorGaussian(NeuronCount);
+            Weights = DataEmulator.Instance.RandomMatrixGaussian(InputFeatures, NeuronCount);
+            Bias = DataEmulator.Instance.RandomVectorGaussian(NeuronCount);
         }
 
         public Matrix Backward(Matrix outputError)
