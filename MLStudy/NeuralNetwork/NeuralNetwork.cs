@@ -1,6 +1,12 @@
-﻿using System;
+﻿/*
+ * Description:Neural network model.
+ * Author:Yunxiao An
+ * Date:2018.10.26
+ */
+
+using MLStudy.Regularizations;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace MLStudy
 {
@@ -10,6 +16,7 @@ namespace MLStudy
         public List<FullyConnectedLayer> HiddenLayers { get; private set; }
         public OutputLayer OutLayer { get; private set; }
         public int InputFeatures { get; private set; }
+
         public NeuralNetwork(int inputFeatures, params int[] hiddenLayers)
         {
             InputFeatures = inputFeatures;
@@ -65,14 +72,120 @@ namespace MLStudy
             return OutLayer.GetLoss(y);
         }
 
-        #region Regularization
-
-        public NeuralNetwork UseRegularization(Regularization regular)
+        public NeuralNetwork AddHiddenLayer(int neuronCount,
+            ActivationTypes activationType = ActivationTypes.ReLU,
+            WeightDecayType regularType = WeightDecayType.None)
         {
-            foreach (var item in HiddenLayers)
+            var input = InputFeatures;
+            if (HiddenLayers.Count != 0)
+                input = HiddenLayers.Last().NeuronCount;
+
+            var layer = new FullyConnectedLayer(input, neuronCount);
+            HiddenLayers.Add(layer);
+            var index = HiddenLayers.IndexOf(layer);
+            UseActivation(activationType, index);
+            UseWeightDecay(regularType, index);
+            return this;
+        }
+
+        public NeuralNetwork AddHiddenLayer(FullyConnectedLayer layer)
+        {
+            HiddenLayers.Add(layer);
+            return this;
+        }
+
+        public NeuralNetwork UseOutputLayer(OutputLayer outLayer)
+        {
+            OutLayer = outLayer;
+            return this;
+        }
+
+        #region Activation
+
+        public NeuralNetwork UseActivation(ActivationTypes activation, params int[] layers)
+        {
+            UseActivation(activation.ToString(), layers);
+            return this;
+        }
+
+        public NeuralNetwork UseActivation(string activationName, params int[] layers)
+        {
+            foreach (var index in layers)
             {
-                
+                var act = Activation.Get(activationName);
+                UseActivation(act, index);
             }
+            return this;
+        }
+
+        public NeuralNetwork UseActivation(Activation activation, int layerIndex)
+        {
+            HiddenLayers[layerIndex].UseActivation(activation);
+            return this;
+        }
+
+        #endregion
+
+        #region Weight Decay
+
+        public NeuralNetwork UseWeightDecay(WeightDecayType regularType, double strength)
+        {
+            return UseWeightDecay(regularType.ToString(), strength);
+        }
+
+        public NeuralNetwork UseWeightDecay(string regularType, double strength)
+        {
+            var reg = WeightDecay.Get(regularType);
+            if (reg != null)
+                reg.Weight = strength;
+            UseWeightDecay(reg);
+            return this;
+        }
+
+        public NeuralNetwork UseLasso(double strength)
+        {
+            var reg = new Lasso { Weight = strength };
+            UseWeightDecay(reg);
+            return this;
+        }
+
+        public NeuralNetwork UseWeightDecayL1(double strength)
+        {
+            var reg = new Lasso { Weight = strength };
+            UseWeightDecay(reg);
+            return this;
+        }
+
+        public NeuralNetwork UseRidge(double strength)
+        {
+            var reg = new Ridge { Weight = strength };
+            UseWeightDecay(reg);
+            return this;
+        }
+
+        public NeuralNetwork UseWeightDecayL2(double strength)
+        {
+            var reg = new Ridge { Weight = strength };
+            UseWeightDecay(reg);
+            return this;
+        }
+
+        public NeuralNetwork UseWeightDecay(WeightDecay decay)
+        {
+            return this;
+        }
+
+        #endregion
+
+        #region Optimization
+
+        public NeuralNetwork UseMomentum()
+        {
+            return this;
+        }
+
+        public NeuralNetwork UseAdam()
+        {
             return this;
         }
 

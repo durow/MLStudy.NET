@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy.Regularizations
 {
-    public class Lasso : Regularization
+    public class Lasso : WeightDecay
     {
         public string Name => "Lasso";
 

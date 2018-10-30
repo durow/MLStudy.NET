@@ -26,20 +26,10 @@ namespace MLStudy
 
         public static (Matrix, Vector) LinearSoftmaxCrossEntropy(Matrix X, Matrix y, Matrix yHat)
         {
-            var error = yHat - y;
-            var gradientBias = new Vector(y.Columns);
-            for (int i = 0; i < y.Columns; i++)
-            {
-                gradientBias[i] = error.GetColumn(i).Mean();
-            }
-
-            var mat = new Matrix(X.Columns, gradientBias.Length);
-            for (int i = 0; i < X.Rows; i++)
-            {
-                var m = X[i].ToMatrix(true) * gradientBias.ToMatrix();
-                mat += m;
-            }
-            var gradientWeights = mat / X.Rows;
+            var linearError = yHat - y;
+            var v = new Vector(linearError.Columns, 1);
+            var gradientBias = (v * linearError).ToVector() / linearError.Rows;
+            var gradientWeights = X.Transpose() * linearError / linearError.Rows;
 
             return (gradientWeights, gradientBias);
         }

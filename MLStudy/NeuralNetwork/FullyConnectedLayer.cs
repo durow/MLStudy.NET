@@ -14,7 +14,7 @@ namespace MLStudy
         public int NeuronCount { get; private set; }
 
         public Activation Activation { get; private set; }
-        public Regularization Regularization { get; private set; }
+        public WeightDecay WeightDecay { get; private set; }
         public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
 
         public Matrix ForwardInput { get; private set; }
@@ -58,16 +58,6 @@ namespace MLStudy
             return InputError;
         }
 
-        private void ErrorBP()
-        {
-            LinearError = Activation.Backward(ForwardOutput, OutputError);
-            InputError = LinearError * Weights.Transpose();
-        }
-
-        private void UpdateWeightsBias()
-        {
-        }
-
         public Matrix Forward(Matrix input)
         {
             ForwardInput = input;
@@ -82,76 +72,57 @@ namespace MLStudy
             return ForwardOutput;
         }
 
-        #region Activation
-
-        public FullyConnectedLayer UseActivation(ActivationTypes activation, params int[] layers)
-        {
-            UseActivation(activation.ToString());
-            return this;
-        }
-
-        public FullyConnectedLayer UseActivation(string activationName, params int[] layers)
-        {
-            Activation = Activation.Get(activationName);
-            return this;
-        }
-
-        public FullyConnectedLayer UseActivation(Activation activation, params int[] layers)
+        public FullyConnectedLayer UseActivation(Activation activation)
         {
             Activation = activation;
             return this;
         }
 
-        #endregion
-
-        #region Regularization
-
-        public FullyConnectedLayer UseRegularization(RegularTypes regularType, double weight)
+        public FullyConnectedLayer UseWeightDecay(WeightDecay decay)
         {
-            return UseRegularization(regularType.ToString(), weight);
-        }
-
-        public FullyConnectedLayer UseRegularization(string regularType, double weight)
-        {
-            Regularization = Regularization.Get(regularType);
-            if(Regularization != null)
-                Regularization.Weight = weight;
+            WeightDecay = decay;
             return this;
         }
 
-        public FullyConnectedLayer UseLasso(double weight)
+        public FullyConnectedLayer UseOptimizer(GradientOptimizer optimizer)
         {
-            Regularization = new Lasso { Weight = weight };
+            Optimizer = optimizer;
             return this;
         }
 
-        public FullyConnectedLayer UseRegularizationL1(double weight)
+        public FullyConnectedLayer UseMomentum()
         {
-            Regularization = new Lasso { Weight = weight };
             return this;
         }
 
-        public FullyConnectedLayer UseRidge(double weight)
+        public FullyConnectedLayer UseAdam()
         {
-            Regularization = new Ridge { Weight = weight };
             return this;
         }
 
-        public FullyConnectedLayer UseRegularizationL2(double weight)
+        public FullyConnectedLayer UseDropOut()
         {
-            Regularization = new Ridge { Weight = weight };
             return this;
         }
 
-        public FullyConnectedLayer UseRegularization(Regularization regular)
+
+        #region Private Methods
+
+        private void ErrorBP()
         {
-            Regularization = regular;
-            return this;
+            LinearError = Activation.Backward(ForwardOutput, OutputError);
+            InputError = LinearError * Weights.Transpose();
         }
 
-        #endregion
+        private void UpdateWeightsBias()
+        {
+            var v = new Vector(LinearError.Columns, 1);
+            var gradientBias = (v * LinearError).ToVector() / LinearError.Rows;
+            var gradientWeights = ForwardInput.Transpose() * LinearError / LinearError.Rows;
 
-        #region Optimization
+            Weights = Optimizer.GradientDescent(Weights, gradientWeights);
+            Bias = Optimizer.GradientDescent(Bias, gradientBias);
+        }
 
         #endregion
     }

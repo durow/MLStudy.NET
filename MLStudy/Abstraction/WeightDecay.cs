@@ -5,13 +5,13 @@ using System.Text;
 
 namespace MLStudy
 {
-    public abstract class Regularization
+    public abstract class WeightDecay
     {
         #region Static
 
         public static Dictionary<string, Type> Dict { get; private set; }
 
-        public Regularization()
+        public WeightDecay()
         {
             Dict = new Dictionary<string, Type>();
             Registor<Lasso>("L1");
@@ -20,19 +20,19 @@ namespace MLStudy
             Registor<Ridge>("Ridge");
         }
 
-        public void Registor<T>(string name) where T: Regularization
+        public static void Registor<T>(string name) where T: WeightDecay
         {
             Dict[name.ToUpper()] = typeof(T);
         }
 
-        public Regularization Get(string name)
+        public static WeightDecay Get(string name)
         {
             name = name.ToUpper();
 
             if (!Dict.ContainsKey(name))
                 return null;
 
-            return (Regularization)Activator.CreateInstance(Dict[name]);
+            return (WeightDecay)Activator.CreateInstance(Dict[name]);
         }
 
         #endregion
@@ -46,8 +46,9 @@ namespace MLStudy
         public abstract Matrix GetValue(Matrix weights);
     }
 
-    public enum RegularTypes
+    public enum WeightDecayType
     {
+        None,
         L1,
         L2
     }

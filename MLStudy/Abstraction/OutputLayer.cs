@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MLStudy.Optimization;
+using System;
 using System.Collections.Generic;
 
 namespace MLStudy
@@ -33,19 +34,8 @@ namespace MLStudy
         //#endregion
 
         public int InputFeatures { get; protected set; }
-        public double LearningRate
-        {
-            get
-            {
-                return Optimizer.LearningRate;
-            }
-            set
-            {
-                Optimizer.LearningRate = value;
-            }
-        }
-        public GradientOptimizer Optimizer { get; protected set; } = new GradientOptimizer();
-        public Regularization Regularization { get; private set; }
+        public GradientOptimizer Optimizer { get; protected set; } = new NormalDescent();
+        public WeightDecay WeightDecay { get; private set; }
 
         public Matrix ForwardInput { get; protected set; }
         public Matrix ForwardOutput { get; protected set; }
@@ -66,11 +56,27 @@ namespace MLStudy
             return GetLoss(ForwardOutput, y);
         }
 
-        #region Regularization
+        public OutputLayer UseWeightDecay(WeightDecay decay)
+        {
+            WeightDecay = decay;
+            return this;
+        }
 
+        public OutputLayer UseOptimizer(GradientOptimizer optimizer)
+        {
+            Optimizer = optimizer;
+            return this;
+        }
 
+        public OutputLayer UseMomentum()
+        {
+            return this;
+        }
 
-        #endregion
+        public OutputLayer UseAdam()
+        {
+            return this;
+        }
     }
 
     public enum OutputTypes

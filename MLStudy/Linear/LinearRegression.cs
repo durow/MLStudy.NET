@@ -33,7 +33,7 @@ namespace MLStudy
             }
         }
 
-        public Regularization Regularization { get; private set; }
+        public WeightDecay Regularization { get; private set; }
 
         public void SetWeights(params double[] weights)
         {

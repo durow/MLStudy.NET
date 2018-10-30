@@ -62,13 +62,13 @@ namespace MLView.Models
             lr.RegularizationWeight = RegularizationWeight;
         }
 
-        private RegularTypes GetRegType(string regString)
+        private WeightDecayType GetRegType(string regString)
         {
             if (regString == "L1")
-                return RegularTypes.L1;
+                return WeightDecayType.L1;
             if (regString == "L2")
-                return RegularTypes.L2;
-            return RegularTypes.None;
+                return WeightDecayType.L2;
+            return WeightDecayType.None;
         }
     }
 }

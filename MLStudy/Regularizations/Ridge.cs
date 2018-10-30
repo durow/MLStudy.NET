@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy.Regularizations
 {
-    public class Ridge: Regularization
+    public class Ridge: WeightDecay
     {
         public string Name => "Ridge";
 

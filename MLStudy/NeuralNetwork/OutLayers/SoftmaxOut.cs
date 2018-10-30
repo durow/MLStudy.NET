@@ -36,7 +36,7 @@ namespace MLStudy
             GetLoss(y);
             var matrixY = ExtendSoftmaxResultToMatrix(y);
             ErrorBP(matrixY);
-            UpdateWeightBias();
+            UpdateWeightsBias();
             throw new NotImplementedException();
         }
 
@@ -46,15 +46,12 @@ namespace MLStudy
             InputError = LinearError * Weights.Transpose();
         }
 
-        private void UpdateWeightBias()
+        private void UpdateWeightsBias()
         {
-            var gradientBias = new Vector(Bias.Length);
-            for (int i = 0; i < Bias.Length; i++)
-            {
-                gradientBias[i] = LinearError.GetColumn(i).Mean();
-            }
-
+            var v = new Vector(LinearError.Columns, 1);
+            var gradientBias = (v * LinearError).ToVector() / LinearError.Rows;
             var gradientWeights = ForwardInput.Transpose() * LinearError / LinearError.Rows;
+
             Weights = Optimizer.GradientDescent(Weights, gradientWeights);
             Bias = Optimizer.GradientDescent(Bias, gradientBias);
         }
