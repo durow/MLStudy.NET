@@ -64,5 +64,18 @@ namespace MLStudy
             Forward(X);
             return OutLayer.GetLoss(y);
         }
+
+        #region Regularization
+
+        public NeuralNetwork UseRegularization(Regularization regular)
+        {
+            foreach (var item in HiddenLayers)
+            {
+                
+            }
+            return this;
+        }
+
+        #endregion
     }
 }

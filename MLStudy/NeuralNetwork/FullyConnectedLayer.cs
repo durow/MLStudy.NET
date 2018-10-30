@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MLStudy.Optimization;
+using MLStudy.Regularizations;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,12 +8,14 @@ namespace MLStudy
 {
     public class FullyConnectedLayer
     {
-        public Activation Activation { get; private set; }
         public Matrix Weights { get; private set; }
         public Vector Bias { get; private set; }
-        public int NeuronCount { get; private set; }
         public int InputFeatures { get; private set; }
-        public double LearningRate { get; set; }
+        public int NeuronCount { get; private set; }
+
+        public Activation Activation { get; private set; }
+        public Regularization Regularization { get; private set; }
+        public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
 
         public Matrix ForwardInput { get; private set; }
         public Matrix ForwardLinear { get; private set; }
@@ -28,24 +32,6 @@ namespace MLStudy
             InputFeatures = inputFeatures;
             NeuronCount = neuronCount;
             AutoInitWeightsBias();
-        }
-
-        public FullyConnectedLayer UseActivation(ActivationTypes activation)
-        {
-            UseActivation(activation.ToString());
-            return this;
-        }
-
-        public FullyConnectedLayer UseActivation(string activationName)
-        {
-            Activation = Activation.Get(activationName);
-            return this;
-        }
-
-        public FullyConnectedLayer UseActivation(Activation activation)
-        {
-            Activation = activation;
-            return this;
         }
 
         public void SetWeights(Matrix weights)
@@ -95,5 +81,78 @@ namespace MLStudy
 
             return ForwardOutput;
         }
+
+        #region Activation
+
+        public FullyConnectedLayer UseActivation(ActivationTypes activation, params int[] layers)
+        {
+            UseActivation(activation.ToString());
+            return this;
+        }
+
+        public FullyConnectedLayer UseActivation(string activationName, params int[] layers)
+        {
+            Activation = Activation.Get(activationName);
+            return this;
+        }
+
+        public FullyConnectedLayer UseActivation(Activation activation, params int[] layers)
+        {
+            Activation = activation;
+            return this;
+        }
+
+        #endregion
+
+        #region Regularization
+
+        public FullyConnectedLayer UseRegularization(RegularTypes regularType, double weight)
+        {
+            return UseRegularization(regularType.ToString(), weight);
+        }
+
+        public FullyConnectedLayer UseRegularization(string regularType, double weight)
+        {
+            Regularization = Regularization.Get(regularType);
+            if(Regularization != null)
+                Regularization.Weight = weight;
+            return this;
+        }
+
+        public FullyConnectedLayer UseLasso(double weight)
+        {
+            Regularization = new Lasso { Weight = weight };
+            return this;
+        }
+
+        public FullyConnectedLayer UseRegularizationL1(double weight)
+        {
+            Regularization = new Lasso { Weight = weight };
+            return this;
+        }
+
+        public FullyConnectedLayer UseRidge(double weight)
+        {
+            Regularization = new Ridge { Weight = weight };
+            return this;
+        }
+
+        public FullyConnectedLayer UseRegularizationL2(double weight)
+        {
+            Regularization = new Ridge { Weight = weight };
+            return this;
+        }
+
+        public FullyConnectedLayer UseRegularization(Regularization regular)
+        {
+            Regularization = regular;
+            return this;
+        }
+
+        #endregion
+
+        #region Optimization
+
+        #endregion
     }
 }

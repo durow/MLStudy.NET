@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MLStudy.Optimization;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,30 +20,20 @@ namespace MLStudy
                 Optimizer.LearningRate = value;
             }
         }
-        public GradientOptimizer Optimizer { get; private set; } = new GradientOptimizer();
+        public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
         public double RegularizationWeight
         {
             get
             {
-                return Regularization.RegularizationWeight;
+                return Regularization.Weight;
             }
             set
             {
-                Regularization.RegularizationWeight = value;
+                Regularization.Weight = value;
             }
         }
-        public RegularTypes RegularizationType
-        {
-            get
-            {
-                return Regularization.RegularType;
-            }
-            set
-            {
-                Regularization.RegularType = value;
-            }
-        }
-        public Regularization Regularization { get; private set; } = new Regularization();
+
+        public Regularization Regularization { get; private set; }
 
         public void SetWeights(params double[] weights)
         {
@@ -64,7 +55,7 @@ namespace MLStudy
             var yHat = Predict(X);
             var (gradientWeights, gradientBias) = Gradient.LinearSquareError(X, y, yHat);
 
-            if (Regularization.RegularType != RegularTypes.None)
+            if (Regularization != null)
                 gradientWeights += Regularization.GetValue(Weights);
 
             Weights = Optimizer.GradientDescent(Weights, gradientWeights);

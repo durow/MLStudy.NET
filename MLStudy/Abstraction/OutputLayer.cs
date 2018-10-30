@@ -45,6 +45,7 @@ namespace MLStudy
             }
         }
         public GradientOptimizer Optimizer { get; protected set; } = new GradientOptimizer();
+        public Regularization Regularization { get; private set; }
 
         public Matrix ForwardInput { get; protected set; }
         public Matrix ForwardOutput { get; protected set; }
@@ -59,10 +60,17 @@ namespace MLStudy
         public abstract void AutoInitWeightsBias();
 
         public abstract double GetLoss(Matrix yHat, Vector y);
+
         public double GetLoss(Vector y)
         {
             return GetLoss(ForwardOutput, y);
         }
+
+        #region Regularization
+
+
+
+        #endregion
     }
 
     public enum OutputTypes

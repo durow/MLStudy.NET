@@ -9,6 +9,8 @@ namespace MLStudy
 {
     public abstract class Activation
     {
+        #region Static
+
         public static Dictionary<string, Type> Dict { get; private set; }
 
         static Activation()
@@ -21,17 +23,22 @@ namespace MLStudy
 
         public static void Registor<T>(string name) where T:Activation
         {
-            Dict[name] = typeof(T);
+            Dict[name.ToUpper()] = typeof(T);
         }
 
         public static Activation Get(string name)
         {
-            if (Dict.ContainsKey(name))
-                return (Activation)Activator.CreateInstance(Dict[name]);
-            else
+            name = name.ToUpper();
+
+            if (!Dict.ContainsKey(name))
                 return null;
+
+            return (Activation)Activator.CreateInstance(Dict[name]);
         }
 
+        #endregion
+
+        public abstract string Name { get; }
         public abstract Matrix Forward(Matrix input);
         public abstract Matrix Backward(Matrix forwardOutput, Matrix outputError);
     }

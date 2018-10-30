@@ -6,6 +6,8 @@ namespace MLStudy.Activations
 {
     public class ReLU : Activation
     {
+        public override string Name => "ReLU";
+
         public override Matrix Backward(Matrix forwardOutput, Matrix outputError)
         {
             var derivative = forwardOutput.ApplyFunction(DerivativeFunctions.ReLU);

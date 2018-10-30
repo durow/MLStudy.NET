@@ -6,6 +6,8 @@ namespace MLStudy.Activations
 {
     public class Tanh : Activation
     {
+        public override string Name => "Tanh";
+
         public override Matrix Backward(Matrix forwardOutput, Matrix outputError)
         {
             var derivative = forwardOutput.ApplyFunction(DerivativeFunctions.TanhByResult);
