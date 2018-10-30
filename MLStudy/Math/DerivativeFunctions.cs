@@ -47,7 +47,16 @@ namespace MLStudy
             return d > 0 ? 1 : 0;
         }
 
+        public static double Tanh(double d)
+        {
+            var g = Functions.Tanh(d);
+            return 1 - Math.Pow(g, 2);
+        }
 
+        public static double TanhByResult(double tanhResult)
+        {
+            return 1 - Math.Pow(tanhResult, 2);
+        }
 
         public static double Sigmoid(double input)
         {

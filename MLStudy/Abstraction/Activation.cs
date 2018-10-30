@@ -15,6 +15,7 @@ namespace MLStudy
         {
             Dict = new Dictionary<string, Type>();
             Registor<ReLU>("ReLU");
+            Registor<Tanh>("Tanh");
             Registor<Sigmoid>("Sigmoid");
         }
 

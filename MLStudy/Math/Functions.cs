@@ -13,7 +13,16 @@ namespace MLStudy
 
         public static double Sigmoid(double x)
         {
+
             return 1 / (1 + Math.Pow(Math.E, -x));
+        }
+
+        public static double Tanh(double x)
+        {
+            var pos = Math.Exp(x);
+            var neg = Math.Exp(-x);
+
+            return (pos - neg) / (pos + neg);
         }
 
         public static double ReLU(double x)
