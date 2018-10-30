@@ -29,7 +29,7 @@ namespace MLStudy
             var (gradientWeights, gradientBias) = Gradient.LinearSigmoidCrossEntropy(X, y, yHat);
 
             if (Regularization != null)
-                gradientWeights += Regularization.GetValue(Weights);
+                gradientWeights += Regularization.Decay(Weights);
 
             Weights = Optimizer.GradientDescent(Weights, gradientWeights);
             Bias = Optimizer.GradientDescent(Bias, gradientBias);

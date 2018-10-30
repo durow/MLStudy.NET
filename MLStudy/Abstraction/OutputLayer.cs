@@ -33,7 +33,18 @@ namespace MLStudy
 
         //#endregion
 
-        public int InputFeatures { get; protected set; }
+        public double LearningRate
+        {
+            get
+            {
+                return Optimizer.LearningRate;
+            }
+            set
+            {
+                Optimizer.LearningRate = value;
+            }
+        }
+        public int InputFeatures { get; internal set; }
         public GradientOptimizer Optimizer { get; protected set; } = new NormalDescent();
         public WeightDecay WeightDecay { get; private set; }
 

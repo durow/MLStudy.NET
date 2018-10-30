@@ -37,16 +37,16 @@ namespace MLStudy
 
         #endregion
 
-        public double Weight { get; set; } = 0.1;
+        public double Strength { get; set; } = 0.1;
 
-        public abstract double GetValue(double weights);
+        public abstract double Decay(double strength);
 
-        public abstract Vector GetValue(Vector weights);
+        public abstract Vector Decay(Vector strength);
 
-        public abstract Matrix GetValue(Matrix weights);
+        public abstract Matrix Decay(Matrix strength);
     }
 
-    public enum WeightDecayType
+    public enum WeightDecayTypes
     {
         None,
         L1,

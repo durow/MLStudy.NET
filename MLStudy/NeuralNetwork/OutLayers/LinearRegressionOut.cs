@@ -6,13 +6,12 @@ namespace MLStudy
 {
     public class LinearRegressionOut: OutputLayer
     {
-        public Matrix Weights { get; private set; }
-        public double Bias { get; private set; }
+        public Matrix Weights { get; set; }
+        public double Bias { get; set; }
 
         public LinearRegressionOut(int inputFeatures)
         {
             InputFeatures = inputFeatures;
-            AutoInitWeightsBias();
         }
 
         public override void AutoInitWeightsBias()

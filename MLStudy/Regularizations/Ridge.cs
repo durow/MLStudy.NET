@@ -8,19 +8,19 @@ namespace MLStudy.Regularizations
     {
         public string Name => "Ridge";
 
-        public override double GetValue(double weight)
+        public override double Decay(double weight)
         {
-            return weight * Weight;
+            return weight * Strength;
         }
 
-        public override Vector GetValue(Vector weights)
+        public override Vector Decay(Vector weights)
         {
-            return weights * Weight;
+            return weights * Strength;
         }
 
-        public override Matrix GetValue(Matrix weights)
+        public override Matrix Decay(Matrix weights)
         {
-            return weights * Weight;
+            return weights * Strength;
         }
     }
 }

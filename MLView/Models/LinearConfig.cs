@@ -58,17 +58,17 @@ namespace MLView.Models
         public void SetToModel(LinearRegression lr)
         {
             lr.LearningRate = LearningRate;
-            lr.RegularizationType = GetRegType(Regularization);
-            lr.RegularizationWeight = RegularizationWeight;
+            lr.Regularization = WeightDecay.Get(Regularization);
+            lr.Regularization.Strength = RegularizationWeight;
         }
 
-        private WeightDecayType GetRegType(string regString)
+        private WeightDecayTypes GetRegType(string regString)
         {
             if (regString == "L1")
-                return WeightDecayType.L1;
+                return WeightDecayTypes.L1;
             if (regString == "L2")
-                return WeightDecayType.L2;
-            return WeightDecayType.None;
+                return WeightDecayTypes.L2;
+            return WeightDecayTypes.None;
         }
     }
 }

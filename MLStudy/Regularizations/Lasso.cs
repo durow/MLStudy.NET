@@ -8,19 +8,19 @@ namespace MLStudy.Regularizations
     {
         public string Name => "Lasso";
 
-        public override double GetValue(double weight)
+        public override double Decay(double weight)
         {
-            return Weight;
+            return Strength;
         }
 
-        public override Vector GetValue(Vector weights)
+        public override Vector Decay(Vector weights)
         {
-            return new Vector(weights.Length, Weight);
+            return new Vector(weights.Length, Strength);
         }
 
-        public override Matrix GetValue(Matrix weights)
+        public override Matrix Decay(Matrix weights)
         {
-            return new Matrix(weights.Rows, weights.Columns, Weight);
+            return new Matrix(weights.Rows, weights.Columns, Strength);
         }
     }
 }

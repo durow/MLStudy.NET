@@ -6,7 +6,7 @@ namespace MLStudy
 {
     public class SoftmaxOut: OutputLayer
     {
-        public Matrix Weights { get; private set; }
+        public Matrix Weights { get; set; }
         public Vector Bias { get; set; }
         public int CategoryCount { get; private set; }
 
@@ -14,7 +14,6 @@ namespace MLStudy
         {
             InputFeatures = inputeFeatures;
             CategoryCount = categoryCount;
-            AutoInitWeightsBias();
         }
 
         public override void AutoInitWeightsBias()

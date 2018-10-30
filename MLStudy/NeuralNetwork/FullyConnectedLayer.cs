@@ -8,8 +8,19 @@ namespace MLStudy
 {
     public class FullyConnectedLayer
     {
-        public Matrix Weights { get; private set; }
-        public Vector Bias { get; private set; }
+        public double LearningRate
+        {
+            get
+            {
+                return Optimizer.LearningRate;
+            }
+            set
+            {
+                Optimizer.LearningRate = value;
+            }
+        }
+        public Matrix Weights { get; set; }
+        public Vector Bias { get; set; }
         public int InputFeatures { get; private set; }
         public int NeuronCount { get; private set; }
 
@@ -31,7 +42,6 @@ namespace MLStudy
         {
             InputFeatures = inputFeatures;
             NeuronCount = neuronCount;
-            AutoInitWeightsBias();
         }
 
         public void SetWeights(Matrix weights)
@@ -101,6 +111,11 @@ namespace MLStudy
         }
 
         public FullyConnectedLayer UseDropOut()
+        {
+            return this;
+        }
+
+        public FullyConnectedLayer UseBatchNorm()
         {
             return this;
         }

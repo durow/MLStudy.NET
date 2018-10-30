@@ -25,15 +25,15 @@ namespace MLStudy
         {
             get
             {
-                return Regularization.Weight;
+                return Regularization.Strength;
             }
             set
             {
-                Regularization.Weight = value;
+                Regularization.Strength = value;
             }
         }
 
-        public WeightDecay Regularization { get; private set; }
+        public WeightDecay Regularization { get; set; }
 
         public void SetWeights(params double[] weights)
         {
@@ -56,7 +56,7 @@ namespace MLStudy
             var (gradientWeights, gradientBias) = Gradient.LinearSquareError(X, y, yHat);
 
             if (Regularization != null)
-                gradientWeights += Regularization.GetValue(Weights);
+                gradientWeights += Regularization.Decay(Weights);
 
             Weights = Optimizer.GradientDescent(Weights, gradientWeights);
             Bias = Optimizer.GradientDescent(Bias, gradientBias);

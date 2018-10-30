@@ -12,7 +12,6 @@ namespace MLStudy
 {
     public class NeuralNetwork : ITrainable
     {
-        public double LearningRate { get; set; }
         public List<FullyConnectedLayer> HiddenLayers { get; private set; }
         public OutputLayer OutLayer { get; private set; }
         public int InputFeatures { get; private set; }
@@ -26,13 +25,27 @@ namespace MLStudy
         private void InitHiddenLayers(int[] hiddenLayers)
         {
             HiddenLayers = new List<FullyConnectedLayer>();
-            for (int i = 0; i < hiddenLayers.Length; i++)
+            foreach (var count in hiddenLayers)
             {
-                if (i == 0)
-                    HiddenLayers.Add(new FullyConnectedLayer(InputFeatures, hiddenLayers[i]));
-                else
-                    HiddenLayers.Add(new FullyConnectedLayer(hiddenLayers[i - 1], hiddenLayers[i]));
+                AddHiddenLayer(count);
             }
+        }
+
+        public void InitWeightsBias()
+        {
+            foreach (var layer in HiddenLayers)
+            {
+                layer.AutoInitWeightsBias();
+            }
+            OutLayer.AutoInitWeightsBias();
+        }
+
+        public void Test()
+        {
+            var testX = DataEmulator.Instance.RandomMatrixGaussian(1, InputFeatures);
+            var testY = new Vector(1d);
+            Forward(testX);
+            Backward(testY);
         }
 
         public void Step(Matrix X, Vector y)
@@ -72,16 +85,48 @@ namespace MLStudy
             return OutLayer.GetLoss(y);
         }
 
-        public NeuralNetwork AddHiddenLayer(int neuronCount,
-            ActivationTypes activationType = ActivationTypes.ReLU,
-            WeightDecayType regularType = WeightDecayType.None)
+        public void SetLearningRate(double learningRate, params int[] layers)
+        {
+            if (layers.Length == 0)
+            {
+                foreach (var layer in HiddenLayers)
+                {
+                    layer.LearningRate = learningRate;
+                }
+            }
+            else
+            {
+                foreach (var index in layers)
+                {
+                    HiddenLayers[index].LearningRate = learningRate;
+                }
+            }
+
+            if (OutLayer != null)
+                OutLayer.LearningRate = learningRate;
+        }
+
+        #region Layers
+
+        public NeuralNetwork AddHiddenLayer(int neuronCount)
         {
             var input = InputFeatures;
             if (HiddenLayers.Count != 0)
                 input = HiddenLayers.Last().NeuronCount;
 
             var layer = new FullyConnectedLayer(input, neuronCount);
-            HiddenLayers.Add(layer);
+            AddHiddenLayer(layer);
+            return this;
+        }
+
+        public NeuralNetwork AddHiddenLayer(int neuronCount, ActivationTypes activationType, WeightDecayTypes regularType)
+        {
+            var input = InputFeatures;
+            if (HiddenLayers.Count != 0)
+                input = HiddenLayers.Last().NeuronCount;
+
+            var layer = new FullyConnectedLayer(input, neuronCount);
+            AddHiddenLayer(layer);
             var index = HiddenLayers.IndexOf(layer);
             UseActivation(activationType, index);
             UseWeightDecay(regularType, index);
@@ -91,6 +136,8 @@ namespace MLStudy
         public NeuralNetwork AddHiddenLayer(FullyConnectedLayer layer)
         {
             HiddenLayers.Add(layer);
+            if (OutLayer != null)
+                OutLayer.InputFeatures = layer.NeuronCount;
             return this;
         }
 
@@ -99,6 +146,38 @@ namespace MLStudy
             OutLayer = outLayer;
             return this;
         }
+
+        public NeuralNetwork UseLinearRegressionOutLayer()
+        {
+            var input = InputFeatures;
+            if (HiddenLayers.Count != 0)
+                input = HiddenLayers.Last().NeuronCount;
+                
+            OutLayer = new LinearRegressionOut(input);
+            return this;
+        }
+
+        public NeuralNetwork UseLogisticRegressionOutLayer()
+        {
+            var input = InputFeatures;
+            if (HiddenLayers.Count != 0)
+                input = HiddenLayers.Last().NeuronCount;
+
+            OutLayer = new LogisticRegressionOut(input);
+            return this;
+        }
+
+        public NeuralNetwork UseSoftmaxOutLayer(int categoryCount)
+        {
+            var input = InputFeatures;
+            if (HiddenLayers.Count != 0)
+                input = HiddenLayers.Last().NeuronCount;
+
+            OutLayer = new SoftmaxOut(input, categoryCount);
+            return this;
+        }
+
+        #endregion
 
         #region Activation
 
@@ -128,50 +207,69 @@ namespace MLStudy
 
         #region Weight Decay
 
-        public NeuralNetwork UseWeightDecay(WeightDecayType regularType, double strength)
+        public NeuralNetwork UseWeightDecay(WeightDecayTypes regularType, double strength, params int[] layers)
         {
             return UseWeightDecay(regularType.ToString(), strength);
         }
 
-        public NeuralNetwork UseWeightDecay(string regularType, double strength)
+        public NeuralNetwork UseWeightDecay(string regularType, double strength, params int[] layers)
         {
-            var reg = WeightDecay.Get(regularType);
-            if (reg != null)
-                reg.Weight = strength;
-            UseWeightDecay(reg);
+            if (layers.Length == 0)
+            {
+                foreach (var layer in HiddenLayers)
+                {
+                    var decay = WeightDecay.Get(regularType);
+                    if (decay != null)
+                        decay.Strength = strength;
+                    layer.UseWeightDecay(decay);
+                }
+
+                var outDecay = WeightDecay.Get(regularType);
+                if (outDecay != null)
+                    outDecay.Strength = strength;
+                OutLayer.UseWeightDecay(outDecay);
+            }
+            else
+            {
+                foreach (var index in layers)
+                {
+                    var reg = WeightDecay.Get(regularType);
+                    if (reg != null)
+                        reg.Strength = strength;
+                    UseWeightDecay(reg, index);
+                }
+            }
+
             return this;
         }
 
-        public NeuralNetwork UseLasso(double strength)
+        public NeuralNetwork UseLasso(double strength, params int[] layers)
         {
-            var reg = new Lasso { Weight = strength };
-            UseWeightDecay(reg);
-            return this;
+            return UseWeightDecay("L1", strength, layers);
         }
 
-        public NeuralNetwork UseWeightDecayL1(double strength)
+        public NeuralNetwork UseWeightDecayL1(double strength, params int[] layers)
         {
-            var reg = new Lasso { Weight = strength };
-            UseWeightDecay(reg);
-            return this;
+            return UseWeightDecay("L1", strength, layers);
         }
 
-        public NeuralNetwork UseRidge(double strength)
+        public NeuralNetwork UseRidge(double strength, params int[] layers)
         {
-            var reg = new Ridge { Weight = strength };
-            UseWeightDecay(reg);
-            return this;
+            return UseWeightDecay("L2", strength, layers);
         }
 
-        public NeuralNetwork UseWeightDecayL2(double strength)
+        public NeuralNetwork UseWeightDecayL2(double strength, params int[] layers)
         {
-            var reg = new Ridge { Weight = strength };
-            UseWeightDecay(reg);
-            return this;
+            return UseWeightDecay("L2", strength, layers);
         }
 
-        public NeuralNetwork UseWeightDecay(WeightDecay decay)
+        public NeuralNetwork UseWeightDecay(WeightDecay decay, int layerIndex)
         {
+            if (layerIndex < 0)
+                OutLayer.UseWeightDecay(decay);
+            else
+                HiddenLayers[layerIndex].UseWeightDecay(decay);
+
             return this;
         }
 
@@ -179,12 +277,27 @@ namespace MLStudy
 
         #region Optimization
 
+        public NeuralNetwork UseOptimizer(GradientOptimizer optimizer, int layerIndex)
+        {
+            if (layerIndex < 0)
+                OutLayer.UseOptimizer(optimizer);
+            else
+                HiddenLayers[layerIndex].UseOptimizer(optimizer);
+
+            return this;
+        }
+
         public NeuralNetwork UseMomentum()
         {
             return this;
         }
 
         public NeuralNetwork UseAdam()
+        {
+            return this;
+        }
+
+        public NeuralNetwork UseBatchNorm()
         {
             return this;
         }
