@@ -19,7 +19,7 @@
                 <views:LogisticRegressionView/>
             </TabItem>
             <TabItem Header="NeuralNetwork">
-
+                <views:NeuralNetworkView/>
             </TabItem>
         </TabControl>
     </DockPanel>

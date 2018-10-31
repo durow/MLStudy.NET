@@ -126,51 +126,11 @@ namespace MLView
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var emu = new DataEmulator();
-            var X = emu.RandomVector(SampleCount).ApplyFunction(a => (int)(a * Range));
-            var y = X.ApplyFunction(F);
-            var noise = emu.RandomVectorGaussian(SampleCount) * 10;
-            var noiseY = y + noise;
-            var testX = emu.RandomVector(TestSize).ApplyFunction(a => (int)(a * Range));
-            var testY = testX.ApplyFunction(F);
-
-
-            OutText.Clear();
-
-            TextOut($"True Weight:{Weight},True Bias:{Bias}");
-
-            lr = new LinearRegression
-            {
-                LearningRate = LearningRate,
-            };
-            lr.SetWeights(0);
-            lr.SetBias(0);
-
-            trainer = new Trainer(lr)
-            {
-                MaxStep = TrainCount,
-                NotifySteps = ReportStep,
-                StepWait = 5,
-            };
-            trainer.Started += Trainer_Started;
-            trainer.Stopped += Trainer_Stopped;
-            trainer.Notify += Trainer_Notify;
-
-            var matrixX = X.ToMatrix(true);
-            var matrixTestX = testX.ToMatrix(true);
-
-            ShowTrainInfo(lr, matrixX, y, matrixTestX, testY);
-
-            Task.Factory.StartNew(() =>
-            {
-                trainer.StartTrain(matrixX, y);
-                if (trainer.MaxStep % trainer.NotifySteps != 0)
-                {
-                    var yHat = lr.Predict(matrixX);
-                    var error = LossFunctions.MeanSquareError(yHat, y);
-                    TextOutCross($"Step:{trainer.StepCounter}, error:{error}!");
-                }
-            });
+            var nn = new NeuralNetwork(2, 2, 2)
+                .UseLogisticRegressionOutLayer();
+            nn.InitWeightsBias();
+            nn.Test();
+            MessageBox.Show("Congratulations!");
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)

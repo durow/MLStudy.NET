@@ -77,6 +77,9 @@
     <Compile Include="Views\LogisticRegressionView.xaml.cs">
       <DependentUpon>LogisticRegressionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\NeuralNetworkView.xaml.cs">
+      <DependentUpon>NeuralNetworkView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TestAreaView.xaml.cs">
       <DependentUpon>TestAreaView.xaml</DependentUpon>
     </Compile>
@@ -113,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LogisticRegressionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NeuralNetworkView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

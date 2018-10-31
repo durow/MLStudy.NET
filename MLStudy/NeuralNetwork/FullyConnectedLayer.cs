@@ -1,4 +1,5 @@
-﻿using MLStudy.Optimization;
+﻿using MLStudy.Activations;
+using MLStudy.Optimization;
 using MLStudy.Regularizations;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace MLStudy
         public int InputFeatures { get; private set; }
         public int NeuronCount { get; private set; }
 
-        public Activation Activation { get; private set; }
+        public Activation Activation { get; private set; } = new ReLU();
         public WeightDecay WeightDecay { get; private set; }
         public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
 
@@ -131,7 +132,7 @@ namespace MLStudy
 
         private void UpdateWeightsBias()
         {
-            var v = new Vector(LinearError.Columns, 1);
+            var v = new Vector(LinearError.Rows, 1);
             var gradientBias = (v * LinearError).ToVector() / LinearError.Rows;
             var gradientWeights = ForwardInput.Transpose() * LinearError / LinearError.Rows;
 

@@ -38,7 +38,7 @@ namespace MLStudy
         public override double Loss(Matrix X, Vector y)
         {
             var yHat = Predict(X).RawResult;
-            return LossFunctions.LogisticError(yHat, y);
+            return LossFunctions.Logistic(yHat, y);
         }
 
         public double Error(Matrix X, Vector y)

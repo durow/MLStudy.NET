@@ -67,6 +67,10 @@ namespace MLStudy
             return GetLoss(ForwardOutput, y);
         }
 
+        public abstract double GetError(Vector y);
+
+        public abstract Vector GetPredict();
+
         public OutputLayer UseWeightDecay(WeightDecay decay)
         {
             WeightDecay = decay;

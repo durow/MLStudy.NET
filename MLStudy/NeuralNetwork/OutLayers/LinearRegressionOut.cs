@@ -55,5 +55,15 @@ namespace MLStudy
             var v = yHat.ToVector();
             return LossFunctions.MeanSquareError(v, y);
         }
+
+        public override double GetError(Vector y)
+        {
+            return LossFunctions.MeanSquareError(ForwardOutput.ToVector(), y);
+        }
+
+        public override Vector GetPredict()
+        {
+            return ForwardOutput.ToVector();
+        }
     }
 }

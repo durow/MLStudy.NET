@@ -61,10 +61,20 @@ namespace MLStudy
             var sum = 0d;
             for (int i = 0; i < ForwardOutput.Rows; i++)
             {
-                var ce = LossFunctions.CrossEntropy(ForwardOutput[i], matrixY[i]);
-                sum += ce;
+                sum += LossFunctions.CrossEntropy(matrixY[i], yHat[i]);
             }
             return sum / y.Length;
+        }
+
+        public override double GetError(Vector y)
+        {
+            var yHat = GetPredict();
+            return LossFunctions.ErrorPercent(yHat, y);
+        }
+
+        public override Vector GetPredict()
+        {
+            return ProbabilityToCategory(ForwardOutput);
         }
 
         private Matrix ExtendSoftmaxResultToMatrix(Vector v)
@@ -83,6 +93,31 @@ namespace MLStudy
             return result;
         }
 
-        
+        private Vector ProbabilityToCategory(Matrix m)
+        {
+            var result = new Vector(m.Rows);
+            for (int i = 0; i < m.Rows; i++)
+            {
+                result[i] = ProbabilityToCategory(m[i]);
+            }
+            return result;
+        }
+
+        private double ProbabilityToCategory(Vector v)
+        {
+            var c = -1;
+            var p = 0d;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (v[i] > p)
+                {
+                    c = i;
+                    p = v[i];
+                }
+            }
+
+            return c;
+        }
     }
 }

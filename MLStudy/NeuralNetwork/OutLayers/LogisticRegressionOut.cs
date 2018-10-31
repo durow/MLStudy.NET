@@ -19,7 +19,20 @@ namespace MLStudy
         public override double GetLoss(Matrix yHat, Vector y)
         {
             var v = yHat.ToVector();
-            return LossFunctions.LogisticError(v, y);
+            return LossFunctions.Logistic(v, y);
+        }
+
+        public override double GetError(Vector y)
+        {
+            var yHat = GetPredict();
+            return LossFunctions.ErrorPercent(yHat, y);
+        }
+
+        public override Vector GetPredict()
+        {
+            return (ForwardOutput - 0.5)
+                .ApplyFunction(Functions.IndicatorFunction)
+                .ToVector();
         }
     }
 }

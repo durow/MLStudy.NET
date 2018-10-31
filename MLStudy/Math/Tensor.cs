@@ -150,7 +150,7 @@ namespace MLStudy
 
         public static Matrix Add(Vector a, Matrix b)
         {
-            if (b.Rows != a.Length)
+            if (b.Columns != a.Length)
                 throw new Exception("not the same size!");
 
             var result = new Matrix(b.Rows, b.Columns);

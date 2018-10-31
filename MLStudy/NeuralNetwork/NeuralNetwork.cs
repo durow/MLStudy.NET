@@ -48,13 +48,19 @@ namespace MLStudy
             Backward(testY);
         }
 
+        public Vector Predict(Matrix X)
+        {
+            Forward(X);
+            return OutLayer.GetPredict();
+        }
+
         public void Step(Matrix X, Vector y)
         {
             Forward(X);
             Backward(y);
         }
 
-        private Matrix Forward(Matrix X)
+        public Matrix Forward(Matrix X)
         {
             Matrix input = X;
 
@@ -82,6 +88,16 @@ namespace MLStudy
         public double Loss(Matrix X, Vector y)
         {
             Forward(X);
+            return OutLayer.GetLoss(y);
+        }
+
+        public double GetLastError(Vector y)
+        {
+            return OutLayer.GetError(y);
+        }
+
+        public double GetLastLoss(Vector y)
+        {
             return OutLayer.GetLoss(y);
         }
 

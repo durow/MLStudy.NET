@@ -38,7 +38,7 @@ namespace MLStudy
             return result;
         }
 
-        public static double LogisticError(Vector yHat, Vector y)
+        public static double Logistic(Vector yHat, Vector y)
         {
             var sum = 0d;
             var crossEntropy = 0d;

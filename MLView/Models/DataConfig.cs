@@ -140,7 +140,7 @@ namespace MLView.Models
             return (trainX, trainY, testX, testY);
         }
 
-        public (Matrix, Vector, Matrix, Vector) GetClassificationData(int features, Func<Matrix,Vector> distance)
+        public (Matrix, Vector, Matrix, Vector) GetLogisticData(int features, Func<Matrix,Vector> distance)
         {
             var trainX = emu.RandomMatrix(trainSize, features, Min, Max);
             var trainDistance = distance(trainX);
@@ -160,6 +160,29 @@ namespace MLView.Models
                 testX = emu.RandomMatrix(TestSize, features, Min, Max);
                 var testDistance = distance(testX);
                 testY = testDistance.ApplyFunction(Functions.IndicatorFunction);
+            }
+
+            return (trainX, trainY, testX, testY);
+        }
+
+        public (Matrix, Vector, Matrix, Vector) GetClassificationData(int features, Func<Matrix, Vector> classify)
+        {
+            var trainX = emu.RandomMatrix(trainSize, features, Min, Max);
+            
+            if (IsNoise)
+            {
+                var noise = emu.RandomMatrixGaussian(trainX.Rows, trainX.Columns, NoiseMean, NoiseVar);
+                trainX += noise;
+            }
+            var trainY = classify(trainX);
+
+            Matrix testX;
+            Vector testY;
+
+            if (TestSize > 0)
+            {
+                testX = emu.RandomMatrix(TestSize, features, Min, Max);
+                testY = classify(testX);
             }
 
             return (trainX, trainY, testX, testY);

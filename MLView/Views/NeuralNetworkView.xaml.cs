@@ -16,29 +16,28 @@ using System.Windows.Shapes;
 namespace MLView.Views
 {
     /// <summary>
-    /// LogisticRegressionView.xaml 的交互逻辑
+    /// NeuralNetworkView.xaml 的交互逻辑
     /// </summary>
-    public partial class LogisticRegressionView : UserControl
+    public partial class NeuralNetworkView : UserControl
     {
-        LogisticRegression lr;
+        NeuralNetwork nn;
         Trainer trainer;
-        DataEmulator emu = new DataEmulator();
         Matrix trainX, testX;
         Vector trainY, testY;
 
-        DataConfig dataConfig = new DataConfig { TrainSize = 200, TestSize = 50 };
+        DataConfig dataConfig = new DataConfig { TrainSize = 200, TestSize = 50, Min = -50, Max = 50 };
         TrainerConfig trainerConfig = new TrainerConfig();
         LinearConfig lrConfig = new LinearConfig { LearningRate = 0.1 };
 
-        public LogisticRegressionView()
+        public NeuralNetworkView()
         {
             InitializeComponent();
 
             TrainerConfig.Config = trainerConfig;
             DataConfig.Config = dataConfig;
             LinearRegConfig.Config = lrConfig;
-            lr = new LogisticRegression();
-            trainer = new Trainer(lr);
+            nn = new NeuralNetwork(2,4).UseLogisticRegressionOutLayer();
+            trainer = new Trainer(nn);
             TrainerControl.Trainer = trainer;
 
             trainer.BeforeStart += Trainer_BeforeStart;
@@ -52,16 +51,25 @@ namespace MLView.Views
 
         private void Trainer_BeforeStart(object sender, EventArgs e)
         {
-            lr.SetWeights(0,0);
-            lr.SetBias(1);
+            nn.InitWeightsBias();
+            nn.SetLearningRate(lrConfig.LearningRate);
 
             Dispatcher.Invoke(() =>
             {
-                lrConfig.SetToModel(lr);
                 trainerConfig.SetToTrainer(trainer);
-                (trainX, trainY, testX, testY) = dataConfig.GetLogisticData(2, m =>
+                (trainX, trainY, testX, testY) = dataConfig.GetClassificationData(2, m =>
                 {
-                    return m.GetColumn(1) - (m.GetColumn(0) * 3 + 5);
+                    var result = new Vector(m.Rows);
+                    for (int i = 0; i < m.Rows; i++)
+                    {
+                        if (m[i, 0] < 0 && m[i, 1] < 0)
+                            result[i] = 1;
+                        else if (m[i, 0] > 0 && m[i, 1] > 0)
+                            result[i] = 1;
+                        else
+                            result[i] = 0;
+                    }
+                    return result;
                 });
 
                 trainer.SetTrainData(trainX, trainY);
@@ -111,8 +119,8 @@ namespace MLView.Views
 
         private void OutputInfo(NotifyEventArgs e)
         {
-            var error = e.Machine.Loss(e.X, e.Y);
-            TextOutCross($"Step:{e.Step} Weight:{lr.Weights}, Bias:{lr.Bias} Error:{error}");
+            //nn.Forward(e.X);
+            TextOutCross($"Step:{trainer.StepCounter}, Loss:{nn.GetLastLoss(e.Y)} Error:{nn.GetLastError(e.Y)}");
         }
     }
 }
