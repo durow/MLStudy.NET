@@ -380,6 +380,29 @@ namespace MLStudy
 
         #endregion
 
+        public virtual Vector Apply(Vector v, Func<double,double> function)
+        {
+            var result = new Vector(v.Length);
+            for (int i = 0; i < v.Length; i++)
+            {
+                result[i] = function(v[i]);
+            }
+            return result;
+        }
+
+        public virtual Matrix Apply(Matrix m, Func<double, double> function)
+        {
+            var result = new Matrix(m.Rows, m.Columns);
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Columns; j++)
+                {
+                    result[i, j] = function(m[i, j]);
+                }
+            }
+            return result;
+        }
+
         #region Helper Functions
 
         public void CheckVectorLength(Vector a, Vector b)

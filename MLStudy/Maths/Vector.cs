@@ -121,47 +121,47 @@ namespace MLStudy
 
         public static Vector operator +(Vector v, double b)
         {
-            return Tensor.Add(v, b);
+            return MatrixOperations.Instance.Add(v, b);
         }
 
         public static Vector operator +(double b, Vector v)
         {
-            return Tensor.Add(v, b);
+            return MatrixOperations.Instance.Add(v, b);
         }
 
         public static Vector operator +(Vector a, Vector b)
         {
-            return Tensor.Add(a, b);
+            return MatrixOperations.Instance.Add(a, b);
         }
 
         public static Vector operator -(Vector v, double b)
         {
-            return Tensor.Minus(v, b);
+            return MatrixOperations.Instance.Minus(v, b);
         }
 
         public static Vector operator -(Vector a, Vector b)
         {
-            return Tensor.Minus(a, b);
+            return MatrixOperations.Instance.Minus(a, b);
         }
 
         public static Vector operator *(Vector v, double b)
         {
-            return Tensor.Multiple(v, b);
+            return MatrixOperations.Instance.Multiple(v, b);
         }
 
         public static Vector operator *(double b, Vector v)
         {
-            return Tensor.Multiple(v, b);
+            return MatrixOperations.Instance.Multiple(v, b);
         }
 
         public static Vector operator *(Vector a, Vector b)
         {
-            return Tensor.Multiple(a, b);
+            return MatrixOperations.Instance.Multiple(a, b);
         }
 
         public static Vector operator /(Vector v, double b)
         {
-            return Tensor.Divide(v, b);
+            return MatrixOperations.Instance.Divide(v, b);
         }
 
         #endregion

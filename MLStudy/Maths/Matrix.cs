@@ -179,84 +179,74 @@ namespace MLStudy
 
         public Matrix ApplyFunction(Func<double,double> func)
         {
-            var result = new double[Rows, Columns];
-
-            for (int i = 0; i < Rows; i++)
-            {
-                for (int j = 0; j < Columns; j++)
-                {
-                    result[i, j] = func(values[i, j]);
-                }
-            }
-
-            return new Matrix(result);
+            return MatrixOperations.Instance.Apply(this, func);
         }
 
         #region Operations
 
         public static Matrix operator +(Matrix m, double a)
         {
-            return Tensor.Add(m, a);
+            return MatrixOperations.Instance.Add(m, a);
         }
 
         public static Matrix operator +(double a, Matrix m)
         {
-            return Tensor.Add(m, a);
+            return MatrixOperations.Instance.Add(m, a);
         }
 
         public static Matrix operator +(Matrix m, Vector a)
         {
-            return Tensor.Add(m, a);
+            return MatrixOperations.Instance.Add(m, a);
         }
 
         public static Matrix operator +(Vector a, Matrix m)
         {
-            return Tensor.Add(a, m);
+            return MatrixOperations.Instance.Add(a, m);
         }
 
         public static Matrix operator +(Matrix a, Matrix b)
         {
-            return Tensor.Add(a, b);
+            return MatrixOperations.Instance.Add(a, b);
         }
 
         public static Matrix operator -(Matrix a, Matrix b)
         {
-            return Tensor.Minus(a, b);
+            return MatrixOperations.Instance.Minus(a, b);
         }
 
         public static Matrix operator -(Matrix m, double a)
         {
-            return Tensor.Minus(m, a);
+            return MatrixOperations.Instance.Minus(m, a);
         }
 
         public static Matrix operator *(Matrix m, double b)
         {
-            return Tensor.Multiple(m, b);
+            return MatrixOperations.Instance.Multiple(m, b);
         }
 
         public static Matrix operator *(double b, Matrix m)
         {
-            return Tensor.Multiple(m, b);
+            return MatrixOperations.Instance.Multiple(m, b);
         }
 
         public static Matrix operator *(Matrix m, Vector v)
         {
-            return Tensor.Multiple(m, v);
+            return MatrixOperations.Instance.Multiple(m, v);
         }
 
         public static Matrix operator *(Vector v, Matrix m)
         {
-            return Tensor.Multiple(v, m);
+            return MatrixOperations.Instance.Multiple(v, m);
         }
 
         public static Matrix operator *(Matrix a, Matrix b)
         {
-            return Tensor.Multiple(a, b);
+            return MatrixOperations.Instance.Multiple(a, b);
         }
 
         public static Matrix operator /(Matrix m, double a)
         {
-            return Tensor.Divide(m, a);
+            return MatrixOperations.Instance.Divide(m, a);
         }
 
         #endregion
