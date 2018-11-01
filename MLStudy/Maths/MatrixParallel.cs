@@ -21,6 +21,9 @@ namespace MLStudy
 
         public override Matrix Multiple(Matrix a, Matrix b)
         {
+            if (a.Rows * b.Columns < 100 * MaxThreads)
+                return base.Multiple(a, b);
+
             if (a.Columns != b.Rows)
                 throw new Exception($"a.Columns={a.Columns} and b.Rows={b.Rows} are not equal!");
 
