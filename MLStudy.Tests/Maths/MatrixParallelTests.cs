@@ -8,7 +8,7 @@ namespace MLStudy.Tests.Maths
     public class MatrixParallelTests
     {
         MatrixParallel op = new MatrixParallel();
-        int arow = 800, acolumn = 400, bcolumn = 500;
+        int arow = 20, acolumn = 30, bcolumn = 20;
         
         [Fact]
         public void MultipleMatrixMatrix()
@@ -85,7 +85,7 @@ namespace MLStudy.Tests.Maths
         public void PerformanceParallelFinal()
         {
             var (a, b) = GetTestMatrix();
-            var r = op.MultipleFinal(a, b, 8);
+            var r = op.MultipleThreadLimit(a, b, 4);
         }
 
         private (Matrix a, Matrix b) GetTestMatrix()
