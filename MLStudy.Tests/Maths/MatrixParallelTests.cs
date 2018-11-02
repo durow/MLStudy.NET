@@ -8,7 +8,7 @@ namespace MLStudy.Tests.Maths
     public class MatrixParallelTests
     {
         MatrixParallel op = new MatrixParallel();
-        int arow = 20, acolumn = 30, bcolumn = 20;
+        int arow =20, acolumn = 300, bcolumn = 20;
         
         [Fact]
         public void MultipleMatrixMatrix()
@@ -86,6 +86,13 @@ namespace MLStudy.Tests.Maths
         {
             var (a, b) = GetTestMatrix();
             var r = op.MultipleThreadLimit(a, b, 4);
+        }
+
+        [Fact]
+        public void PerformanceParallelForEach()
+        {
+            var (a, b) = GetTestMatrix();
+            var r = op.MultipleForeach(a, b);
         }
 
         private (Matrix a, Matrix b) GetTestMatrix()

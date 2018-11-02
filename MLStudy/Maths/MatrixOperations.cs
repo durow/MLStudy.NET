@@ -8,6 +8,7 @@ namespace MLStudy
 {
     public class MatrixOperations
     {
+        public static int OperationLimit { get; set; } = 10000;
         public static int MaxThreads
         {
             get
