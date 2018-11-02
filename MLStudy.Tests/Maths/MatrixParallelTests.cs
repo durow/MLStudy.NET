@@ -95,11 +95,23 @@ namespace MLStudy.Tests.Maths
             var r = op.MultipleForeach(a, b);
         }
 
+        [Fact]
+        public void Validation()
+        {
+            var (a, b) = GetTestMatrix();
+            var expected = new MatrixOperations().Multiple(a, b);
+            var actual = new MatrixParallel().Multiple(a, b);
+
+            expected.Equals(actual);
+        }
+
         private (Matrix a, Matrix b) GetTestMatrix()
         {
             var a = DataEmulator.Instance.RandomMatrix(arow, acolumn);
             var b = DataEmulator.Instance.RandomMatrix(acolumn, bcolumn);
             return (a, b);
         }
+
+        
     }
 }

@@ -4,20 +4,13 @@ using System.Text;
 
 namespace MLStudy
 {
-    public sealed class Matrix
+    public struct Matrix
     {
         private double[,] values;
 
         public int Length { get { return values.Length; } }
         public int Rows { get { return values.GetLength(0); } }
         public int Columns { get { return values.GetLength(1); } }
-        public int[] Shape
-        {
-            get
-            {
-                return new int[] { Rows, Columns };
-            }
-        }
 
         public double this[int row, int column]
         {
@@ -38,9 +31,6 @@ namespace MLStudy
                 return GetRow(index);
             }
         }
-
-        public Matrix()
-        { }
 
         public Matrix(int rows, int columns)
         {
@@ -86,6 +76,21 @@ namespace MLStudy
             }
 
             return new Vector(result);
+        }
+
+        public Matrix GetRange(int startRow, int rowLength, int startColumn, int columnLength)
+        {
+            var result = new Matrix(rowLength, columnLength);
+
+            for (int i = 0; i < rowLength; i++)
+            {
+                for (int j = 0; j < columnLength; j++)
+                {
+                    result[i, j] = values[startRow + i, startColumn + j];
+                }
+            }
+
+            return result;
         }
 
         public double GetValue(int row, int column)
@@ -145,9 +150,39 @@ namespace MLStudy
             return result;
         }
 
+        public Vector SumRow()
+        {
+            var result = new Vector(Columns);
+            for (int i = 0; i < Rows; i++)
+            {
+                result += GetRow(i);
+            }
+            return result;
+        }
+
+        public Vector SumColumn()
+        {
+            var result = new Vector(Rows);
+            for (int i = 0; i < Columns; i++)
+            {
+                result += GetColumn(i);
+            }
+            return result;
+        }
+
         public double Mean()
         {
             return Sum() / Length;
+        }
+
+        public Vector MeanRow()
+        {
+            return SumRow() / Rows;
+        }
+
+        public Vector MeanColumn()
+        {
+            return SumColumn() / Columns;
         }
 
         public Matrix Transpose(bool changeLocal = false)

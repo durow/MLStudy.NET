@@ -43,6 +43,16 @@ namespace MLStudy
             this.values = values;
         }
 
+        public Vector GetRange(int start, int length)
+        {
+            var result = new Vector(length);
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = values[start + i];
+            }
+            return result;
+        }
+
         public double Sum()
         {
             return values.Sum();
@@ -139,6 +149,11 @@ namespace MLStudy
             return MatrixOperations.Instance.Minus(v, b);
         }
 
+        public static Vector operator -(double b, Vector v)
+        {
+            return MatrixOperations.Instance.Minus(b, v);
+        }
+
         public static Vector operator -(Vector a, Vector b)
         {
             return MatrixOperations.Instance.Minus(a, b);
@@ -154,7 +169,7 @@ namespace MLStudy
             return MatrixOperations.Instance.Multiple(v, b);
         }
 
-        public static Vector operator *(Vector a, Vector b)
+        public static double operator *(Vector a, Vector b)
         {
             return MatrixOperations.Instance.Multiple(a, b);
         }
@@ -162,6 +177,11 @@ namespace MLStudy
         public static Vector operator /(Vector v, double b)
         {
             return MatrixOperations.Instance.Divide(v, b);
+        }
+
+        public static Vector operator /(double b, Vector v)
+        {
+            return MatrixOperations.Instance.Divide(b, v);
         }
 
         #endregion

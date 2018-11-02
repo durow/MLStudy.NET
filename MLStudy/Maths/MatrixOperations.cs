@@ -244,28 +244,11 @@ namespace MLStudy
             return new Vector(result);
         }
 
-        public double MultipleAsMatrix(Vector a, Vector b)
+        public double Multiple(Vector a, Vector b)
         {
             CheckVectorLength(a, b);
 
-            var result = new double[a.Length];
-            for (int i = 0; i < a.Length; i++)
-            {
-                result[i] = a[i] * b[i];
-            }
-            return result.Sum();
-        }
-
-        public Vector Multiple(Vector a, Vector b)
-        {
-            CheckVectorLength(a, b);
-
-            var result = new double[a.Length];
-            for (int i = 0; i < a.Length; i++)
-            {
-                result[i] = a[i] * b[i];
-            }
-            return new Vector(result);
+            return MultipleElementWise(a, b).Sum();
         }
 
         public virtual Matrix Multiple(Matrix m, double b)
@@ -311,6 +294,18 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public Vector MultipleElementWise(Vector a, Vector b)
+        {
+            CheckVectorLength(a, b);
+
+            var result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                result[i] = a[i] * b[i];
+            }
+            return new Vector(result);
         }
 
         public virtual Matrix MultipleElementWise(Matrix a, Matrix b)

@@ -19,7 +19,7 @@ namespace MLStudy
         public static double SquareError(Vector yHat, Vector y)
         {
             var error = yHat - y;
-            return Tensor.MultipleAsMatrix(error, error);
+            return error * error;
         }
 
         public static double CrossEntropy(Vector p, Vector pHat)

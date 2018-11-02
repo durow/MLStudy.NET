@@ -11,7 +11,7 @@ namespace MLStudy.Activations
         public override Matrix Backward(Matrix forwardOutput, Matrix outputError)
         {
             var derivative = forwardOutput.ApplyFunction(DerivativeFunctions.TanhByResult);
-            return Tensor.MultipleElementWise(derivative, outputError);
+            return MatrixOperations.Instance.MultipleElementWise(derivative, outputError);
         }
 
         public override Matrix Forward(Matrix input)
