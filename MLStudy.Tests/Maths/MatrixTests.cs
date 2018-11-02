@@ -199,5 +199,51 @@ namespace MLStudy.Tests
 
             Assert.Equal(expected, actual);
         }
+
+        [Fact]
+        public void ToVecotrByRow()
+        {
+            var test1 = new Matrix(new double[,]
+            {{1,2,3 },{ 4,5,6},{7,8,9 } });
+            var test2 = new Matrix(new double[,]
+            {{1,2,3 } });
+            var test3 = new Matrix(new double[,]
+            {{4 },{5 },{6 } });
+
+            var expected1 = new Vector(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            var expected2 = new Vector(1, 2, 3);
+            var expected3 = new Vector(4, 5, 6);
+
+            var actual1 = test1.ToVectorByRow();
+            var actual2 = test2.ToVectorByRow();
+            var actual3 = test3.ToVectorByRow();
+
+            Assert.Equal(expected1, actual1);
+            Assert.Equal(expected2, actual2);
+            Assert.Equal(expected3, actual3);
+        }
+
+        [Fact]
+        public void ToVectorByColumn()
+        {
+            var test1 = new Matrix(new double[,]
+            {{1,2,3 },{ 4,5,6},{7,8,9 } });
+            var test2 = new Matrix(new double[,]
+            {{1,2,3 } });
+            var test3 = new Matrix(new double[,]
+            {{4 },{5 },{6 } });
+
+            var expected1 = new Vector(1, 4, 7, 2, 5, 8, 3, 6, 9);
+            var expected2 = new Vector(1, 2, 3);
+            var expected3 = new Vector(4, 5, 6);
+
+            var actual1 = test1.ToVectorByColumn();
+            var actual2 = test2.ToVectorByColumn();
+            var actual3 = test3.ToVectorByColumn();
+
+            Assert.Equal(expected1, actual1);
+            Assert.Equal(expected2, actual2);
+            Assert.Equal(expected3, actual3);
+        }
     }
 }

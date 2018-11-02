@@ -63,8 +63,6 @@ namespace MLStudy.Tests
 
             Assert.Equal(expected12, actual1);
             Assert.Equal(expected12, actual2);
-            Assert.Equal(expected34, actual3);
-            Assert.Equal(expected34, actual4);
         }
 
         [Fact]

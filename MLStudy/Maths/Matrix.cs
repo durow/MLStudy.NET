@@ -212,6 +212,36 @@ namespace MLStudy
             throw new Exception($"This matrix [{Rows},{Columns}] can't convert to Vector!");
         }
 
+        public Vector ToVectorByRow()
+        {
+            var result = new Vector(Length);
+            var index = 0;
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    result[index] = values[i, j];
+                    index++;
+                }
+            }
+            return result;
+        }
+
+        public Vector ToVectorByColumn()
+        {
+            var result = new Vector(Length);
+            var index = 0;
+            for (int i = 0; i < Columns; i++)
+            {
+                for (int j = 0; j < Rows; j++)
+                {
+                    result[index] = values[j, i];
+                    index++;
+                }
+            }
+            return result;
+        }
+
         public Matrix ApplyFunction(Func<double,double> func)
         {
             return MatrixOperations.Instance.Apply(this, func);
