@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MLStudy
 {
-    public class MatrixOperations
+    public class TensorOperations
     {
         public static int OperationLimit { get; set; } = 10000;
         public static int MaxThreads
@@ -21,11 +21,11 @@ namespace MLStudy
             }
         }
         public static ParallelOptions ParallelOptions { get; private set; } = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        public static MatrixOperations Instance { get; private set; } = new MatrixOperations();
+        public static TensorOperations Instance { get; private set; } = new TensorOperations();
 
         public static void UseSequence()
         {
-            Instance = new MatrixOperations();
+            Instance = new TensorOperations();
         }
 
         public static void UseParallel()
@@ -399,6 +399,53 @@ namespace MLStudy
             return result;
         }
 
+        public virtual Tensor Apply(Tensor t, Func<double,double> function)
+        {
+            var result = t.GetSameShape();
+            for (int i = 0; i < t.Depth; i++)
+            {
+                for (int j = 0; j < t.Rows; j++)
+                {
+                    for (int k = 0; k < t.Columns; k++)
+                    {
+                        t[i, j, k] = function(t[i, j, k]);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public virtual double Convolute(Matrix input, Matrix filter, int startRow, int startColumn)
+        {
+            var result = 0d;
+            for (int i = 0; i < filter.Rows; i++)
+            {
+                for (int j = 0; j < filter.Columns; j++)
+                {
+                    result += filter[i, j] * input[startRow + i, startColumn + j];
+                }
+            }
+            return result;
+        }
+
+        public virtual double Convolute(Tensor input, Tensor filter, int startRow, int startColumn)
+        {
+            CheckTensorDepth(input, filter);
+
+            var result = 0d;
+            for (int i = 0; i < filter.Depth; i++)
+            {
+                for (int j = 0; j < input.Rows; j++)
+                {
+                    for (int k = 0; k < input.Columns; k++)
+                    {
+                        result += filter[i, j, k] * input[i, startRow + j, startColumn + k];
+                    }
+                }
+            }
+            return result;
+        }
+
         #region Helper Functions
 
         public void CheckVectorLength(Vector a, Vector b)
@@ -411,6 +458,12 @@ namespace MLStudy
         {
             if (a.Rows != b.Rows || a.Columns != b.Columns)
                 throw new Exception($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
+        }
+        
+        public void CheckTensorDepth(Tensor a, Tensor b)
+        {
+            if (a.Depth != b.Depth)
+                throw new Exception("Not have the same depth!");
         }
 
         #endregion

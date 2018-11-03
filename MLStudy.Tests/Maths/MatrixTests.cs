@@ -4,7 +4,7 @@ using System.Text;
 using Xunit;
 using MLStudy;
 
-namespace MLStudy.Tests
+namespace MLStudy.Tests.Maths
 {
     public class MatrixTests
     {
