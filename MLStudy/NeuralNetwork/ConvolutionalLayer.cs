@@ -41,11 +41,11 @@ namespace MLStudy
 
             Parallel.For(0, FilterCount, i =>
             {
-                for (int j = 0; j < input.Rows; j+=Stride)
+                for (int j = 0; j < output.Rows; j++)
                 {
-                    for (int k = 0; k < input.Columns; k+=Stride)
+                    for (int k = 0; k < output.Columns; k++)
                     {
-                        output[i, j, k] = TensorOperations.Instance.Convolute(ForwardInput, Filters[i].Weights, j, k) + Filters[i].Bias;
+                        output[i, j, k] = TensorOperations.Instance.Convolute(ForwardInput, Filters[i].Weights, j * Stride, k * Stride) + Filters[i].Bias;
                     }
                 }
             });
