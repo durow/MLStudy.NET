@@ -135,6 +135,22 @@ namespace MLStudy
             return result;
         }
 
+        public virtual void AddLoal(Tensor a, Tensor b, int startRow, int startColumn)
+        {
+            CheckTensorDepth(a, b);
+
+            for (int i = 0; i < b.Depth; i++)
+            {
+                for (int j = 0; j < b.Rows; j++)
+                {
+                    for (int k = 0; k < b.Columns; k++)
+                    {
+                        a[i, startRow + j, startColumn + k] += b[i, j, k];
+                    }
+                }
+            }
+        }
+
         #endregion
 
 
@@ -183,6 +199,40 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public virtual Tensor Minus(Tensor t, double b)
+        {
+            var result = t.GetSameShape();
+            for (int i = 0; i < t.Depth; i++)
+            {
+                for (int j = 0; j < t.Rows; j++)
+                {
+                    for (int k = 0; k < t.Columns; k++)
+                    {
+                        result[i, j, k] = t[i, j, k] - b;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public virtual Tensor Minus(Tensor a, Tensor b)
+        {
+            CheckShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] - b[i, j, k];
+                    }
+                }
+            }
+            return result;
         }
 
         public virtual Matrix Minus(double b, Matrix m)
@@ -282,6 +332,22 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public virtual Tensor Multiple(Tensor a, double b)
+        {
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] * b;
+                    }
+                }
+            }
+            return result;
+        }
+
         public virtual Matrix Multiple(Matrix a, Vector v)
         {
             var m = v.ToMatrix(true);
@@ -359,6 +425,22 @@ namespace MLStudy
             return result;
         }
 
+        public virtual Tensor PartMultiple(Tensor a, double b, int startRow, int startColumn, int rows, int columns)
+        {
+            var result = new Tensor(a.Depth, rows, columns);
+            for (int i = 0; i < result.Depth; i++)
+            {
+                for (int j = 0; j < result.Rows; j++)
+                {
+                    for (int k = 0; k < result.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, startRow + k, startColumn + k] * b;
+                    }
+                }
+            }
+            return result;
+        }
+
         #endregion
 
 
@@ -410,6 +492,22 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public virtual Tensor Divide(Tensor t, double b)
+        {
+            var result = t.GetSameShape();
+            for (int i = 0; i < t.Depth; i++)
+            {
+                for (int j = 0; j < t.Rows; j++)
+                {
+                    for (int k = 0; k < t.Columns; k++)
+                    {
+                        result[i, j, k] = t[i, j, k] / b;
+                    }
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         public virtual Vector Apply(Vector v, Func<double,double> function)
@@ -446,19 +544,6 @@ namespace MLStudy
                     {
                         t[i, j, k] = function(t[i, j, k]);
                     }
-                }
-            }
-            return result;
-        }
-
-        public virtual double Convolute(Matrix input, Matrix filter, int startRow, int startColumn)
-        {
-            var result = 0d;
-            for (int i = 0; i < filter.Rows; i++)
-            {
-                for (int j = 0; j < filter.Columns; j++)
-                {
-                    result += filter[i, j] * input[startRow + i, startColumn + j];
                 }
             }
             return result;

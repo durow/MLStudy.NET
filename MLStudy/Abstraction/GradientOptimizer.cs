@@ -9,6 +9,8 @@ namespace MLStudy
         public abstract string Name { get; }
         public double LearningRate { get; set; } = 0.01;
 
+        public abstract Tensor GradientDescent(Tensor weights, Tensor gradient);
+
         public abstract Matrix GradientDescent(Matrix weights, Matrix gradient);
 
         public abstract Vector GradientDescent(Vector weights, Vector gradient);

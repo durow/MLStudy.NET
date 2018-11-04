@@ -80,6 +80,27 @@ namespace MLStudy
             return new Tensor(Depth, Rows, Columns);
         }
 
+        public double Sum()
+        {
+            var result = 0d;
+            for (int i = 0; i < Depth; i++)
+            {
+                for (int j = 0; j < Rows; j++)
+                {
+                    for (int k = 0; k < Columns; k++)
+                    {
+                        result += values[i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        public double Mean()
+        {
+            return Sum() / (Depth * Rows * Columns);
+        }
+
         public Tensor ApplyFunction(Func<double,double> function)
         {
             return TensorOperations.Instance.Apply(this, function);
@@ -94,9 +115,35 @@ namespace MLStudy
             }
         }
 
+
         public static Tensor operator +(Tensor a, Tensor b)
         {
             return TensorOperations.Instance.Add(a, b);
+        }
+
+        public static Tensor operator -(Tensor a, double b)
+        {
+            return TensorOperations.Instance.Minus(a, b);
+        }
+
+        public static Tensor operator -(Tensor a, Tensor b)
+        {
+            return TensorOperations.Instance.Minus(a, b);
+        }
+
+        public static Tensor operator *(Tensor a, double b)
+        {
+            return TensorOperations.Instance.Multiple(a, b);
+        }
+
+        public static Tensor operator *(double a, Tensor b)
+        {
+            return TensorOperations.Instance.Multiple(b, a);
+        }
+
+        public static Tensor operator /(Tensor a, double b)
+        {
+            return TensorOperations.Instance.Divide(a, b);
         }
     }
 }

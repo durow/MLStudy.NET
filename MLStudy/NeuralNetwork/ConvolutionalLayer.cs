@@ -1,4 +1,6 @@
-﻿using MLStudy.Activations;
+﻿using MLStudy.Abstraction;
+using MLStudy.Activations;
+using MLStudy.Optimization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,17 +8,29 @@ using System.Threading.Tasks;
 
 namespace MLStudy
 {
-    public class ConvolutionalLayer
+    public class ConvolutionalLayer: CNNLayer
     {
+        public double LearningRate
+        {
+            get
+            {
+                return Optimizer.LearningRate;
+            }
+            set
+            {
+                Optimizer.LearningRate = value;
+            }
+        }
         public int InputDepth { get; private set; }
         public int FilterRows { get; private set; }
         public int FilterColumns { get; private set; }
         public int FilterCount { get; private set; }
         public List<Filter> Filters { get; private set; } = new List<Filter>();
-        public Tensor PaddingInput { get; private set; }
+        public Tensor ForwardInputPadding { get; private set; }
         public Tensor ForwardOutput { get; private set; }
         public Tensor LinearError { get; private set; }
         public Activation Activation { get; set; } = new ReLU();
+        public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
 
         public int Stride { get; set; } = 1;
         public int Padding { get; set; } = 0;
@@ -34,9 +48,9 @@ namespace MLStudy
             }
         }
 
-        public Tensor Forward(Tensor input)
+        public override Tensor Forward(Tensor input)
         {
-            PaddingInput = DoPadding(input);
+            ForwardInputPadding = DoPadding(input);
             var (outRows, outColumns) = GetOutputSize();
             var output = new Tensor(outRows, outColumns, FilterCount);
 
@@ -46,7 +60,7 @@ namespace MLStudy
                 {
                     for (int k = 0; k < output.Columns; k++)
                     {
-                        output[i, j, k] = TensorOperations.Instance.Convolute(PaddingInput, Filters[i].Weights, j * Stride, k * Stride) + Filters[i].Bias;
+                        output[i, j, k] = TensorOperations.Instance.Convolute(ForwardInputPadding, Filters[i].Weights, j * Stride, k * Stride) + Filters[i].Bias;
                     }
                 }
             });
@@ -55,7 +69,7 @@ namespace MLStudy
             return ForwardOutput;
         }
 
-        public Tensor Backward(Tensor outputError)
+        public override Tensor Backward(Tensor outputError)
         {
             var inputError = ErrorBP(outputError);
             UpdateWeightsBias();
@@ -65,15 +79,15 @@ namespace MLStudy
         private Tensor ErrorBP(Tensor outputError)
         {
             LinearError = Activation.Backward(ForwardOutput, outputError);
-            var inputError = PaddingInput.GetSameShape();
+            var inputError = ForwardInputPadding.GetSameShape();
 
             var errorList = new Tensor[FilterCount];
             Parallel.For(0, FilterCount, i =>
             {
-                errorList[i] = UpdateInputErrorByFilter(outputError, i);
+                errorList[i] = GetInputErrorByFilter(outputError, i);
             });
 
-            var result = PaddingInput.GetSameShape();
+            var result = ForwardInputPadding.GetSameShape();
             for (int i = 0; i < errorList.Length; i++)
             {
                 result += errorList[i];
@@ -81,15 +95,18 @@ namespace MLStudy
             return UnPadding(result);
         }
 
-        private Tensor UpdateInputErrorByFilter(Tensor outputError, int filterIndex)
+        private Tensor GetInputErrorByFilter(Tensor outputError, int filterIndex)
         {
-            var result = PaddingInput.GetSameShape();
+            var result = ForwardInputPadding.GetSameShape();
             var filter = Filters[filterIndex];
             for (int i = 0; i < outputError.Rows; i++)
             {
                 for (int j = 0; j < outputError.Columns; j++)
                 {
-                    var error = outputError[filterIndex, i, j];
+                    var error = filter.Weights * outputError[filterIndex, i, j];
+                    var startRow = i * Stride;
+                    var startColumn = j * Stride;
+                    TensorOperations.Instance.AddLoal(result, error, startRow, startColumn);
                 }
             }
             return result;
@@ -112,12 +129,41 @@ namespace MLStudy
         }
 
         private void UpdateWeightsBias()
-        { }
+        {
+            Parallel.For(0, FilterCount, i =>
+            {
+                var filter = Filters[i];
+                var gradient = GetFilterGradient(i);
+                var biasGradient = gradient.Mean();
+                var weights = Optimizer.GradientDescent(filter.Weights, gradient);
+                var bias = Optimizer.GradientDescent(filter.Bias, biasGradient);
+                filter.SetWeights(weights);
+                filter.SetBias(bias);
+            });
+        }
+
+        private Tensor GetFilterGradient(int filterIndex)
+        {
+            var filter = Filters[filterIndex];
+            var result = filter.Weights.GetSameShape();
+
+            for (int i = 0; i < LinearError.Rows; i++)
+            {
+                for (int j = 0; j < LinearError.Columns; j++)
+                {
+                    var error = TensorOperations.Instance.PartMultiple(ForwardInputPadding, LinearError[filterIndex,i,j], i * Stride, j * Stride, filter.Rows, filter.Columns);
+                    result += error;
+                }
+            }
+            return result / (LinearError.Rows * LinearError.Columns);
+        }
+
+
 
         private (int, int) GetOutputSize()
         {
-            var outRows = (PaddingInput.Rows - FilterRows) / Stride + 1;
-            var outColumns = (PaddingInput.Columns - FilterColumns) / Stride + 1;
+            var outRows = (ForwardInputPadding.Rows - FilterRows) / Stride + 1;
+            var outColumns = (ForwardInputPadding.Columns - FilterColumns) / Stride + 1;
             return (outRows, outColumns);
         }
 

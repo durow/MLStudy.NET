@@ -14,12 +14,13 @@ namespace MLStudy.Activations
             return TensorOperations.Instance.MultipleElementWise(derivative, outputError);
         }
 
-        public override Matrix Forward(Matrix input)
+        public override Tensor Backward(Tensor forwardOutput, Tensor outputError)
         {
-            return input.ApplyFunction(Functions.Sigmoid);
+            var derivative = forwardOutput.ApplyFunction(DerivativeFunctions.SigmoidByResult);
+            return TensorOperations.Instance.MultipleElementWise(derivative, outputError);
         }
 
-        public override Vector Forward(Vector input)
+        public override Matrix Forward(Matrix input)
         {
             return input.ApplyFunction(Functions.Sigmoid);
         }

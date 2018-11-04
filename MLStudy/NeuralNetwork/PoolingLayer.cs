@@ -1,13 +1,14 @@
 ﻿/*
  */
 
+using MLStudy.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MLStudy
 {
-    public class PoolingLayer
+    public class PoolingLayer: CNNLayer
     {
         public PoolingType PoolingType { get; private set; }
         public int Rows { get; private set; }
@@ -35,7 +36,7 @@ namespace MLStudy
                 GetOut = GetMean;
         }
 
-        public Tensor Forward(Tensor input)
+        public override Tensor Forward(Tensor input)
         {
             InputRows = input.Rows;
             InputColumns = input.Columns;
@@ -74,7 +75,7 @@ namespace MLStudy
                 maxPosition = null;
         }
 
-        public Tensor Backward(Tensor outputError)
+        public override Tensor Backward(Tensor outputError)
         {
             if (PoolingType == PoolingType.Max)
                 return BackwardMax(outputError);

@@ -22,5 +22,10 @@ namespace MLStudy.Optimization
         {
             return bias - gradient * LearningRate;
         }
+
+        public override Tensor GradientDescent(Tensor weights, Tensor gradient)
+        {
+            return weights - weights * LearningRate;
+        }
     }
 }
