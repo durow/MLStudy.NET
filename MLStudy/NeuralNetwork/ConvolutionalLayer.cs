@@ -13,8 +13,9 @@ namespace MLStudy
         public int FilterColumns { get; private set; }
         public int FilterCount { get; private set; }
         public List<Filter> Filters { get; private set; } = new List<Filter>();
-        public Tensor ForwardInput { get; private set; }
+        public Tensor PaddingInput { get; private set; }
         public Tensor ForwardOutput { get; private set; }
+        public Tensor LinearError { get; private set; }
         public Activation Activation { get; set; } = new ReLU();
 
         public int Stride { get; set; } = 1;
@@ -35,7 +36,7 @@ namespace MLStudy
 
         public Tensor Forward(Tensor input)
         {
-            ForwardInput = DoPadding(input);
+            PaddingInput = DoPadding(input);
             var (outRows, outColumns) = GetOutputSize();
             var output = new Tensor(outRows, outColumns, FilterCount);
 
@@ -45,7 +46,7 @@ namespace MLStudy
                 {
                     for (int k = 0; k < output.Columns; k++)
                     {
-                        output[i, j, k] = TensorOperations.Instance.Convolute(ForwardInput, Filters[i].Weights, j * Stride, k * Stride) + Filters[i].Bias;
+                        output[i, j, k] = TensorOperations.Instance.Convolute(PaddingInput, Filters[i].Weights, j * Stride, k * Stride) + Filters[i].Bias;
                     }
                 }
             });
@@ -54,10 +55,69 @@ namespace MLStudy
             return ForwardOutput;
         }
 
+        public Tensor Backward(Tensor outputError)
+        {
+            var inputError = ErrorBP(outputError);
+            UpdateWeightsBias();
+            return inputError;
+        }
+
+        private Tensor ErrorBP(Tensor outputError)
+        {
+            LinearError = Activation.Backward(ForwardOutput, outputError);
+            var inputError = PaddingInput.GetSameShape();
+
+            var errorList = new Tensor[FilterCount];
+            Parallel.For(0, FilterCount, i =>
+            {
+                errorList[i] = UpdateInputErrorByFilter(outputError, i);
+            });
+
+            var result = PaddingInput.GetSameShape();
+            for (int i = 0; i < errorList.Length; i++)
+            {
+                result += errorList[i];
+            }
+            return UnPadding(result);
+        }
+
+        private Tensor UpdateInputErrorByFilter(Tensor outputError, int filterIndex)
+        {
+            var result = PaddingInput.GetSameShape();
+            var filter = Filters[filterIndex];
+            for (int i = 0; i < outputError.Rows; i++)
+            {
+                for (int j = 0; j < outputError.Columns; j++)
+                {
+                    var error = outputError[filterIndex, i, j];
+                }
+            }
+            return result;
+        }
+
+        private Tensor UnPadding(Tensor paddingTensor)
+        {
+            var result = new Tensor(paddingTensor.Rows - Padding * 2, paddingTensor.Columns - Padding * 2, paddingTensor.Depth);
+            for (int i = 0; i < result.Depth; i++)
+            {
+                for (int j = 0; j < result.Rows; j++)
+                {
+                    for (int k = 0; k < result.Columns; k++)
+                    {
+                        result[i, j, k] = paddingTensor[i, Padding + j, Padding + k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        private void UpdateWeightsBias()
+        { }
+
         private (int, int) GetOutputSize()
         {
-            var outRows = (ForwardInput.Rows - FilterRows) / Stride + 1;
-            var outColumns = (ForwardInput.Columns - FilterColumns) / Stride + 1;
+            var outRows = (PaddingInput.Rows - FilterRows) / Stride + 1;
+            var outColumns = (PaddingInput.Columns - FilterColumns) / Stride + 1;
             return (outRows, outColumns);
         }
 
@@ -79,6 +139,8 @@ namespace MLStudy
             }
             return result;
         }
+
+
     }
 
     public class Filter

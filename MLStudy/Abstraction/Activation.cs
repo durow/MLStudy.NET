@@ -39,10 +39,10 @@ namespace MLStudy
         #endregion
 
         public abstract string Name { get; }
-        public abstract Vector Forward(Vector input);
         public abstract Matrix Forward(Matrix input);
         public abstract Tensor Forward(Tensor input);
         public abstract Matrix Backward(Matrix forwardOutput, Matrix outputError);
+        public abstract Tensor Backward(Tensor forwardOutput, Tensor outputError);
     }
 
     public enum ActivationTypes

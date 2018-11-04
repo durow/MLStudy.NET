@@ -93,5 +93,10 @@ namespace MLStudy
                     throw new Exception("Matrixes are not the same shape!");
             }
         }
+
+        public static Tensor operator +(Tensor a, Tensor b)
+        {
+            return TensorOperations.Instance.Add(a, b);
+        }
     }
 }

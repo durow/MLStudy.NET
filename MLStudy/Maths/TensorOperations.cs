@@ -45,7 +45,7 @@ namespace MLStudy
 
         public Vector Add(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Length];
             for (int i = 0; i < a.Length; i++)
@@ -104,7 +104,7 @@ namespace MLStudy
 
         public virtual Matrix Add(Matrix a, Matrix b)
         {
-            CheckMatrixShape(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Rows, a.Columns];
             for (int i = 0; i < a.Rows; i++)
@@ -115,6 +115,24 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public virtual Tensor Add(Tensor a, Tensor b)
+        {
+            CheckShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] + b[i, j, k];
+                    }
+                }
+            }
+            return result;
         }
 
         #endregion
@@ -144,7 +162,7 @@ namespace MLStudy
 
         public Vector Minus(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Length];
             for (int i = 0; i < a.Length; i++)
@@ -216,7 +234,7 @@ namespace MLStudy
 
         public virtual Matrix Minus(Matrix a, Matrix b)
         {
-            CheckMatrixShape(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Rows, a.Columns];
             for (int i = 0; i < a.Rows; i++)
@@ -246,7 +264,7 @@ namespace MLStudy
 
         public double Multiple(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             return MultipleElementWise(a, b).Sum();
         }
@@ -298,7 +316,7 @@ namespace MLStudy
 
         public Vector MultipleElementWise(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Length];
             for (int i = 0; i < a.Length; i++)
@@ -310,7 +328,7 @@ namespace MLStudy
 
         public virtual Matrix MultipleElementWise(Matrix a, Matrix b)
         {
-            CheckMatrixShape(a, b);
+            CheckShape(a, b);
 
             var result = a.GetSameShape();
             for (int i = 0; i < a.Rows; i++)
@@ -318,6 +336,24 @@ namespace MLStudy
                 for (int j = 0; j < a.Columns; j++)
                 {
                     result[i, j] = a[i, j] * b[i, j];
+                }
+            }
+            return result;
+        }
+
+        public virtual Tensor MultipleElementWise(Tensor a, Tensor b)
+        {
+            CheckShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] * b[i, j, k];
+                    }
                 }
             }
             return result;
@@ -448,13 +484,21 @@ namespace MLStudy
 
         #region Helper Functions
 
-        public void CheckVectorLength(Vector a, Vector b)
+        public void CheckShape(Tensor a, Tensor b)
         {
-            if (a.Length != b.Length)
-                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not the equal!");
+            if (a.Rows != b.Rows ||
+                a.Columns != b.Columns ||
+                a.Depth != b.Depth)
+                throw new Exception("tensors are not the same shape!");
         }
 
-        public void CheckMatrixShape(Matrix a, Matrix b)
+        public void CheckShape(Vector a, Vector b)
+        {
+            if (a.Length != b.Length)
+                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not equal!");
+        }
+
+        public void CheckShape(Matrix a, Matrix b)
         {
             if (a.Rows != b.Rows || a.Columns != b.Columns)
                 throw new Exception($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
