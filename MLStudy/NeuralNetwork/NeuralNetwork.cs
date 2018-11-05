@@ -85,7 +85,7 @@ namespace MLStudy
             return OutLayer.Forward(input);
         }
 
-        public Matrix Forward(Tensor X)
+        public Matrix Forward(Tensor3 X)
         {
             var input = X;
 

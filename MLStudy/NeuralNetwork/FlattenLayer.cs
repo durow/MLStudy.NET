@@ -10,7 +10,7 @@ namespace MLStudy
         public int OriginColumns { get; private set; }
         public int OriginDepth { get; private set; }
 
-        public Matrix FlattenToMatrix(Tensor t)
+        public Matrix FlattenToMatrix(Tensor3 t)
         {
             OriginRows = t.Rows;
             OriginColumns = t.Columns;

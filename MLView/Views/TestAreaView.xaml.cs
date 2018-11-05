@@ -1,6 +1,7 @@
 ﻿using MLStudy;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,11 +127,11 @@ namespace MLView
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var nn = new NeuralNetwork(2, 2, 2)
-                .UseLogisticRegressionOutLayer();
-            nn.InitWeightsBias();
-            nn.Test();
-            MessageBox.Show("Congratulations!");
+            var img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgb24>("D:\\AYX\\test.png");
+            using (var fs = new FileStream("D:\\AYX\\test2.png",FileMode.Create))
+            {
+                img.Save(fs,new SixLabors.ImageSharp.Formats.Png.PngEncoder());
+            }
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)

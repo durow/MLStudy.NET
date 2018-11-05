@@ -20,7 +20,7 @@ namespace MLStudy
         public int OutputRows { get; private set; }
         public int OutputColumns { get; private set; }
 
-        private Func<Tensor, int, int, int, double> GetOut;
+        private Func<Tensor3, int, int, int, double> GetOut;
         private List<List<(int,int)>> maxPosition;
 
         public PoolingLayer(int rows = 2, int columns = 2, int stride = 2, PoolingType type = PoolingType.Max)
@@ -36,7 +36,7 @@ namespace MLStudy
                 GetOut = GetMean;
         }
 
-        public override Tensor Forward(Tensor input)
+        public override Tensor3 Forward(Tensor3 input)
         {
             InputRows = input.Rows;
             InputColumns = input.Columns;
@@ -47,7 +47,7 @@ namespace MLStudy
 
             InitMaxPositionList();
 
-            var result = new Tensor(OutputRows, OutputColumns, input.Depth);
+            var result = new Tensor3(OutputRows, OutputColumns, input.Depth);
             Parallel.For(0, result.Depth, i =>
             {
                 for (int j = 0; j < result.Rows; j++)
@@ -75,7 +75,7 @@ namespace MLStudy
                 maxPosition = null;
         }
 
-        public override Tensor Backward(Tensor outputError)
+        public override Tensor3 Backward(Tensor3 outputError)
         {
             if (PoolingType == PoolingType.Max)
                 return BackwardMax(outputError);
@@ -83,9 +83,9 @@ namespace MLStudy
                 return BackwardMean(outputError);
         }
 
-        private Tensor BackwardMean(Tensor outputError)
+        private Tensor3 BackwardMean(Tensor3 outputError)
         {
-            var result = new Tensor(InputRows, InputColumns, InputDepth);
+            var result = new Tensor3(InputRows, InputColumns, InputDepth);
             Parallel.For(0, result.Depth, i =>
             {
                 for (int j = 0; j < outputError.Rows; j++)
@@ -102,9 +102,9 @@ namespace MLStudy
             return result;
         }
 
-        private Tensor BackwardMax(Tensor outputError)
+        private Tensor3 BackwardMax(Tensor3 outputError)
         {
-            var result = new Tensor(InputRows, InputColumns, InputDepth);
+            var result = new Tensor3(InputRows, InputColumns, InputDepth);
             Parallel.For(0, result.Depth, i =>
             {
                 var position = maxPosition[i];
@@ -122,7 +122,7 @@ namespace MLStudy
             return result;
         }
 
-        private void SetMeanError(Tensor inputError, int startRow, int startColumn, int depth, double error)
+        private void SetMeanError(Tensor3 inputError, int startRow, int startColumn, int depth, double error)
         {
             var meanError = error / (Rows * Columns);
             for (int i = 0; i < Rows; i++)
@@ -134,7 +134,7 @@ namespace MLStudy
             }
         }
 
-        private void SetMeanMax(Tensor inputError, int startRow, int startColumn, int depth, double error)
+        private void SetMeanMax(Tensor3 inputError, int startRow, int startColumn, int depth, double error)
         {
             for (int i = 0; i < Rows; i++)
             {
@@ -144,7 +144,7 @@ namespace MLStudy
             }
         }
 
-        private double GetMax(Tensor input, int depthIndex, int startRow, int startColumns)
+        private double GetMax(Tensor3 input, int depthIndex, int startRow, int startColumns)
         {
             var result = double.MinValue;
             var maxRow = 0;
@@ -167,7 +167,7 @@ namespace MLStudy
             return result;
         }
 
-        private double GetMean(Tensor input, int depthIndex, int startRow, int startColumns)
+        private double GetMean(Tensor3 input, int depthIndex, int startRow, int startColumns)
         {
             var result = 0d;
             for (int i = 0; i < Rows; i++)

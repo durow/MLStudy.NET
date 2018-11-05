@@ -117,7 +117,7 @@ namespace MLStudy
             return new Matrix(result);
         }
 
-        public virtual Tensor Add(Tensor a, Tensor b)
+        public virtual Tensor3 Add(Tensor3 a, Tensor3 b)
         {
             CheckShape(a, b);
 
@@ -135,7 +135,7 @@ namespace MLStudy
             return result;
         }
 
-        public virtual void AddLoal(Tensor a, Tensor b, int startRow, int startColumn)
+        public virtual void AddLoal(Tensor3 a, Tensor3 b, int startRow, int startColumn)
         {
             CheckTensorDepth(a, b);
 
@@ -201,7 +201,7 @@ namespace MLStudy
             return new Matrix(result);
         }
 
-        public virtual Tensor Minus(Tensor t, double b)
+        public virtual Tensor3 Minus(Tensor3 t, double b)
         {
             var result = t.GetSameShape();
             for (int i = 0; i < t.Depth; i++)
@@ -217,7 +217,7 @@ namespace MLStudy
             return result;
         }
 
-        public virtual Tensor Minus(Tensor a, Tensor b)
+        public virtual Tensor3 Minus(Tensor3 a, Tensor3 b)
         {
             CheckShape(a, b);
 
@@ -332,7 +332,7 @@ namespace MLStudy
             return new Matrix(result);
         }
 
-        public virtual Tensor Multiple(Tensor a, double b)
+        public virtual Tensor3 Multiple(Tensor3 a, double b)
         {
             var result = a.GetSameShape();
             for (int i = 0; i < a.Depth; i++)
@@ -407,7 +407,7 @@ namespace MLStudy
             return result;
         }
 
-        public virtual Tensor MultipleElementWise(Tensor a, Tensor b)
+        public virtual Tensor3 MultipleElementWise(Tensor3 a, Tensor3 b)
         {
             CheckShape(a, b);
 
@@ -425,9 +425,9 @@ namespace MLStudy
             return result;
         }
 
-        public virtual Tensor PartMultiple(Tensor a, double b, int startRow, int startColumn, int rows, int columns)
+        public virtual Tensor3 PartMultiple(Tensor3 a, double b, int startRow, int startColumn, int rows, int columns)
         {
-            var result = new Tensor(a.Depth, rows, columns);
+            var result = new Tensor3(a.Depth, rows, columns);
             for (int i = 0; i < result.Depth; i++)
             {
                 for (int j = 0; j < result.Rows; j++)
@@ -492,7 +492,7 @@ namespace MLStudy
             return new Matrix(result);
         }
 
-        public virtual Tensor Divide(Tensor t, double b)
+        public virtual Tensor3 Divide(Tensor3 t, double b)
         {
             var result = t.GetSameShape();
             for (int i = 0; i < t.Depth; i++)
@@ -533,7 +533,7 @@ namespace MLStudy
             return result;
         }
 
-        public virtual Tensor Apply(Tensor t, Func<double,double> function)
+        public virtual Tensor3 Apply(Tensor3 t, Func<double,double> function)
         {
             var result = t.GetSameShape();
             for (int i = 0; i < t.Depth; i++)
@@ -549,7 +549,7 @@ namespace MLStudy
             return result;
         }
 
-        public virtual double Convolute(Tensor input, Tensor filter, int startRow, int startColumn)
+        public virtual double Convolute(Tensor3 input, Tensor3 filter, int startRow, int startColumn)
         {
             CheckTensorDepth(input, filter);
 
@@ -569,7 +569,7 @@ namespace MLStudy
 
         #region Helper Functions
 
-        public void CheckShape(Tensor a, Tensor b)
+        public void CheckShape(Tensor3 a, Tensor3 b)
         {
             if (a.Rows != b.Rows ||
                 a.Columns != b.Columns ||
@@ -589,7 +589,7 @@ namespace MLStudy
                 throw new Exception($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
         }
         
-        public void CheckTensorDepth(Tensor a, Tensor b)
+        public void CheckTensorDepth(Tensor3 a, Tensor3 b)
         {
             if (a.Depth != b.Depth)
                 throw new Exception("Not have the same depth!");

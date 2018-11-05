@@ -14,7 +14,7 @@ namespace MLStudy.Activations
             return TensorOperations.Instance.MultipleElementWise(derivative, outputError);
         }
 
-        public override Tensor Backward(Tensor forwardOutput, Tensor outputError)
+        public override Tensor3 Backward(Tensor3 forwardOutput, Tensor3 outputError)
         {
             var derivative = forwardOutput.ApplyFunction(DerivativeFunctions.TanhByResult);
             return TensorOperations.Instance.MultipleElementWise(derivative, outputError);
@@ -25,7 +25,7 @@ namespace MLStudy.Activations
             return input.ApplyFunction(Functions.Tanh);
         }
 
-        public override Tensor Forward(Tensor input)
+        public override Tensor3 Forward(Tensor3 input)
         {
             return input.ApplyFunction(Functions.Tanh);
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MLStudy
 {
-    public class MatrixParallel : TensorOperations
+    public class TensorParallel : TensorOperations
     {
         #region Add
 

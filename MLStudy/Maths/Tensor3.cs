@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public struct Tensor
+    public struct Tensor3
     {
         private double[,,] values;
         public int Dimension => 3;
@@ -32,12 +32,12 @@ namespace MLStudy
             }
         }
 
-        public Tensor(int rows, int columns, int depth)
+        public Tensor3(int rows, int columns, int depth)
         {
             values = new double[depth, rows, columns];
         }
         
-        public Tensor(params Matrix[] matrixes)
+        public Tensor3(params Matrix[] matrixes)
         {
             if (matrixes.Length == 0)
             {
@@ -75,9 +75,9 @@ namespace MLStudy
             return result;
         }
 
-        public Tensor GetSameShape()
+        public Tensor3 GetSameShape()
         {
-            return new Tensor(Depth, Rows, Columns);
+            return new Tensor3(Depth, Rows, Columns);
         }
 
         public double Sum()
@@ -101,7 +101,7 @@ namespace MLStudy
             return Sum() / (Depth * Rows * Columns);
         }
 
-        public Tensor ApplyFunction(Func<double,double> function)
+        public Tensor3 ApplyFunction(Func<double,double> function)
         {
             return TensorOperations.Instance.Apply(this, function);
         }
@@ -116,32 +116,32 @@ namespace MLStudy
         }
 
 
-        public static Tensor operator +(Tensor a, Tensor b)
+        public static Tensor3 operator +(Tensor3 a, Tensor3 b)
         {
             return TensorOperations.Instance.Add(a, b);
         }
 
-        public static Tensor operator -(Tensor a, double b)
+        public static Tensor3 operator -(Tensor3 a, double b)
         {
             return TensorOperations.Instance.Minus(a, b);
         }
 
-        public static Tensor operator -(Tensor a, Tensor b)
+        public static Tensor3 operator -(Tensor3 a, Tensor3 b)
         {
             return TensorOperations.Instance.Minus(a, b);
         }
 
-        public static Tensor operator *(Tensor a, double b)
+        public static Tensor3 operator *(Tensor3 a, double b)
         {
             return TensorOperations.Instance.Multiple(a, b);
         }
 
-        public static Tensor operator *(double a, Tensor b)
+        public static Tensor3 operator *(double a, Tensor3 b)
         {
             return TensorOperations.Instance.Multiple(b, a);
         }
 
-        public static Tensor operator /(Tensor a, double b)
+        public static Tensor3 operator /(Tensor3 a, double b)
         {
             return TensorOperations.Instance.Divide(a, b);
         }

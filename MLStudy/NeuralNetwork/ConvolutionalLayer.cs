@@ -1,9 +1,13 @@
-﻿using MLStudy.Abstraction;
+﻿/*
+ * Description:Convolutional layer
+ * Author:YunXiao An
+ * Date:2018.11.02
+ */
+
+using MLStudy.Abstraction;
 using MLStudy.Activations;
 using MLStudy.Optimization;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MLStudy
@@ -29,9 +33,9 @@ namespace MLStudy
         public int Padding { get; set; } = 0;
 
         public List<Filter> Filters { get; private set; } = new List<Filter>();
-        public Tensor ForwardInputPadding { get; private set; }
-        public Tensor ForwardOutput { get; private set; }
-        public Tensor LinearError { get; private set; }
+        public Tensor3 ForwardInputPadding { get; private set; }
+        public Tensor3 ForwardOutput { get; private set; }
+        public Tensor3 LinearError { get; private set; }
         public Activation Activation { get; set; } = new ReLU();
         public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
 
@@ -48,11 +52,11 @@ namespace MLStudy
             }
         }
 
-        public override Tensor Forward(Tensor input)
+        public override Tensor3 Forward(Tensor3 input)
         {
             ForwardInputPadding = DoPadding(input);
             var (outRows, outColumns) = GetOutputSize();
-            var output = new Tensor(outRows, outColumns, FilterCount);
+            var output = new Tensor3(outRows, outColumns, FilterCount);
 
             Parallel.For(0, FilterCount, i =>
             {
@@ -69,19 +73,19 @@ namespace MLStudy
             return ForwardOutput;
         }
 
-        public override Tensor Backward(Tensor outputError)
+        public override Tensor3 Backward(Tensor3 outputError)
         {
             var inputError = ErrorBP(outputError);
             UpdateWeightsBias();
             return inputError;
         }
 
-        private Tensor ErrorBP(Tensor outputError)
+        private Tensor3 ErrorBP(Tensor3 outputError)
         {
             LinearError = Activation.Backward(ForwardOutput, outputError);
             var inputError = ForwardInputPadding.GetSameShape();
 
-            var errorList = new Tensor[FilterCount];
+            var errorList = new Tensor3[FilterCount];
             Parallel.For(0, FilterCount, i =>
             {
                 errorList[i] = GetInputErrorByFilter(outputError, i);
@@ -95,7 +99,7 @@ namespace MLStudy
             return UnPadding(result);
         }
 
-        private Tensor GetInputErrorByFilter(Tensor outputError, int filterIndex)
+        private Tensor3 GetInputErrorByFilter(Tensor3 outputError, int filterIndex)
         {
             var result = ForwardInputPadding.GetSameShape();
             var filter = Filters[filterIndex];
@@ -112,9 +116,9 @@ namespace MLStudy
             return result;
         }
 
-        private Tensor UnPadding(Tensor paddingTensor)
+        private Tensor3 UnPadding(Tensor3 paddingTensor)
         {
-            var result = new Tensor(paddingTensor.Rows - Padding * 2, paddingTensor.Columns - Padding * 2, paddingTensor.Depth);
+            var result = new Tensor3(paddingTensor.Rows - Padding * 2, paddingTensor.Columns - Padding * 2, paddingTensor.Depth);
             for (int i = 0; i < result.Depth; i++)
             {
                 for (int j = 0; j < result.Rows; j++)
@@ -142,7 +146,7 @@ namespace MLStudy
             });
         }
 
-        private Tensor GetFilterGradient(int filterIndex)
+        private Tensor3 GetFilterGradient(int filterIndex)
         {
             var filter = Filters[filterIndex];
             var result = filter.Weights.GetSameShape();
@@ -165,12 +169,12 @@ namespace MLStudy
             return (outRows, outColumns);
         }
 
-        private Tensor DoPadding(Tensor input)
+        private Tensor3 DoPadding(Tensor3 input)
         {
             if (Padding == 0)
                 return input;
 
-            var result = new Tensor(input.Rows + Padding * 2, input.Columns + Padding * 2, input.Depth);
+            var result = new Tensor3(input.Rows + Padding * 2, input.Columns + Padding * 2, input.Depth);
             for (int i = 0; i < input.Depth; i++)
             {
                 for (int j = 0; j < input.Rows; j++)
@@ -183,13 +187,11 @@ namespace MLStudy
             }
             return result;
         }
-
-
     }
 
     public class Filter
     {
-        public Tensor Weights { get; private set; }
+        public Tensor3 Weights { get; private set; }
         public int Rows { get { return Weights.Rows; } }
         public int Columns { get { return Weights.Columns; } }
         public int Depth { get { return Weights.Depth; } }
@@ -197,10 +199,10 @@ namespace MLStudy
 
         public Filter(int rows, int columns, int depth)
         {
-            Weights = new Tensor(depth, rows, columns);
+            Weights = new Tensor3(depth, rows, columns);
         }
 
-        public void SetWeights(Tensor weights)
+        public void SetWeights(Tensor3 weights)
         {
             Weights = weights;
         }

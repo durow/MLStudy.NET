@@ -6,7 +6,7 @@ namespace MLStudy.Abstraction
 {
     public abstract class CNNLayer
     {
-        public abstract Tensor Forward(Tensor input);
-        public abstract Tensor Backward(Tensor outputError);
+        public abstract Tensor3 Forward(Tensor3 input);
+        public abstract Tensor3 Backward(Tensor3 outputError);
     }
 }

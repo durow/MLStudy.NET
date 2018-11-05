@@ -7,7 +7,7 @@ namespace MLStudy.Tests.Maths
 {
     public class MatrixParallelTests
     {
-        MatrixParallel op = new MatrixParallel();
+        TensorParallel op = new TensorParallel();
         int arow =20, acolumn = 300, bcolumn = 20;
         
         [Fact]
@@ -100,7 +100,7 @@ namespace MLStudy.Tests.Maths
         {
             var (a, b) = GetTestMatrix();
             var expected = new TensorOperations().Multiple(a, b);
-            var actual = new MatrixParallel().Multiple(a, b);
+            var actual = new TensorParallel().Multiple(a, b);
 
             expected.Equals(actual);
         }
