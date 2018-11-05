@@ -13,15 +13,19 @@ namespace MLStudy
 {
     public class NeuralNetwork : ITrainable
     {
-        public List<CNNLayer> CNLayers { get; private set; }
-        public FlattenLayer Flatten { get; private set; } = new FlattenLayer();
+        public List<CNNLayer> CNNLayers { get; private set; }
+        public FlattenLayer FlattenLayer { get; private set; } = new FlattenLayer();
         public List<FullyConnectedLayer> FCLayers { get; private set; }
         public OutputLayer OutLayer { get; private set; }
         public int InputFeatures { get; private set; }
 
+        public int InputRows { get; private set; }
+        public int InputColumns { get; private set; }
+        public int InputDepth { get; private set; }
+
         public NeuralNetwork()
         {
-            CNLayers = new List<CNNLayer>();
+            CNNLayers = new List<CNNLayer>();
             FCLayers = new List<FullyConnectedLayer>();
         }
 
@@ -85,12 +89,12 @@ namespace MLStudy
         {
             var input = X;
 
-            for (int i = 0; i < CNLayers.Count; i++)
+            for (int i = 0; i < CNNLayers.Count; i++)
             {
-                input = CNLayers[i].Forward(input);
+                input = CNNLayers[i].Forward(input);
             }
 
-            var fcInput = Flatten.FlattenToMatrix(input);
+            var fcInput = FlattenLayer.FlattenToMatrix(input);
             return Forward(fcInput);
         }
 
@@ -153,25 +157,97 @@ namespace MLStudy
                 input = FCLayers.Last().NeuronCount;
 
             var layer = new FullyConnectedLayer(input, neuronCount);
-            AddHiddenLayer(layer);
+            AddFullyConnectedLayer(layer);
             return this;
         }
 
-        public NeuralNetwork AddHiddenLayer(int neuronCount, ActivationTypes activationType, WeightDecayTypes regularType)
+        public NeuralNetwork AddConvolutionalLayers(params ConvolutionalLayer[] layers)
+        {
+            foreach (var layer in layers)
+            {
+                CNNLayers.Add(layer);
+            }
+            return this;
+        }
+
+        public NeuralNetwork AddConvolutionalLayer(int filterRows, int filterColumns, int filterCount, 
+            int filterDepth = 0, int padding = 0, int stride = 1)
+        {
+            if(filterDepth <= 0)
+            {
+                if (CNNLayers.Count == 0)
+                    throw new System.Exception("must specify the depth of the first ConvolutionalLayer!");
+                var last = CNNLayers.Last(l => l is ConvolutionalLayer);
+                if(last == null)
+                    throw new System.Exception("must specify the depth of the first ConvolutionalLayer!");
+
+                filterDepth = ((ConvolutionalLayer)last).FilterCount;
+            }
+
+            var layer = new ConvolutionalLayer(filterDepth, filterRows, filterColumns, filterCount)
+            {
+                Padding = padding,
+                Stride = stride
+            };
+            return AddConvolutionalLayers(layer);
+        }
+
+        public NeuralNetwork AddConvolutionalLayer(int filterRows, int filterColumns, int filterCount, int layerCount,
+            int firstLayerDepth = 0, int padding = 0, int stride = 1)
+        {
+            if (firstLayerDepth <= 0)
+            {
+                if (CNNLayers.Count == 0)
+                    throw new System.Exception("must specify the depth of the first ConvolutionalLayer!");
+                var last = CNNLayers.Last(l => l is ConvolutionalLayer);
+                if (last == null)
+                    throw new System.Exception("must specify the depth of the first ConvolutionalLayer!");
+
+                firstLayerDepth = ((ConvolutionalLayer)last).FilterCount;
+            }
+
+            var layer = new ConvolutionalLayer(firstLayerDepth, filterRows, filterColumns, filterCount)
+            {
+                Padding = padding,
+                Stride = stride
+            };
+            AddConvolutionalLayers(layer);
+
+            for (int i = 1; i < layerCount; i++)
+            {
+                layer = new ConvolutionalLayer(layer.FilterCount, filterRows, filterColumns, filterCount);
+                AddConvolutionalLayers(layer);
+            }
+            return this;
+        }
+
+        public NeuralNetwork AddPoolingLayer(PoolingLayer layer)
+        {
+            CNNLayers.Add(layer);
+            return this;
+        }
+
+        public NeuralNetwork AddPoolingLayer(int rows = 2, int columns = 2, int stride = 2, PoolingType type = PoolingType.Max)
+        {
+            var layer = new PoolingLayer(rows, columns, stride, type);
+            return AddPoolingLayer(layer);
+        }
+
+        public NeuralNetwork AddFullyConnectedLayer(int neuronCount, ActivationTypes activationType, WeightDecayTypes regularType)
         {
             var input = InputFeatures;
             if (FCLayers.Count != 0)
                 input = FCLayers.Last().NeuronCount;
 
             var layer = new FullyConnectedLayer(input, neuronCount);
-            AddHiddenLayer(layer);
+            AddFullyConnectedLayer(layer);
             var index = FCLayers.IndexOf(layer);
             UseActivation(activationType, index);
             UseWeightDecay(regularType, index);
             return this;
         }
 
-        public NeuralNetwork AddHiddenLayer(FullyConnectedLayer layer)
+        public NeuralNetwork AddFullyConnectedLayer(FullyConnectedLayer layer)
         {
             FCLayers.Add(layer);
             if (OutLayer != null)

@@ -25,15 +25,15 @@ namespace MLStudy
         public int FilterRows { get; private set; }
         public int FilterColumns { get; private set; }
         public int FilterCount { get; private set; }
+        public int Stride { get; set; } = 1;
+        public int Padding { get; set; } = 0;
+
         public List<Filter> Filters { get; private set; } = new List<Filter>();
         public Tensor ForwardInputPadding { get; private set; }
         public Tensor ForwardOutput { get; private set; }
         public Tensor LinearError { get; private set; }
         public Activation Activation { get; set; } = new ReLU();
         public GradientOptimizer Optimizer { get; private set; } = new NormalDescent();
-
-        public int Stride { get; set; } = 1;
-        public int Padding { get; set; } = 0;
 
         public ConvolutionalLayer(int inputDepth, int filterRows, int filterColumns, int filterCount)
         {
@@ -157,8 +157,6 @@ namespace MLStudy
             }
             return result / (LinearError.Rows * LinearError.Columns);
         }
-
-
 
         private (int, int) GetOutputSize()
         {
