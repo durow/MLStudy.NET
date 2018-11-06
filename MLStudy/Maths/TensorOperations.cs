@@ -135,7 +135,7 @@ namespace MLStudy
             return result;
         }
 
-        public virtual void AddLoal(Tensor3 a, Tensor3 b, int startRow, int startColumn)
+        public virtual void AddLocal(Tensor3 a, Tensor3 b, int startRow, int startColumn)
         {
             CheckTensorDepth(a, b);
 
@@ -574,25 +574,25 @@ namespace MLStudy
             if (a.Rows != b.Rows ||
                 a.Columns != b.Columns ||
                 a.Depth != b.Depth)
-                throw new Exception("tensors are not the same shape!");
+                throw new TensorShapeException("tensors are not the same shape!");
         }
 
         public void CheckShape(Vector a, Vector b)
         {
             if (a.Length != b.Length)
-                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not equal!");
+                throw new TensorShapeException($"vector a.Length={a.Length} and b.Length={b.Length} are not equal!");
         }
 
         public void CheckShape(Matrix a, Matrix b)
         {
             if (a.Rows != b.Rows || a.Columns != b.Columns)
-                throw new Exception($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
+                throw new TensorShapeException($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
         }
         
         public void CheckTensorDepth(Tensor3 a, Tensor3 b)
         {
             if (a.Depth != b.Depth)
-                throw new Exception("Not have the same depth!");
+                throw new TensorShapeException("Not have the same depth!");
         }
 
         #endregion

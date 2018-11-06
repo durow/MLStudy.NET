@@ -110,7 +110,7 @@ namespace MLStudy
                     var error = filter.Weights * outputError[filterIndex, i, j];
                     var startRow = i * Stride;
                     var startColumn = j * Stride;
-                    TensorOperations.Instance.AddLoal(result, error, startRow, startColumn);
+                    TensorOperations.Instance.AddLocal(result, error, startRow, startColumn);
                 }
             }
             return result;
