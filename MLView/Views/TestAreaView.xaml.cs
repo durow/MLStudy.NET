@@ -1,4 +1,5 @@
 ﻿using MLStudy;
+using MLStudy.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -127,11 +128,8 @@ namespace MLView
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var img = SixLabors.ImageSharp.Image.Load<SixLabors.ImageSharp.PixelFormats.Rgb24>("D:\\AYX\\test.png");
-            using (var fs = new FileStream("D:\\AYX\\test2.png",FileMode.Create))
-            {
-                img.Save(fs,new SixLabors.ImageSharp.Formats.Png.PngEncoder());
-            }
+            var file = @"D:\AYX\Data\train-labels.idx1-ubyte";
+            var matrix = MINISTReader.ReadLabels(file);
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)
