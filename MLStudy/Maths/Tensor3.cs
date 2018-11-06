@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public struct Tensor3
+    public sealed class Tensor3
     {
         private double[,,] values;
         public int Dimension => 3;

@@ -128,8 +128,18 @@ namespace MLView
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var file = @"D:\AYX\Data\train-labels.idx1-ubyte";
-            var matrix = MINISTReader.ReadLabels(file);
+            var train_label = @"D:\Data\train-labels.idx1-ubyte";
+            var test_label = @"D:\Data\t10k-labels.idx1-ubyte";
+            var train_images = @"D:\Data\train-images.idx3-ubyte";
+            var test_images = @"D:\Data\t10k-images.idx3-ubyte";
+            
+            var trainLabels = MINISTReader.ReadLabels(train_label);
+            var testLabels = MINISTReader.ReadLabels(test_label);
+            var start = DateTime.Now;
+            var trainImages = MINISTReader.ReadImagesToMatrix(train_images);
+            var testImages = MINISTReader.ReadImagesToMatrix(test_images);
+            var ts = DateTime.Now - start;
+            MessageBox.Show(ts.TotalMilliseconds.ToString());
         }
 
         private void Trainer_Notify(object sender, NotifyEventArgs e)

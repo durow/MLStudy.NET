@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public struct Matrix
+    public sealed class Matrix
     {
         private double[,] values;
 

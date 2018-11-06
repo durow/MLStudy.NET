@@ -71,8 +71,8 @@ namespace MLStudy
         {
             State = TrainerState.Training;
 
-            Matrix batchX = new Matrix();
-            Vector batchY = new Vector();
+            Matrix batchX = null;
+            Vector batchY = null;
             var loss = double.MaxValue;
 
             Started?.Invoke(this, null);

@@ -1,5 +1,6 @@
-﻿/*
- * FILE FORMATS FOR THE MNIST DATABASE
+﻿/* Description:This is used to read the MINIST handwriting data.
+ * 
+ *   FILE FORMATS FOR THE MNIST DATABASE
  *   The data is stored in a very simple file format designed for storing vectors and multidimensional matrices. 
  *   General info on this format is given at the end of this page, but you don't need to read that to use the data files.
  *   All the integers in the files are stored in the MSB first (high endian) format used by most non-Intel processors. 
@@ -16,12 +17,13 @@
  *
  *   The first 5000 examples of the test set are taken from the original NIST training set.
  *   The last 5000 are taken from the original NIST test set. The first 5000 are cleaner and easier than the last 5000.
+ *   
+ *   Author:YunXiao An
+ *   Date:2018.11.06
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace MLStudy.Data
 {
@@ -53,7 +55,7 @@ namespace MLStudy.Data
         }
 
         /*
-         * TRAINING SET LABEL FILE (train-labels-idx1-ubyte):
+         *  TRAINING SET LABEL FILE (train-labels-idx1-ubyte):
          *  [offset] [type]          [value]          [description] 
          *   0000     32 bit integer  0x00000801(2049) magic number (MSB first) 
          *   0004     32 bit integer  60000            number of items 
@@ -94,7 +96,7 @@ namespace MLStudy.Data
         }
 
         /*
-         * TRAINING SET IMAGE FILE (train-images-idx3-ubyte):
+         *  TRAINING SET IMAGE FILE (train-images-idx3-ubyte):
          *   [offset] [type]          [value]          [description] 
          *   0000     32 bit integer  0x00000803(2051) magic number 
          *   0004     32 bit integer  60000            number of images 
@@ -109,17 +111,81 @@ namespace MLStudy.Data
 
         public static Matrix ReadImagesToMatrix(string filename)
         {
-            throw new NotImplementedException();
+            using (var fs = new FileStream(filename, FileMode.Open))
+            {
+                using (var br = new BinaryReader(fs))
+                {
+                    br.ReadInt32(); //skip the 32bit magic number
+                    var count = ReadInt32BigEndian(br); //read the number of images
+                    var rows = ReadInt32BigEndian(br);  //read the number of rows
+                    var columns = ReadInt32BigEndian(br); //read the number of columns
+                    var length = rows * columns;
+                    var result = new Matrix(count,length);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        for (int j = 0; j < length; j++)
+                        {
+                            result[i, j] = br.ReadByte();
+                        }
+                    }
+                    return result;
+                }
+            }
         }
 
         public static Tensor3 ReadImagesToTensor3(string filename)
         {
-            throw new NotImplementedException();
+            using (var fs = new FileStream(filename, FileMode.Open))
+            {
+                using (var br = new BinaryReader(fs))
+                {
+                    br.ReadInt32(); //skip the 32bit magic number
+                    var count = ReadInt32BigEndian(br); //read the number of images
+                    var rows = ReadInt32BigEndian(br);  //read the number of rows
+                    var columns = ReadInt32BigEndian(br); //read the number of columns
+                    var result = new Tensor3(count, rows, columns);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        for (int j = 0; j < rows; j++)
+                        {
+                            for (int k = 0; k < columns; k++)
+                            {
+                                result[i, j, k] = br.ReadByte();
+                            }
+                        }
+                    }
+                    return result;
+                }
+            }
         }
 
         public static Tensor4 ReadImagesToTensor4(string filename)
         {
-            throw new NotImplementedException();
+            using (var fs = new FileStream(filename, FileMode.Open))
+            {
+                using (var br = new BinaryReader(fs))
+                {
+                    br.ReadInt32(); //skip the 32bit magic number
+                    var count = ReadInt32BigEndian(br); //read the number of images
+                    var rows = ReadInt32BigEndian(br);  //read the number of rows
+                    var columns = ReadInt32BigEndian(br); //read the number of columns
+                    var result = new Tensor4(count, 1, rows, columns);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        for (int j = 0; j < rows; j++)
+                        {
+                            for (int k = 0; k < columns; k++)
+                            {
+                                result[i, 1, j, k] = br.ReadByte();
+                            }
+                        }
+                    }
+                    return result;
+                }
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using System;
 
 namespace MLStudy
 {
-    public struct Tensor4
+    public sealed class Tensor4
     {
         private double[,,,] values;
         public int Dimension => 4;
