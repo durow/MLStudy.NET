@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public sealed class Matrix
+    public struct Matrix
     {
         private double[,] values;
 
@@ -228,6 +228,7 @@ namespace MLStudy
         }
 
         public Vector ToVectorByColumn()
+
         {
             var result = new Vector(Length);
             var index = 0;
@@ -237,6 +238,19 @@ namespace MLStudy
                 {
                     result[index] = values[j, i];
                     index++;
+                }
+            }
+            return result;
+        }
+
+        public Tensor3 ToTensor3()
+        {
+            var result = new Tensor3(1, Rows, Columns);
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    result[1, i, j] = values[i, j];
                 }
             }
             return result;

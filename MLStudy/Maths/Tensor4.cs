@@ -8,7 +8,7 @@ using System;
 
 namespace MLStudy
 {
-    public sealed class Tensor4
+    public struct Tensor4
     {
         private double[,,,] values;
         public int Dimension => 4;
@@ -63,6 +63,25 @@ namespace MLStudy
                     for (int k = 0; k < D4; k++)
                     {
                         result[i, j, k] = values[d1Index, i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        public Tensor3 ToTensor3()
+        {
+            var result = new Tensor3(D1 * D2, D3, D4);
+            for (int i = 0; i < D1; i++)
+            {
+                for (int j = 0; j < D2; j++)
+                {
+                    for (int k = 0; k < D3; k++)
+                    {
+                        for (int l = 0; l < D4; l++)
+                        {
+                            result[i * D1 + j, k, l] = values[i, j, k, l];
+                        }
                     }
                 }
             }

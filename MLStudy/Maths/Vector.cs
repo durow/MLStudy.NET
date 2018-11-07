@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public sealed class Vector
+    public struct Vector
     {
         private double[] values;
 

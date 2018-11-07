@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public sealed class Tensor3
+    public struct Tensor3
     {
         private double[,,] values;
         public int Dimension => 3;
@@ -101,6 +101,54 @@ namespace MLStudy
             return Sum() / (Depth * Rows * Columns);
         }
 
+        public Matrix ToMatrixByRow()
+        {
+            var result = new Matrix(Depth * Rows, Columns);
+            for (int i = 0; i < Depth; i++)
+            {
+                for (int j = 0; j < Rows; j++)
+                {
+                    for (int k = 0; k < Columns; k++)
+                    {
+                        result[i * Rows + j, k] = values[i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        public Matrix ToMatrixByColumn()
+        {
+            var result = new Matrix(Rows, Depth * Columns);
+            for (int i = 0; i < Depth; i++)
+            {
+                for (int j = 0; j < Rows; j++)
+                {
+                    for (int k = 0; k < Columns; k++)
+                    {
+                        result[j, i * Columns + k] = values[i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        public Tensor4 ToTensor4()
+        {
+            var result = new Tensor4(1, Depth, Rows, Columns);
+            for (int i = 0; i < Depth; i++)
+            {
+                for (int j = 0; j < Rows; j++)
+                {
+                    for (int k = 0; i < Columns; k++)
+                    {
+                        result[1, i, j, k] = values[i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
         public Tensor3 ApplyFunction(Func<double,double> function)
         {
             return TensorOperations.Instance.Apply(this, function);
@@ -111,7 +159,7 @@ namespace MLStudy
             for (int i = 0; i < matrixes.Length; i++)
             {
                 if (matrixes[i].Rows != rows || matrixes[i].Columns != columns)
-                    throw new Exception("Matrixes are not the same shape!");
+                    throw new TensorShapeException("Matrixes are not the same shape!");
             }
         }
 
