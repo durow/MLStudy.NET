@@ -14,7 +14,7 @@ namespace MLStudy.Tests
             var b = 10d;
             var expected = new Vector(11, 12, 13, 14, 15, 16);
 
-            var actual = Tensor.Add(a, b);
+            var actual = TensorOld.Add(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -26,7 +26,7 @@ namespace MLStudy.Tests
             var b = new Vector(7, 8, 9, 10, 11, 12);
             var expected = new Vector(8, 10, 12, 14, 16, 18);
 
-            var actual = Tensor.Add(a, b);
+            var actual = TensorOld.Add(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -42,7 +42,7 @@ namespace MLStudy.Tests
                 { 11, 12, 13 },
                 { 14, 15, 16 }});
 
-            var actual = Tensor.Add(a, b);
+            var actual = TensorOld.Add(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -60,7 +60,7 @@ namespace MLStudy.Tests
                 { 8, 10, 12 },
                 { 14, 16, 18 }});
 
-            var actual = Tensor.Add(a, b);
+            var actual = TensorOld.Add(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -72,7 +72,7 @@ namespace MLStudy.Tests
             var b = 10d;
             var expected = new Vector(10, 20, 30, 40, 50, 60);
 
-            var actual = Tensor.Multiple(a, b);
+            var actual = TensorOld.Multiple(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -84,7 +84,7 @@ namespace MLStudy.Tests
             var b = new Vector(7, 8, 9, 10, 11, 12);
             var expected = new Vector(7, 16, 27, 40, 55, 72);
 
-            var actual = Tensor.Multiple(a, b);
+            var actual = TensorOld.Multiple(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -96,7 +96,7 @@ namespace MLStudy.Tests
             var b = new Vector(7, 8, 9, 10, 11, 12);
             var expected = 217;
 
-            var actual = Tensor.MultipleAsMatrix(a, b);
+            var actual = TensorOld.MultipleAsMatrix(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -112,7 +112,7 @@ namespace MLStudy.Tests
                 { 10, 20, 30 },
                 { 40, 50, 60 }});
 
-            var actual = Tensor.Multiple(a, b);
+            var actual = TensorOld.Multiple(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -130,7 +130,7 @@ namespace MLStudy.Tests
             var expected = new Matrix(new double[,]{
                 { 58, 64 },
                 { 139, 154 }});
-            var actual = Tensor.Multiple(a, b);
+            var actual = TensorOld.Multiple(a, b);
 
             Assert.Equal(expected, actual);
         }
@@ -145,7 +145,7 @@ namespace MLStudy.Tests
             var expected = new Matrix(new double[,]{
                 { 50 },
                 { 122 }});
-            var actual = Tensor.Multiple(a, v);
+            var actual = TensorOld.Multiple(a, v);
 
             Assert.Equal(expected, actual);
         }
@@ -159,7 +159,7 @@ namespace MLStudy.Tests
             var v = new Vector(7, 8);
             var expected = new Matrix(new double[,]{
                 { 39, 54, 69 }});
-            var actual = Tensor.Multiple(v, a);
+            var actual = TensorOld.Multiple(v, a);
 
             Assert.Equal(expected, actual);
         }

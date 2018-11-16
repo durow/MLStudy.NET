@@ -64,7 +64,7 @@ namespace MLStudy.Tests.Maths
         public void PerformanceSequence()
         {
             var (a, b) = GetTestMatrix();
-            var r = Tensor.Multiple(a, b);
+            var r = TensorOld.Multiple(a, b);
         }
 
         [Fact]
