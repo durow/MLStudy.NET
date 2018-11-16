@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    class DerivativeFunctions
+    public class Derivatives
     {
         public static Matrix SquareError(Matrix yHat, Matrix y, bool raw = false)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MLStudy
 {
-    public class MatrixOperations
+    public class TensorOperations
     {
         public static int OperationLimit { get; set; } = 10000;
         public static int MaxThreads
@@ -21,11 +21,11 @@ namespace MLStudy
             }
         }
         public static ParallelOptions ParallelOptions { get; private set; } = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        public static MatrixOperations Instance { get; private set; } = new MatrixOperations();
+        public static TensorOperations Instance { get; private set; } = new TensorOperations();
 
         public static void UseSequence()
         {
-            Instance = new MatrixOperations();
+            Instance = new TensorOperations();
         }
 
         public static void UseParallel()
@@ -45,7 +45,7 @@ namespace MLStudy
 
         public Vector Add(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Length];
             for (int i = 0; i < a.Length; i++)
@@ -104,7 +104,7 @@ namespace MLStudy
 
         public virtual Matrix Add(Matrix a, Matrix b)
         {
-            CheckMatrixShape(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Rows, a.Columns];
             for (int i = 0; i < a.Rows; i++)
@@ -115,6 +115,40 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public virtual Tensor3 Add(Tensor3 a, Tensor3 b)
+        {
+            CheckShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] + b[i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        public virtual void AddLocal(Tensor3 a, Tensor3 b, int startRow, int startColumn)
+        {
+            CheckTensorDepth(a, b);
+
+            for (int i = 0; i < b.Depth; i++)
+            {
+                for (int j = 0; j < b.Rows; j++)
+                {
+                    for (int k = 0; k < b.Columns; k++)
+                    {
+                        a[i, startRow + j, startColumn + k] += b[i, j, k];
+                    }
+                }
+            }
         }
 
         #endregion
@@ -144,7 +178,7 @@ namespace MLStudy
 
         public Vector Minus(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Length];
             for (int i = 0; i < a.Length; i++)
@@ -165,6 +199,40 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public virtual Tensor3 Minus(Tensor3 t, double b)
+        {
+            var result = t.GetSameShape();
+            for (int i = 0; i < t.Depth; i++)
+            {
+                for (int j = 0; j < t.Rows; j++)
+                {
+                    for (int k = 0; k < t.Columns; k++)
+                    {
+                        result[i, j, k] = t[i, j, k] - b;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public virtual Tensor3 Minus(Tensor3 a, Tensor3 b)
+        {
+            CheckShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] - b[i, j, k];
+                    }
+                }
+            }
+            return result;
         }
 
         public virtual Matrix Minus(double b, Matrix m)
@@ -216,7 +284,7 @@ namespace MLStudy
 
         public virtual Matrix Minus(Matrix a, Matrix b)
         {
-            CheckMatrixShape(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Rows, a.Columns];
             for (int i = 0; i < a.Rows; i++)
@@ -246,7 +314,7 @@ namespace MLStudy
 
         public double Multiple(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             return MultipleElementWise(a, b).Sum();
         }
@@ -262,6 +330,22 @@ namespace MLStudy
                 }
             }
             return new Matrix(result);
+        }
+
+        public virtual Tensor3 Multiple(Tensor3 a, double b)
+        {
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] * b;
+                    }
+                }
+            }
+            return result;
         }
 
         public virtual Matrix Multiple(Matrix a, Vector v)
@@ -298,7 +382,7 @@ namespace MLStudy
 
         public Vector MultipleElementWise(Vector a, Vector b)
         {
-            CheckVectorLength(a, b);
+            CheckShape(a, b);
 
             var result = new double[a.Length];
             for (int i = 0; i < a.Length; i++)
@@ -310,7 +394,7 @@ namespace MLStudy
 
         public virtual Matrix MultipleElementWise(Matrix a, Matrix b)
         {
-            CheckMatrixShape(a, b);
+            CheckShape(a, b);
 
             var result = a.GetSameShape();
             for (int i = 0; i < a.Rows; i++)
@@ -318,6 +402,40 @@ namespace MLStudy
                 for (int j = 0; j < a.Columns; j++)
                 {
                     result[i, j] = a[i, j] * b[i, j];
+                }
+            }
+            return result;
+        }
+
+        public virtual Tensor3 MultipleElementWise(Tensor3 a, Tensor3 b)
+        {
+            CheckShape(a, b);
+
+            var result = a.GetSameShape();
+            for (int i = 0; i < a.Depth; i++)
+            {
+                for (int j = 0; j < a.Rows; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, j, k] * b[i, j, k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        public virtual Tensor3 PartMultiple(Tensor3 a, double b, int startRow, int startColumn, int rows, int columns)
+        {
+            var result = new Tensor3(a.Depth, rows, columns);
+            for (int i = 0; i < result.Depth; i++)
+            {
+                for (int j = 0; j < result.Rows; j++)
+                {
+                    for (int k = 0; k < result.Columns; k++)
+                    {
+                        result[i, j, k] = a[i, startRow + k, startColumn + k] * b;
+                    }
                 }
             }
             return result;
@@ -374,6 +492,22 @@ namespace MLStudy
             return new Matrix(result);
         }
 
+        public virtual Tensor3 Divide(Tensor3 t, double b)
+        {
+            var result = t.GetSameShape();
+            for (int i = 0; i < t.Depth; i++)
+            {
+                for (int j = 0; j < t.Rows; j++)
+                {
+                    for (int k = 0; k < t.Columns; k++)
+                    {
+                        result[i, j, k] = t[i, j, k] / b;
+                    }
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         public virtual Vector Apply(Vector v, Func<double,double> function)
@@ -399,18 +533,66 @@ namespace MLStudy
             return result;
         }
 
-        #region Helper Functions
-
-        public void CheckVectorLength(Vector a, Vector b)
+        public virtual Tensor3 Apply(Tensor3 t, Func<double,double> function)
         {
-            if (a.Length != b.Length)
-                throw new Exception($"vector a.Length={a.Length} and b.Length={b.Length} are not the equal!");
+            var result = t.GetSameShape();
+            for (int i = 0; i < t.Depth; i++)
+            {
+                for (int j = 0; j < t.Rows; j++)
+                {
+                    for (int k = 0; k < t.Columns; k++)
+                    {
+                        t[i, j, k] = function(t[i, j, k]);
+                    }
+                }
+            }
+            return result;
         }
 
-        public void CheckMatrixShape(Matrix a, Matrix b)
+        public virtual double Convolute(Tensor3 input, Tensor3 filter, int startRow, int startColumn)
+        {
+            CheckTensorDepth(input, filter);
+
+            var result = 0d;
+            for (int i = 0; i < filter.Depth; i++)
+            {
+                for (int j = 0; j < input.Rows; j++)
+                {
+                    for (int k = 0; k < input.Columns; k++)
+                    {
+                        result += filter[i, j, k] * input[i, startRow + j, startColumn + k];
+                    }
+                }
+            }
+            return result;
+        }
+
+        #region Helper Functions
+
+        public void CheckShape(Tensor3 a, Tensor3 b)
+        {
+            if (a.Rows != b.Rows ||
+                a.Columns != b.Columns ||
+                a.Depth != b.Depth)
+                throw new TensorShapeException("tensors are not the same shape!");
+        }
+
+        public void CheckShape(Vector a, Vector b)
+        {
+            if (a.Length != b.Length)
+                throw new TensorShapeException($"vector a.Length={a.Length} and b.Length={b.Length} are not equal!");
+        }
+
+        public void CheckShape(Matrix a, Matrix b)
         {
             if (a.Rows != b.Rows || a.Columns != b.Columns)
-                throw new Exception($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
+                throw new TensorShapeException($"matrix shape a:[{a.Rows},{a.Columns}] and b:[{b.Rows},{b.Columns}] are not equal!");
+        }
+        
+        public void CheckTensorDepth(Tensor3 a, Tensor3 b)
+        {
+            if (a.Depth != b.Depth)
+                throw new TensorShapeException("Not have the same depth!");
         }
 
         #endregion

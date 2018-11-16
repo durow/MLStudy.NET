@@ -128,8 +128,8 @@ namespace MLView.Models
                 trainY += noise;
             }
 
-            Matrix testX ;
-            Vector testY ;
+            Matrix testX = new Matrix();
+            Vector testY = new Vector();
 
             if (TestSize > 0)
             {
@@ -151,9 +151,9 @@ namespace MLView.Models
             }
 
             var trainY = trainDistance.ApplyFunction(Functions.IndicatorFunction);
-            
-            Matrix testX;
-            Vector testY;
+
+            Matrix testX = new Matrix();
+            Vector testY = new Vector();
 
             if (TestSize > 0)
             {
@@ -176,8 +176,8 @@ namespace MLView.Models
             }
             var trainY = classify(trainX);
 
-            Matrix testX;
-            Vector testY;
+            Matrix testX = new Matrix();
+            Vector testY = new Vector();
 
             if (TestSize > 0)
             {

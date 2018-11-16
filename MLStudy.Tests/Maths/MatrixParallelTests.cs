@@ -7,7 +7,7 @@ namespace MLStudy.Tests.Maths
 {
     public class MatrixParallelTests
     {
-        MatrixParallel op = new MatrixParallel();
+        TensorParallel op = new TensorParallel();
         int arow =20, acolumn = 300, bcolumn = 20;
         
         [Fact]
@@ -64,7 +64,7 @@ namespace MLStudy.Tests.Maths
         public void PerformanceSequence()
         {
             var (a, b) = GetTestMatrix();
-            var r = TensorOld.Multiple(a, b);
+            var r = TensorOperations.Instance.Multiple(a, b);
         }
 
         [Fact]
@@ -99,8 +99,8 @@ namespace MLStudy.Tests.Maths
         public void Validation()
         {
             var (a, b) = GetTestMatrix();
-            var expected = new MatrixOperations().Multiple(a, b);
-            var actual = new MatrixParallel().Multiple(a, b);
+            var expected = new TensorOperations().Multiple(a, b);
+            var actual = new TensorParallel().Multiple(a, b);
 
             expected.Equals(actual);
         }

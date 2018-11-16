@@ -228,6 +228,7 @@ namespace MLStudy
         }
 
         public Vector ToVectorByColumn()
+
         {
             var result = new Vector(Length);
             var index = 0;
@@ -242,76 +243,89 @@ namespace MLStudy
             return result;
         }
 
+        public Tensor3 ToTensor3()
+        {
+            var result = new Tensor3(1, Rows, Columns);
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    result[1, i, j] = values[i, j];
+                }
+            }
+            return result;
+        }
+
         public Matrix ApplyFunction(Func<double,double> func)
         {
-            return MatrixOperations.Instance.Apply(this, func);
+            return TensorOperations.Instance.Apply(this, func);
         }
 
         #region Operations
 
         public static Matrix operator +(Matrix m, double a)
         {
-            return MatrixOperations.Instance.Add(m, a);
+            return TensorOperations.Instance.Add(m, a);
         }
 
         public static Matrix operator +(double a, Matrix m)
         {
-            return MatrixOperations.Instance.Add(m, a);
+            return TensorOperations.Instance.Add(m, a);
         }
 
         public static Matrix operator +(Matrix m, Vector a)
         {
-            return MatrixOperations.Instance.Add(m, a);
+            return TensorOperations.Instance.Add(m, a);
         }
 
         public static Matrix operator +(Vector a, Matrix m)
         {
-            return MatrixOperations.Instance.Add(a, m);
+            return TensorOperations.Instance.Add(a, m);
         }
 
         public static Matrix operator +(Matrix a, Matrix b)
         {
-            return MatrixOperations.Instance.Add(a, b);
+            return TensorOperations.Instance.Add(a, b);
         }
 
         public static Matrix operator -(Matrix a, Matrix b)
         {
-            return MatrixOperations.Instance.Minus(a, b);
+            return TensorOperations.Instance.Minus(a, b);
         }
 
         public static Matrix operator -(Matrix m, double a)
         {
-            return MatrixOperations.Instance.Minus(m, a);
+            return TensorOperations.Instance.Minus(m, a);
         }
 
         public static Matrix operator *(Matrix m, double b)
         {
-            return MatrixOperations.Instance.Multiple(m, b);
+            return TensorOperations.Instance.Multiple(m, b);
         }
 
         public static Matrix operator *(double b, Matrix m)
         {
-            return MatrixOperations.Instance.Multiple(m, b);
+            return TensorOperations.Instance.Multiple(m, b);
         }
 
         public static Matrix operator *(Matrix m, Vector v)
         {
-            return MatrixOperations.Instance.Multiple(m, v);
+            return TensorOperations.Instance.Multiple(m, v);
         }
 
         public static Matrix operator *(Vector v, Matrix m)
         {
-            return MatrixOperations.Instance.Multiple(v, m);
+            return TensorOperations.Instance.Multiple(v, m);
         }
 
         public static Matrix operator *(Matrix a, Matrix b)
         {
-            return MatrixOperations.Instance.Multiple(a, b);
+            return TensorOperations.Instance.Multiple(a, b);
         }
 
         public static Matrix operator /(Matrix m, double a)
         {
-            return MatrixOperations.Instance.Divide(m, a);
+            return TensorOperations.Instance.Divide(m, a);
         }
 
         #endregion

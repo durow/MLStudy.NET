@@ -131,57 +131,57 @@ namespace MLStudy
 
         public static Vector operator +(Vector v, double b)
         {
-            return MatrixOperations.Instance.Add(v, b);
+            return TensorOperations.Instance.Add(v, b);
         }
 
         public static Vector operator +(double b, Vector v)
         {
-            return MatrixOperations.Instance.Add(v, b);
+            return TensorOperations.Instance.Add(v, b);
         }
 
         public static Vector operator +(Vector a, Vector b)
         {
-            return MatrixOperations.Instance.Add(a, b);
+            return TensorOperations.Instance.Add(a, b);
         }
 
         public static Vector operator -(Vector v, double b)
         {
-            return MatrixOperations.Instance.Minus(v, b);
+            return TensorOperations.Instance.Minus(v, b);
         }
 
         public static Vector operator -(double b, Vector v)
         {
-            return MatrixOperations.Instance.Minus(b, v);
+            return TensorOperations.Instance.Minus(b, v);
         }
 
         public static Vector operator -(Vector a, Vector b)
         {
-            return MatrixOperations.Instance.Minus(a, b);
+            return TensorOperations.Instance.Minus(a, b);
         }
 
         public static Vector operator *(Vector v, double b)
         {
-            return MatrixOperations.Instance.Multiple(v, b);
+            return TensorOperations.Instance.Multiple(v, b);
         }
 
         public static Vector operator *(double b, Vector v)
         {
-            return MatrixOperations.Instance.Multiple(v, b);
+            return TensorOperations.Instance.Multiple(v, b);
         }
 
         public static double operator *(Vector a, Vector b)
         {
-            return MatrixOperations.Instance.Multiple(a, b);
+            return TensorOperations.Instance.Multiple(a, b);
         }
 
         public static Vector operator /(Vector v, double b)
         {
-            return MatrixOperations.Instance.Divide(v, b);
+            return TensorOperations.Instance.Divide(v, b);
         }
 
         public static Vector operator /(double b, Vector v)
         {
-            return MatrixOperations.Instance.Divide(b, v);
+            return TensorOperations.Instance.Divide(b, v);
         }
 
         #endregion
