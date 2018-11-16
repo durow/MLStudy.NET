@@ -43,6 +43,11 @@ namespace MLStudy
             return (trainX, trainY);
         }
 
+        public double Random()
+        {
+            return rand1.NextDouble();
+        }
+
         public double[] RandomArray(int length)
         {
             var result = new double[length];

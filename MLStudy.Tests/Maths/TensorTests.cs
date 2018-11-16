@@ -30,7 +30,7 @@ namespace MLStudy.Tests.Maths
         [Fact]
         public void CreateTest2()
         {
-            var data = new float[,] { { 1, 2, 3 }, { 4, 5, 6 } };
+            var data = new double[,] { { 1, 2, 3 }, { 4, 5, 6 } };
             var t = new Tensor(data);
 
             Assert.Equal(2, t.Shape[0]);
@@ -94,12 +94,56 @@ namespace MLStudy.Tests.Maths
         }
 
         [Fact]
+        public void ReshapeTest()
+        {
+            var t = Tensor.Rand(100);
+            var r = t.Reshape(5, 20);
+
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    Assert.Equal(t[i * 20 + j], r[i, j]);
+                }
+            }
+
+            //测试Reshape只是视图
+            r[0, 0] = 123;
+            r[0, 1] = 456;
+            Assert.Equal(123, t[0]);
+            Assert.Equal(456, t[1]);
+        }
+
+        [Fact]
+        public void ITest()
+        {
+            var t = Tensor.I(10);
+            var shape = t.Shape;
+            Assert.Equal(2, t.Rank);
+            Assert.Equal(100, t.ElementCount);
+            Assert.Equal(10, shape[0]);
+            Assert.Equal(10, shape[1]);
+
+            for (int i = 0; i < shape[0]; i++)
+            {
+                for (int j = 0; j < shape[1]; j++)
+                {
+                    if (i == j)
+                        Assert.Equal(1, t[i, j]);
+                    else
+                        Assert.Equal(0, t[i, j]);
+                }
+            }
+        }
+
+        [Fact]
         public void MultipleTest()
         {
             var a = new Tensor(new double[] { 1, 2, 3 });
             var b = new Tensor(new double[] { 4, 5, 6 });
             var c = new Tensor(new double[,] { { 1, 2, 3 }, { 4, 5, 6 } });
             var d = new Tensor(new double[,] { { 1, 2 }, { 3, 4 }, { 5, 6 } });
+            var e = new Tensor(new double[,] { { 3, 2, 1 }, { 6, 5, 4 } });
 
             var ab = a * b;
             Assert.Equal(32, ab.GetValue());
@@ -111,6 +155,14 @@ namespace MLStudy.Tests.Maths
             var ca = c * a;
             var caExpected = new Tensor(new double[] { 14, 32 }, 2, 1);
             Assert.Equal(caExpected, ca);
+
+            var abew = Tensor.MultipleElementWise(a, b);
+            var abewExpected = new Tensor(new double[] { 4, 10, 18 });
+            Assert.Equal(abewExpected, abew);
+
+            var ceew = Tensor.MultipleElementWise(c, e);
+            var ceewExpected = new Tensor(new double[,] { { 3, 4, 3 }, { 24, 25, 24 } });
+            Assert.Equal(ceewExpected, ceew);
         }
 
         [Fact]
