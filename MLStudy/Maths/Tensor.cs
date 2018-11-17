@@ -427,6 +427,26 @@ namespace MLStudy
         }
 
         /// <summary>
+        /// 当前Tensor每个元素应用function，并将结果写入到result参数中。
+        /// result需要和当前Tensor结构一致
+        /// </summary>
+        /// <param name="function">应用的操作</param>
+        /// <param name="result">写入结果的Tensor</param>
+        public void Apply(Func<double,double> function, Tensor result)
+        {
+            CheckShape(shape, result.shape);
+
+            Parallel.ForEach(Partitioner.Create(0, values.Length),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = function(values[i]);
+                    }
+                });
+        }
+
+        /// <summary>
         /// 指定Tensor的每个元素应用function，结果返回为新的Tensor
         /// </summary>
         /// <param name="tensor">应用function的Tensor</param>
@@ -966,7 +986,7 @@ namespace MLStudy
             return result;
         }
 
-        private static void CheckShape(int[] shape)
+        public static void CheckShape(int[] shape)
         {
             foreach (var item in shape)
             {
@@ -975,7 +995,7 @@ namespace MLStudy
             }
         }
 
-        private static void CheckShape(int[] shape1, int[] shape2)
+        public static void CheckShape(int[] shape1, int[] shape2)
         {
             if (shape1.Length != shape2.Length)
                 throw new TensorShapeException("Tensor rank are not same!");
@@ -987,13 +1007,45 @@ namespace MLStudy
             }
         }
 
-        private static void CheckMultipleShape(Tensor a, Tensor b)
+        public static void CheckShape(Tensor t1, Tensor t2)
+        {
+            CheckShape(t1.shape, t2.shape);
+        }
+
+        public static bool CheckShapeBool(Tensor t1, Tensor t2)
+        {
+            if (t1.shape.Length != t2.shape.Length)
+                return false;
+
+            for (int i = 0; i < t1.shape.Length; i++)
+            {
+                if (t1.shape[i] != t2.shape[i])
+                    return false;
+            }
+            return true;
+        }
+
+        public static void CheckMultipleShape(Tensor a, Tensor b)
         {
             if (a.Rank != 2 || b.Rank != 2)
                 throw new NotImplementedException("only suport multiple between scalar, vector and matrix!");
 
             if (a.shape[1] != b.shape[0])
                 throw new TensorShapeException($"can't multiple matrix between {a.shape.ToString()} and {b.shape.ToString()}");
+        }
+
+        public static bool ApproximatelyEqual(Tensor a, Tensor b, double allowError = 0.0000001)
+        {
+            if (!CheckShapeBool(a, b))
+                return false;
+
+            for (int i = 0; i < a.ElementCount; i++)
+            {
+                if (Math.Abs(a.values[i] - b.values[i]) > allowError)
+                    return false;
+            }
+
+            return true;
         }
 
         #endregion

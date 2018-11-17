@@ -137,6 +137,44 @@ namespace MLStudy.Tests.Maths
         }
 
         [Fact]
+        public void AddTest()
+        {
+            var a = new Tensor(new double[,] { { 1, 2, 3 }, { 4, 5, 6 } });
+            var b = new Tensor(new double[,] { { 3, 2, 1 }, { 6, 5, 4 } });
+
+            var a10 = a + 10;
+            var a10r = 10 + a;
+            var a10Expected = new Tensor(new double[,] { { 11, 12, 13 }, { 14, 15, 16 } });
+            Assert.Equal(a10Expected, a10);
+            Assert.Equal(a10Expected, a10r);
+
+            var ab = a + b;
+            var abr = b + a;
+            var abExpected = new Tensor(new double[,] { { 4, 4, 4 }, { 10, 10, 10 } });
+            Assert.Equal(abExpected, ab);
+            Assert.Equal(abExpected, abr);
+        }
+
+        [Fact]
+        public void MinusTest()
+        {
+            var a = new Tensor(new double[,] { { 1, 2, 3 }, { 4, 5, 6 } });
+            var b = new Tensor(new double[,] { { 3, 2, 1 }, { 6, 5, 4 } });
+
+            var a10 = a - 10;
+            var a10Expected = new Tensor(new double[,] { { -9, -8, -7 }, { -6, -5, -4 } });
+            Assert.Equal(a10Expected, a10);
+
+            var a10r = 10 - a;
+            var a10rExpected = new Tensor(new double[,] { { 9, 8, 7 }, { 6, 5, 4 } });
+            Assert.Equal(a10rExpected, a10r);
+
+            var ab = a - b;
+            var abExpected = new Tensor(new double[,] { { -2, 0, 2 }, { -2, 0, 2 } });
+            Assert.Equal(abExpected, ab);
+        }
+
+        [Fact]
         public void MultipleTest()
         {
             var a = new Tensor(new double[] { 1, 2, 3 });
