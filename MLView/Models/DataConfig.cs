@@ -150,7 +150,7 @@ namespace MLView.Models
                 trainDistance += noise;
             }
 
-            var trainY = trainDistance.ApplyFunction(Functions.IndicatorFunction);
+            var trainY = trainDistance.ApplyFunction(Functions.Indicator);
 
             Matrix testX = new Matrix();
             Vector testY = new Vector();
@@ -159,7 +159,7 @@ namespace MLView.Models
             {
                 testX = emu.RandomMatrix(TestSize, features, Min, Max);
                 var testDistance = distance(testX);
-                testY = testDistance.ApplyFunction(Functions.IndicatorFunction);
+                testY = testDistance.ApplyFunction(Functions.Indicator);
             }
 
             return (trainX, trainY, testX, testY);

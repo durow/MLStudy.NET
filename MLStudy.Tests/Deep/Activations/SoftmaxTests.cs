@@ -35,8 +35,8 @@ namespace MLStudy.Tests.Deep
               { -0.0075, 0.1275, -0.105, -0.015},
               { -0.035, -0.105, 0.21, -0.07},
               { -0.005, -0.015, -0.07, 0.09 } });
-            var actual = MLStudy.Deep.Softmax.Derivative(output);
-            Assert.True(Tensor.ApproximatelyEqual(expected, actual));
+            var actual = MLStudy.Deep.Softmax.DerivativeByOutput(output);
+            MyAssert.ApproximatelyEqual(expected, actual);
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace MLStudy.Tests.Deep
             var expected = output - y; //推导出来的结果，因为要把softmax和损失函数分离，所以实际应用时要分别计算
 
             //存在精度问题，有些值无法完全相等
-            Assert.True(Tensor.ApproximatelyEqual(expected, actual));
+            MyAssert.ApproximatelyEqual(expected, actual);
         }
     }
 }

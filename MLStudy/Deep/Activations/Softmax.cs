@@ -27,7 +27,7 @@ namespace MLStudy.Deep
                 //这个方法直接将计算结果写入result，不需要开辟中间内存
                 ErrorBP(LastForwardOutput, error, result, i);
 
-                //以下用显示的链式法则，过程更明显
+                //以下用显式的链式法则，过程更明显
                 //var jacob = Derivative(LastForwardOutput.GetTensorByDim1(i)); //求得单个样本输出的softmax的导数
                 //var gradient = error.GetTensorByDim1(i) * jacob;  //导数乘上反向传播过来的误差
                 //for (int j = 0; j < result.Shape[1]; j++)  //结果写入result
@@ -72,6 +72,7 @@ namespace MLStudy.Deep
             return x.Divide(sum);
         }
 
+        //这个方法不会产生多余的临时对象
         private static void ErrorBP(Tensor output, Tensor error, Tensor result, int sampleIndex)
         {
             var column = output.Shape[1];
@@ -108,7 +109,13 @@ namespace MLStudy.Deep
             return result;
         }
 
-        public static double[,] Derivative(double[] output)
+        public static double[,] Derivative(double[] x)
+        {
+            var output = Function(x);
+            return DerivativeByOutput(output);
+        }
+
+        public static double[,] DerivativeByOutput(double[] output)
         {
             var len = output.Length;
             var jacob = new double[len, len];
@@ -125,24 +132,19 @@ namespace MLStudy.Deep
             return jacob;
         }
 
-        public static Tensor Derivative(Tensor output)
+        public static Tensor Derivative(Tensor x)
+        {
+            var derivative = Derivative(x.GetRawValues());
+            return new Tensor(derivative);
+        }
+
+        public static Tensor DerivativeByOutput(Tensor output)
         {
             if (output.Rank != 1)
                 throw new TensorShapeException("Softmax derivative output.Rank must be 1");
 
-            var len = (int)output.ElementCount;
-            var jacob = new Tensor(len,len);
-            for (int i = 0; i < len; i++)
-            {
-                for (int j = 0; j < len; j++)
-                {
-                    if (i == j)
-                        jacob[i, j] = output[i] * (1 - output[j]);
-                    else
-                        jacob[i, j] = -output[i] * output[j];
-                }
-            }
-            return jacob;
+            var derivative = DerivativeByOutput(output.GetRawValues());
+            return new Tensor(derivative);
         }
     }
 }

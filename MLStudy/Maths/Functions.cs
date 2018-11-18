@@ -6,7 +6,7 @@ namespace MLStudy
 {
     public static class Functions
     {
-        public static double IndicatorFunction(double d)
+        public static double Indicator(double d)
         {
             return d >= 0 ? 1 : 0;
         }
@@ -14,7 +14,7 @@ namespace MLStudy
         public static double Sigmoid(double x)
         {
 
-            return 1 / (1 + Math.Pow(Math.E, -x));
+            return 1 / (1 + Math.Exp(-x));
         }
 
         public static double Tanh(double x)

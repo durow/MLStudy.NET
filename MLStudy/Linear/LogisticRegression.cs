@@ -49,7 +49,7 @@ namespace MLStudy
 
         private Vector ProbabilityToCategory(Vector v)
         {
-            return (v - 0.5).ApplyFunction(Functions.IndicatorFunction);
+            return (v - 0.5).ApplyFunction(Functions.Indicator);
         }
     }
 

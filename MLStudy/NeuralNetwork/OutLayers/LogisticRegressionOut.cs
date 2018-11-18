@@ -31,7 +31,7 @@ namespace MLStudy
         public override Vector GetPredict()
         {
             return (ForwardOutput - 0.5)
-                .ApplyFunction(Functions.IndicatorFunction)
+                .ApplyFunction(Functions.Indicator)
                 .ToVector();
         }
     }

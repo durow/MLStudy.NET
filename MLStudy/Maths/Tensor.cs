@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace MLStudy
 {
     /// <summary>
-    /// 标量
+    /// 张量
     /// </summary>
     public sealed class Tensor
     {
@@ -379,7 +379,7 @@ namespace MLStudy
         public Tensor Clone()
         {
             var result = GetSameShape();
-            values.CopyTo(result.values, 0);
+            Array.Copy(values, 0, result.values, 0, ElementCount);
             return result;
         }
 
@@ -390,6 +390,9 @@ namespace MLStudy
         /// <returns></returns>
         public Tensor GetTensorByDim1(int index)
         {
+            if (Rank == 0)
+                throw new TensorShapeException("this tensor is a scalar, don't have any dimension!");
+
             if (index >= shape[0])
                 throw new TensorShapeException($"index out of range! index is {index} rank1 is {shape[0]}");
 
@@ -400,19 +403,21 @@ namespace MLStudy
                 return result;
             }
 
+            //index为负的时候修正为正值
+            while (index < 0)
+            {
+                index += shape[0];
+            }
+
             var len = dimensionSize[0];
             var start = index * len;
             var data = new double[len];
             var newShape = new int[Rank - 1];
-            for (int i = 0; i < newShape.Length; i++)
-            {
-                newShape[i] = shape[i + 1];
-            }
 
-            for (int i = 0; i < len; i++)
-            {
-                data[i] = values[start + i];
-            }
+            //计算新Tensor的shape
+            Array.Copy(shape, 1, newShape, 0, newShape.Length);
+            //复制数据到新Tensor
+            Array.Copy(values, start, data, 0, len);
 
             return new Tensor(data, newShape);
         }
@@ -424,35 +429,8 @@ namespace MLStudy
         /// <returns>当前Tensor</returns>
         public Tensor Apply(Func<double, double> function)
         {
-            Parallel.ForEach(Partitioner.Create(0, values.Length),
-                arg =>
-            {
-                for (long i = arg.Item1; i < arg.Item2; i++)
-                {
-                    values[i] = function(values[i]);
-                }
-            });
+            Apply(this, this, function);
             return this;
-        }
-
-        /// <summary>
-        /// 当前Tensor每个元素应用function，并将结果写入到result参数中。
-        /// result需要和当前Tensor结构一致
-        /// </summary>
-        /// <param name="function">应用的操作</param>
-        /// <param name="result">写入结果的Tensor</param>
-        public void Apply(Func<double,double> function, Tensor result)
-        {
-            CheckShape(shape, result.shape);
-
-            Parallel.ForEach(Partitioner.Create(0, values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        result.values[i] = function(values[i]);
-                    }
-                });
         }
 
         /// <summary>
@@ -463,7 +441,32 @@ namespace MLStudy
         /// <returns>结果返回为新的Tensor</returns>
         public static Tensor Apply(Tensor tensor, Func<double, double> function)
         {
-            return tensor.Clone().Apply(function);
+            var result = tensor.GetSameShape();
+            Apply(tensor, result, function);
+            return result;
+        }
+
+        /// <summary>
+        /// 把input中的每个元素应用function，并将结果写入到result中。
+        /// 必要的时候在调用这个方法前进行Tensor结构一致性检查
+        /// </summary>
+        /// <param name="input">输入的Tensor</param>
+        /// <param name="result">写入结果的Tensor</param>
+        /// <param name="function">应用的运算</param>
+        public static void Apply(Tensor input, Tensor result, Func<double,double> function)
+        {
+            //这个方法中不进行Tensor结构一致性的检查
+            //所有的Tensor结构的问题都放到Prepare过程中
+            //或者必要的时候在调用这个函数之前执行Tensor结构一致性的检查
+
+            Parallel.ForEach(Partitioner.Create(0, input.values.Length),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = function(input.values[i]);
+                    }
+                });
         }
 
 
@@ -492,14 +495,7 @@ namespace MLStudy
 
             CheckShape(shape, t.shape);
 
-            Parallel.ForEach(Partitioner.Create(0, values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        values[i] += t.values[i];
-                    }
-                });
+            Add(this, t, this);
             return this;
         }
 
@@ -511,7 +507,14 @@ namespace MLStudy
         /// <returns></returns>
         public static Tensor Add(Tensor t, double d)
         {
-            return t.Clone().Add(d);
+            var result = t.GetSameShape();
+            Add(t, d, result);
+            return result;
+        }
+
+        public static void Add(Tensor t, double d, Tensor result)
+        {
+            Apply(t, result, a => a + d);
         }
 
         /// <summary>
@@ -527,7 +530,30 @@ namespace MLStudy
             if (b.ElementCount == 1)
                 return Add(a, b.GetValue());
 
-            return a.Clone().Add(b);
+            var result = a.GetSameShape();
+            Add(a, b, result);
+            return result;
+        }
+
+        /// <summary>
+        /// a和b相加结果写入result参数
+        /// 必要的时候在调用这个方法前进行Tensor结构一致性检查
+        /// </summary>
+        /// <param name="a">加数1</param>
+        /// <param name="b">加数2</param>
+        /// <param name="result">结果</param>
+        public static void Add(Tensor a, Tensor b, Tensor result)
+        {
+            //放弃Tensor结构的检查
+
+            Parallel.ForEach(Partitioner.Create(0, result.ElementCount),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = a.values[i] + b.values[i];
+                    }
+                });
         }
 
         public static Tensor operator +(Tensor t, double d)
@@ -584,14 +610,7 @@ namespace MLStudy
 
             CheckShape(shape, t.shape);
 
-            Parallel.ForEach(Partitioner.Create(0, values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        values[i] -= t.values[i];
-                    }
-                });
+            Minus(this, t, this);
             return this;
         }
 
@@ -603,7 +622,9 @@ namespace MLStudy
         /// <returns>包含结果的新的Tensor</returns>
         public static Tensor Minus(Tensor t, double d)
         {
-            return t.Clone().Minus(d);
+            var result = t.GetSameShape();
+            Minus(t, d, result);
+            return result;
         }
 
         /// <summary>
@@ -618,7 +639,7 @@ namespace MLStudy
         }
 
         /// <summary>
-        /// 两个Tensor对应元素相减，结果返回为新的Tensor，要求两个Tensor结构相同
+        /// 两个Tensor对应元素相减，结果返回为新的Tensor，要求两个Tensor结构相同.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -631,6 +652,36 @@ namespace MLStudy
                 return Minus(a, b.GetValue());
 
             return a.Clone().Minus(b);
+        }
+
+        /// <summary>
+        /// Tensor减去d，结果存入result
+        /// </summary>
+        /// <param name="t">被减数</param>
+        /// <param name="d">减数</param>
+        /// <param name="result">结果</param>
+        public static void Minus(Tensor t, double d, Tensor result)
+        {
+            Apply(t, result, a => a - d);
+        }
+
+        /// <summary>
+        /// a和b相减，结果写入result参数
+        /// 必要的时候在调用这个方法前进行Tensor结构一致性检查
+        /// </summary>
+        /// <param name="a">被减数</param>
+        /// <param name="b">减数</param>
+        /// <param name="result">结果</param>
+        public static void Minus(Tensor a, Tensor b, Tensor result)
+        {
+            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = a.values[i] - b.values[i];
+                    }
+                });
         }
 
         public static Tensor operator -(Tensor t, double d)
@@ -695,7 +746,9 @@ namespace MLStudy
         /// <returns>包含结果的新的Tensor</returns>
         public static Tensor Multiple(Tensor t, double d)
         {
-            return t.Clone().Multiple(d);
+            var result = t.GetSameShape();
+            Multiple(t, d, result);
+            return result;
         }
 
         /// <summary>
@@ -719,19 +772,7 @@ namespace MLStudy
 
             CheckMultipleShape(a, b);
             var result = new Tensor(a.shape[0], b.shape[1]);
-
-            Parallel.For(0, a.shape[0], i =>
-            {
-                Parallel.For(0, b.shape[1], j =>
-                {
-                    var sum = 0d;
-                    for (int k = 0; k < a.shape[1]; k++)
-                    {
-                        sum += a[i, k] * b[k, j];
-                    }
-                    result[i, j] = sum;
-                });
-            });
+            Multiple(a, b, result);
 
             return result;
         }
@@ -749,7 +790,55 @@ namespace MLStudy
             if (b.ElementCount == 1)
                 return Multiple(a, b.GetValue());
 
-            return a.Clone().MultipleElementWise(b);
+            var result = a.GetSameShape();
+            MultipleElementWise(a, b, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Tensor每个元素乘上d，结果写入result
+        /// </summary>
+        /// <param name="t">Tensor乘数</param>
+        /// <param name="d">标量乘数</param>
+        /// <param name="result">结果</param>
+        public static void Multiple(Tensor t, double d, Tensor result)
+        {
+            Apply(t, result, a => a * d);
+        }
+
+        public static void Multiple(Tensor a, Tensor b, Tensor result)
+        {
+            Parallel.For(0, a.shape[0], i =>
+            {
+                Parallel.For(0, b.shape[1], j =>
+                {
+                    var sum = 0d;
+                    for (int k = 0; k < a.shape[1]; k++)
+                    {
+                        sum += a[i, k] * b[k, j];
+                    }
+                    result[i, j] = sum;
+                });
+            });
+        }
+
+        /// <summary>
+        /// a和b的点积，结果写入result
+        /// 必要的时候在调用这个方法前进行Tensor结构一致性检查
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="result"></param>
+        public static void MultipleElementWise(Tensor a, Tensor b, Tensor result)
+        {
+            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = a.values[i] * b.values[i];
+                    }
+                });
         }
 
         public static Tensor operator *(Tensor t, double d)
@@ -932,7 +1021,7 @@ namespace MLStudy
         {
             var result = new int[shape.Length];
             //复制shape，防止被修改
-            shape.CopyTo(result, 0);
+            Array.Copy(shape, 0, result, 0, shape.Length);
             return result;
         }
 
@@ -968,6 +1057,8 @@ namespace MLStudy
 
         private int GetOffset(int[] index)
         {
+            CorrectIndex(index);
+
             if (index.Length == 1)
                 return index[0];
 
@@ -979,6 +1070,17 @@ namespace MLStudy
             result += index[index.Length - 1];
 
             return result;
+        }
+
+        private void CorrectIndex(int[] index)
+        {
+            for (int i = 0; i < index.Length; i++)
+            {
+                while (index[i] < 0)
+                {
+                    index[i] += shape[i];
+                }
+            }
         }
 
         private int[] GetIndex(int offset)
@@ -1041,20 +1143,6 @@ namespace MLStudy
 
             if (a.shape[1] != b.shape[0])
                 throw new TensorShapeException($"can't multiple matrix between {a.shape.ToString()} and {b.shape.ToString()}");
-        }
-
-        public static bool ApproximatelyEqual(Tensor a, Tensor b, double allowError = 0.0000001)
-        {
-            if (!CheckShapeBool(a, b))
-                return false;
-
-            for (int i = 0; i < a.ElementCount; i++)
-            {
-                if (Math.Abs(a.values[i] - b.values[i]) > allowError)
-                    return false;
-            }
-
-            return true;
         }
 
         #endregion
