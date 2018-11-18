@@ -3,16 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MLStudy.NN
+namespace MLStudy.Deep
 {
-    public class ReLULayer : ILayer
+    public class Sigmoid : ILayer
     {
+        public string Name { get; set; }
         public Tensor LastForwardOutput { get; private set; }
 
         public Tensor Backward(Tensor error)
         {
-            var derivative = Tensor.Apply(LastForwardOutput, Derivative);
-            return derivative.MultipleElementWise(error);
+            return Tensor
+                .Apply(LastForwardOutput, DerivativeFromOutput)
+                .MultipleElementWise(error);
         }
 
         public Tensor Forward(Tensor input)
@@ -23,12 +25,18 @@ namespace MLStudy.NN
 
         public static double Function(double x)
         {
-            return Math.Max(x, 0);
+            return 1 / (1 + Math.Exp(-x));
         }
 
         public static double Derivative(double x)
         {
-            return x > 0 ? 1 : 0;
+            var output = Function(x);
+            return DerivativeFromOutput(output);
+        }
+
+        public static double DerivativeFromOutput(double output)
+        {
+            return output * (1 - output);
         }
     }
 }

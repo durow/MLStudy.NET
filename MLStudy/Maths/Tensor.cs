@@ -59,7 +59,7 @@ namespace MLStudy
         /// <summary>
         /// Tensor中所有元素的个数
         /// </summary>
-        public long ElementCount
+        public int ElementCount
         {
             get
             {
@@ -282,6 +282,15 @@ namespace MLStudy
         public double GetValueByRawIndex(int index)
         {
             return values[index];
+        }
+
+        /// <summary>
+        /// 获取底层数据
+        /// </summary>
+        /// <returns></returns>
+        public double[] GetRawValues()
+        {
+            return values;
         }
 
         /// <summary>
@@ -704,9 +713,9 @@ namespace MLStudy
                 return Multiple(a, b.GetValue());
 
             if (a.Rank == 1)
-                a = a.Reshape(1, (int)a.ElementCount);
+                a = a.Reshape(1, a.ElementCount);
             if (b.Rank == 1)
-                b = b.Reshape((int)b.ElementCount, 1);
+                b = b.Reshape(b.ElementCount, 1);
 
             CheckMultipleShape(a, b);
             var result = new Tensor(a.shape[0], b.shape[1]);

@@ -3,10 +3,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MLStudy.NN
+namespace MLStudy.Deep
 {
-    public class SoftmaxLayer : ILayer
+    public class Softmax : ILayer
     {
+        public string Name { get; set; }
         public Tensor LastForwardOutput { get; private set; }
 
         public Tensor Backward(Tensor error)

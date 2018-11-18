@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MLStudy.NN
+namespace MLStudy.Deep
 {
-    class MeanPoolingLayer
+    class MaxPooling
     {
     }
 }
