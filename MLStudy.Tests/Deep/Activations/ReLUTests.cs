@@ -9,25 +9,7 @@ namespace MLStudy.Tests.Deep
     public class ReLUTests
     {
         [Fact]
-        public void FunctionTest()
-        {
-            var input = new Tensor(new double[] { 1, 2, -3, 5, -2, 7, 4, 6, 8, -5, 4, 1 }, 3, 4);
-            var expected = new Tensor(new double[] { 1, 2, 0, 5, 0, 7, 4, 6, 8, 0, 4, 1 }, 3, 4);
-            var actual = Tensor.Apply(input, ReLU.Function);
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void DerivativeTest()
-        {
-            var output = new Tensor(new double[] { 1, 2, 0, 5, 0, 7, 4, 6, 8, 0, 4, 1 }, 3, 4);
-            var expected = new Tensor(new double[] { 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1 }, 3, 4);
-            var actual = Tensor.Apply(output, ReLU.Derivative);
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void ReLUTest1()
+        public void ReLUTest()
         {
             var relu = new ReLU();
             var input = new Tensor(new double[] { 1, 2, -3, 5, -2, 7, 4, 6, 8, -5, 4, 1 }, 3, 4);

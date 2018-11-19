@@ -1,35 +1,50 @@
-﻿using MLStudy.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/*
+ * Description:使用ReLU函数的激活层
+ * Author:YunXiao An
+ * Date:2018.11.19
+ */
 
 namespace MLStudy.Deep
 {
-    public class ReLU : ILayer
+    /// <summary>
+    /// 使用ReLU函数的激活层
+    /// </summary>
+    public class ReLU : Activations.Activation
     {
-        public Tensor LastForwardOutput { get; private set; }
-        public string Name { get; set; }
-
-        public Tensor Backward(Tensor error)
+        /// <summary>
+        /// 运行前的准备，用于初始化所有Tensor的结构
+        /// </summary>
+        /// <param name="input">输入Tensor</param>
+        /// <returns></returns>
+        public override Tensor PrepareTrain(Tensor input)
         {
-            var derivative = Tensor.Apply(LastForwardOutput, Derivative);
-            return derivative.MultipleElementWise(error);
+            ForwardOutput = input.GetSameShape();
+            BackwardOutput = input.GetSameShape();
+            Derivative = input.GetSameShape();
+            return ForwardOutput;
         }
 
-        public Tensor Forward(Tensor input)
+        /// <summary>
+        /// 正向传播或叫向后传播
+        /// </summary>
+        /// <param name="input">输入的数值</param>
+        /// <returns>输出的数值</returns>
+        public override Tensor Forward(Tensor input)
         {
-            LastForwardOutput = Tensor.Apply(input, Function);
-            return LastForwardOutput;
+            Tensor.Apply(input, ForwardOutput, Functions.ReLU);
+            return ForwardOutput;
         }
 
-        public static double Function(double x)
+        /// <summary>
+        /// 反向传播或叫向前传播
+        /// </summary>
+        /// <param name="error">传回来的误差</param>
+        /// <returns>传到前面的误差</returns>
+        public override Tensor Backward(Tensor error)
         {
-            return Math.Max(x, 0);
-        }
-
-        public static double Derivative(double x)
-        {
-            return x > 0 ? 1 : 0;
+            Tensor.Apply(ForwardOutput, Derivative, Derivatives.ReLU);
+            Tensor.MultipleElementWise(Derivative, error, BackwardOutput);
+            return BackwardOutput;
         }
     }
 }

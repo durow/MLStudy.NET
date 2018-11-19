@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MLStudy
@@ -28,6 +29,28 @@ namespace MLStudy
         public static double ReLU(double x)
         {
             return Math.Max(0, x);
+        }
+
+        public static double[] Softmax(double[] x)
+        {
+            var result = new double[x.Length];
+            Softmax(x, result);
+            return result;
+        }
+
+        public static void Softmax(double[] x, double[] result)
+        {
+            var max = x.Max();
+            for (int i = 0; i < x.Length; i++)
+            {
+                result[i] = Math.Exp(x[i] - max);
+            }
+
+            var sum = result.Sum();
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = result[i] / sum;
+            }
         }
 
         public static Vector Softmax(Vector v)

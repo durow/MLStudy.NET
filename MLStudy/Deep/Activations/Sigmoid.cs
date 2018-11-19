@@ -1,42 +1,51 @@
-﻿using MLStudy.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/*
+ * Description:使用Sigmoid函数的激活层
+ * Author:YunXiao An
+ * Date:2018.11.19
+ */
+
 
 namespace MLStudy.Deep
 {
-    public class Sigmoid : ILayer
+    /// <summary>
+    /// 使用Sigmoid函数的激活层
+    /// </summary>
+    public class Sigmoid : Activations.Activation
     {
-        public string Name { get; set; }
-        public Tensor LastForwardOutput { get; private set; }
-
-        public Tensor Backward(Tensor error)
+        /// <summary>
+        /// 运行前的准备，用于初始化所有Tensor的结构
+        /// </summary>
+        /// <param name="input">输入Tensor</param>
+        /// <returns></returns>
+        public override Tensor PrepareTrain(Tensor input)
         {
-            return Tensor
-                .Apply(LastForwardOutput, DerivativeFromOutput)
-                .MultipleElementWise(error);
+            BackwardOutput = input.GetSameShape();
+            ForwardOutput = input.GetSameShape();
+            Derivative = input.GetSameShape();
+            return ForwardOutput;
         }
 
-        public Tensor Forward(Tensor input)
+        /// <summary>
+        /// 正向传播或叫向后传播
+        /// </summary>
+        /// <param name="input">输入的数值</param>
+        /// <returns>输出的数值</returns>
+        public override Tensor Forward(Tensor input)
         {
-            LastForwardOutput = Tensor.Apply(input, Function);
-            return LastForwardOutput;
+            Tensor.Apply(input, ForwardOutput, Functions.Sigmoid);
+            return ForwardOutput;
         }
 
-        public static double Function(double x)
+        /// <summary>
+        /// 反向传播或叫向前传播
+        /// </summary>
+        /// <param name="error">传回来的误差</param>
+        /// <returns>传到前面的误差</returns>
+        public override Tensor Backward(Tensor error)
         {
-            return 1 / (1 + Math.Exp(-x));
-        }
-
-        public static double Derivative(double x)
-        {
-            var output = Function(x);
-            return DerivativeFromOutput(output);
-        }
-
-        public static double DerivativeFromOutput(double output)
-        {
-            return output * (1 - output);
+            Tensor.Apply(ForwardOutput, Derivative, Derivatives.SigmoidFromOutput);
+            Tensor.MultipleElementWise(Derivative, error, BackwardOutput);
+            return BackwardOutput;
         }
     }
 }

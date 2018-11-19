@@ -11,43 +11,42 @@ namespace MLStudy.Deep.Activations
     public abstract class Activation : ILayer
     {
         /// <summary>
-        /// 激活函数的名称
+        /// 激活层的名称
         /// </summary>
         public string Name { get; set; }
         
         /// <summary>
         /// 最后一次Forward的输出
         /// </summary>
-        public Tensor LastForward { get; private set; }
+        public Tensor ForwardOutput { get; protected set; }
 
         /// <summary>
         /// 最后一次Backward向前传播的结果
         /// </summary>
-        public Tensor LastBackward { get; set; }
+        public Tensor BackwardOutput { get; protected set; }
+
+        /// <summary>
+        /// 反向传播的梯度
+        /// </summary>
+        public Tensor Derivative { get; protected set; }
 
         /// <summary>
         /// 清空LastForwad和LastBackward的缓存
         /// </summary>
         public virtual void ClearCache()
         {
-            LastForward = null;
-            LastBackward = null;
+            ForwardOutput = null;
+            BackwardOutput = null;
+            Derivative = null;
         }
 
-
-        public virtual Tensor Prepare(Tensor input)
-        {
-            LastForward = input.GetSameShape();
-            LastBackward = input.GetSameShape();
-            return LastBackward;
-        }
 
         /// <summary>
-        /// 反向传播或叫向前传播
+        /// 运行前的准备，用于初始化所有Tensor的结构
         /// </summary>
-        /// <param name="error">传回来的误差</param>
-        /// <returns>传到前面的误差</returns>
-        public abstract Tensor Backward(Tensor error);
+        /// <param name="input">输入Tensor</param>
+        /// <returns></returns>
+        public abstract Tensor PrepareTrain(Tensor input);
 
         /// <summary>
         /// 正向传播或叫向后传播
@@ -55,5 +54,12 @@ namespace MLStudy.Deep.Activations
         /// <param name="input">输入的数值</param>
         /// <returns>输出的数值</returns>
         public abstract Tensor Forward(Tensor input);
+
+        /// <summary>
+        /// 反向传播或叫向前传播
+        /// </summary>
+        /// <param name="error">传回来的误差</param>
+        /// <returns>传到前面的误差</returns>
+        public abstract Tensor Backward(Tensor error);
     }
 }

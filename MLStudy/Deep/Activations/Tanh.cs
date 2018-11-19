@@ -1,44 +1,28 @@
-﻿using MLStudy.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace MLStudy.Deep
 {
-    public class Tanh : ILayer
+    public class Tanh : Activations.Activation
     {
-        public string Name { get; set; }
-        public Tensor LastForwardOutput { get; private set; }
-
-        public Tensor Backward(Tensor error)
+        public override Tensor PrepareTrain(Tensor input)
         {
-            return Tensor.Apply(LastForwardOutput, DerivativeByOutput)
-                .MultipleElementWise(error);
+            BackwardOutput = input.GetSameShape();
+            ForwardOutput = input.GetSameShape();
+            Derivative = input.GetSameShape();
+            return ForwardOutput;
         }
 
-        public Tensor Forward(Tensor input)
+        public override Tensor Forward(Tensor input)
         {
-            LastForwardOutput = Tensor.Apply(input, Function);
-            return LastForwardOutput;
+            Tensor.Apply(input, ForwardOutput, Functions.Tanh);
+            return ForwardOutput;
         }
 
-        public static double Function(double x)
+        public override Tensor Backward(Tensor error)
         {
-            var pos = Math.Exp(x);
-            var neg = Math.Exp(-x);
-
-            return (pos - neg) / (pos + neg);
-        }
-
-        public static double Derivative(double x)
-        {
-            var o = Function(x);
-            return DerivativeByOutput(o);
-        }
-
-        public static double DerivativeByOutput(double output)
-        {
-            return 1 - Math.Pow(output, 2);
+            Tensor.Apply(ForwardOutput, Derivative, Derivatives.TanhFromOutput);
+            Tensor.MultipleElementWise(Derivative, error, BackwardOutput);
+            return BackwardOutput;
         }
     }
 }

@@ -238,7 +238,7 @@ namespace MLStudy
             if (index.Length == 0)
                 return values[0];
 
-            var offset = GetOffset(index);
+            var offset = GetRawOffset(index);
             return values[offset];
         }
 
@@ -270,8 +270,28 @@ namespace MLStudy
                 return;
             }
 
-            var offset = GetOffset(index);
+            var offset = GetRawOffset(index);
             values[offset] = value;
+        }
+
+        public int GetRawOffset(params int[] index)
+        {
+            CorrectIndex(index);
+
+            if (index.Length == 1)
+                return 0;
+
+            if (index.Length == 1)
+                return index[0];
+
+            var result = 0;
+            for (int i = 0; i < dimensionSize.Length; i++)
+            {
+                result += dimensionSize[i] * index[i];
+            }
+            result += index[index.Length - 1];
+
+            return result;
         }
 
         /// <summary>
@@ -1069,23 +1089,6 @@ namespace MLStudy
                 }
                 dimensionSize[i] = temp;
             }
-        }
-
-        private int GetOffset(int[] index)
-        {
-            CorrectIndex(index);
-
-            if (index.Length == 1)
-                return index[0];
-
-            var result = 0;
-            for (int i = 0; i < dimensionSize.Length; i++)
-            {
-                result += dimensionSize[i] * index[i];
-            }
-            result += index[index.Length - 1];
-
-            return result;
         }
 
         private void CorrectIndex(int[] index)

@@ -6,37 +6,6 @@ namespace MLStudy
 {
     public class Derivatives
     {
-        public static Matrix SquareError(Matrix yHat, Matrix y, bool raw = false)
-        {
-            if (raw)
-                return 2 * (yHat - y);
-            else
-                return yHat - y;
-        }
-
-        public static Vector SquareError(Vector yHat, Vector y, bool raw = false)
-        {
-            if (raw)
-                return 2 * (yHat - y);
-            else
-                return yHat - y;
-        }
-
-        public static Matrix LinearWeights(Matrix X)
-        {
-            return X.Transpose();
-        }
-
-        public static Matrix LinearWeights(Vector v)
-        {
-            return v.ToMatrix(true);
-        }
-
-        public static double LinearBias()
-        {
-            return 1;
-        }
-
         public static Matrix ReLU(Matrix input)
         {
             return input.ApplyFunction(a => ReLU(a));
@@ -53,9 +22,9 @@ namespace MLStudy
             return 1 - Math.Pow(g, 2);
         }
 
-        public static double TanhByResult(double tanhResult)
+        public static double TanhFromOutput(double output)
         {
-            return 1 - Math.Pow(tanhResult, 2);
+            return 1 - Math.Pow(output, 2);
         }
 
         public static double Sigmoid(double input)
@@ -64,9 +33,32 @@ namespace MLStudy
             return o * (1 - o);
         }
 
-        public static double SigmoidByResult(double sigmoidResult)
+        public static double SigmoidFromOutput(double output)
         {
-            return sigmoidResult * (1 - sigmoidResult);
+            return output * (1 - output);
+        }
+
+        public static double[,] Softmax(double[] x)
+        {
+            var output = Functions.Softmax(x);
+            return SoftmaxFromOutput(output);
+        }
+
+        public static double[,] SoftmaxFromOutput(double[] output)
+        {
+            var len = output.Length;
+            var jacob = new double[len, len];
+            for (int i = 0; i < len; i++)
+            {
+                for (int j = 0; j < len; j++)
+                {
+                    if (i == j)
+                        jacob[i, j] = output[i] * (1 - output[j]);
+                    else
+                        jacob[i, j] = -output[i] * output[j];
+                }
+            }
+            return jacob;
         }
     }
 }
