@@ -76,5 +76,15 @@ namespace MLStudy.Tests.Maths
             var loss4 = Functions.CrossEntropy(new double[] { 0.2, 0.3, 0.5 }, new double[] { 0.3, 0.2, 0.5 });
             Assert.True(loss3 < loss4);
         }
+
+        [Fact]
+        public void MeanSquareErrorTest()
+        {
+            var y = new Tensor(new double[] { 1, 3, 2, 4, 5, 6 });
+            var yHat = new Tensor(new double[] { 1.5, 2.6, 2.1, 3.9, 5.3, 6.7 });
+            var error = Functions.MeanSquareError(y, yHat);
+            var expected = 0.16833333333333333;
+            MyAssert.ApproximatelyEqual(expected, error);
+        }
     }
 }

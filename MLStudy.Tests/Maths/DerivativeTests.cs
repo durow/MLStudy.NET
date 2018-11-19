@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace MLStudy.Tests.Maths
 {
@@ -127,6 +124,20 @@ namespace MLStudy.Tests.Maths
             var expected = (ce1 - ce0) / delta;
 
             MyAssert.ApproximatelyEqual(expected, der[3], 0.0001);
+        }
+
+        [Fact]
+        public void MeanSquareErrorTest()
+        {
+            var y = new Tensor(new double[] { 1, 3, 2, 4, 5, 6 });
+            var yHat = new Tensor(new double[] { 1.5, 2.6, 2.1, 3.9, 5.3, 6.7 });
+            var loss = Functions.MeanSquareError(y, yHat);
+            var gradient = Derivatives.MeanSquareError(y, yHat);
+            var delta = 0.00001;
+            yHat[0] += delta;
+            var expected = (Functions.MeanSquareError(y, yHat) - loss) / delta;
+
+            MyAssert.ApproximatelyEqual(expected, gradient[0]);
         }
     }
 }

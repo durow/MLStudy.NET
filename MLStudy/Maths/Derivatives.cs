@@ -83,7 +83,7 @@ namespace MLStudy
             if (y == 1)
                 return -1 / yHat;
 
-            if (y == 0) //当y==0时是把(1-yHat)当作整体求导
+            if (y == 0) 
                 return 1 / (1 - yHat);
 
             return -y / yHat; //这个返回实际上是无意义的
@@ -104,6 +104,22 @@ namespace MLStudy
                 else
                     result[i] = -y[i] / yHat[i];
             }
+        }
+
+        public static Tensor MeanSquareError(Tensor y, Tensor yHat)
+        {
+            Tensor.CheckShape(y, yHat);
+
+            var result = y.GetSameShape();
+            MeanSquareError(y, yHat, result);
+            return result;
+        }
+
+        public static void MeanSquareError(Tensor y, Tensor yHat, Tensor result)
+        {
+            //因为存在learning rate，所以梯度前面的系数不那么重要，但最好和损失函数一致，
+            Tensor.Minus(yHat, y, result);
+            result.Multiple(2d / y.ElementCount);
         }
     }
 }

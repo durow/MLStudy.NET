@@ -8,12 +8,12 @@ namespace MLStudy.Tests
 {
     public class MyAssert
     {
-        public static void ApproximatelyEqual(double a, double b, double error = 0.000001)
+        public static void ApproximatelyEqual(double a, double b, double error = 0.00001)
         {
             Assert.True(Math.Abs(a - b) < error);
         }
 
-        public static void ApproximatelyEqual(double[,] a, double[,] b, double allowError = 0.000001)
+        public static void ApproximatelyEqual(double[,] a, double[,] b, double allowError = 0.00001)
         {
             Assert.True(a.Rank == b.Rank);
             for (int i = 0; i < a.Rank; i++)
@@ -30,7 +30,7 @@ namespace MLStudy.Tests
             }
         }
 
-        public static void ApproximatelyEqual(Tensor a, Tensor b, double allowError = 0.000001)
+        public static void ApproximatelyEqual(Tensor a, Tensor b, double allowError = 0.00001)
         {
             Assert.True(Tensor.CheckShapeBool(a, b));
 

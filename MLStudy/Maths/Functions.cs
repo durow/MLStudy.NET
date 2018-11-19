@@ -113,6 +113,24 @@ namespace MLStudy
             return -y * Math.Log(yHat) - (1 - y) * Math.Log(1 - yHat);
         }
 
-        
+        public static double MeanSquareError(Tensor y, Tensor yHat)
+        {
+            return SquareError(y, yHat).Mean();
+        }
+
+        public static Tensor SquareError(Tensor y, Tensor yHat)
+        {
+            Tensor.CheckShape(y, yHat);
+
+            var result = y.GetSameShape();
+            SquareError(y, yHat, result);
+            return result;
+        }
+
+        public static void SquareError(Tensor y, Tensor yHat, Tensor result)
+        {
+            Tensor.Minus(y, yHat, result);
+            result.Apply(a => a * a);
+        }
     }
 }
