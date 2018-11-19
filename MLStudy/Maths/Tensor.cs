@@ -896,14 +896,7 @@ namespace MLStudy
 
             CheckShape(shape, t.shape);
 
-            Parallel.ForEach(Partitioner.Create(0, values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        values[i] /= t.values[i];
-                    }
-                });
+            DivideElementWise(this, t, this);
             return this;
         }
 
@@ -915,7 +908,9 @@ namespace MLStudy
         /// <returns>包含结果的新的Tensor</returns>
         public static Tensor Divide(Tensor t, double d)
         {
-            return t.Clone().Divide(d);
+            var result = t.GetSameShape();
+            Apply(t, result, a => a / d);
+            return result;
         }
 
         /// <summary>
@@ -926,7 +921,9 @@ namespace MLStudy
         /// <returns>包含结果的新的Tensor</returns>
         public static Tensor Divide(double d, Tensor t)
         {
-            return t.Clone().DivideBy(d);
+            var result = t.GetSameShape();
+            Apply(t, result, a => d / a);
+            return result;
         }
 
         /// <summary>
@@ -943,6 +940,25 @@ namespace MLStudy
                 return Divide(a, b.GetValue());
 
             return a.Clone().DivideElementWise(b);
+        }
+
+        /// <summary>
+        /// a每个元素除以b对应元素，结果写入result
+        /// 必要的时候在调用这个方法前进行Tensor结构一致性检查
+        /// </summary>
+        /// <param name="a">被除数</param>
+        /// <param name="b">除数</param>
+        /// <param name="result">结果</param>
+        public static void DivideElementWise(Tensor a, Tensor b, Tensor result)
+        {
+            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = a.values[i] / b.values[i];
+                    }
+                });
         }
 
         public static Tensor operator /(Tensor t, double d)
