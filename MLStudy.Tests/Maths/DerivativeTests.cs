@@ -48,5 +48,85 @@ namespace MLStudy.Tests.Maths
             var expected = (Functions.Tanh(x + delta) - Functions.Tanh(x)) / delta;
             MyAssert.ApproximatelyEqual(expected, d);
         }
+
+        [Fact]
+        public void SigmoidCrossEntropyTest()
+        {
+            var y = new double[] { 1 };
+            var yHat = new double[] { 0.7 };
+            var der = Derivatives.CrossEntropy(y, yHat);
+
+            var delta = 0.00001;
+            var ce0 = Functions.CrossEntropy(y, yHat);
+            yHat[0] += delta;
+            var ce1 = Functions.CrossEntropy(y, yHat);
+            var expected = (ce1 - ce0) / delta;
+
+            MyAssert.ApproximatelyEqual(expected, der[0], 0.0001);
+        }
+
+        [Fact]
+        public void SigmoidCrossEntropyTest2()
+        {
+            var y = new double[] { 0 };
+            var yHat = new double[] { 0.3 };
+            var der = Derivatives.CrossEntropy(y, yHat);
+
+            var delta = 0.00001;
+            var ce0 = Functions.CrossEntropy(y, yHat);
+            yHat[0] += delta;
+            var ce1 = Functions.CrossEntropy(y, yHat);
+            var expected = (ce1 - ce0) / delta;
+
+            MyAssert.ApproximatelyEqual(expected, der[0], 0.0001);
+        }
+
+        [Fact]
+        public void SoftmaxCrossEntropyTest()
+        {
+            var y = new double[] { 0, 1, 0, 0 };
+            var yHat = new double[] { 0.1, 0.7, 0.15, 0.05 };
+            var der = Derivatives.CrossEntropy(y, yHat);
+
+            var delta = 0.00001;
+            var ce0 = Functions.CrossEntropy(y, yHat);
+            yHat[0] += delta;
+            var ce1 = Functions.CrossEntropy(y, yHat);
+            var expected = (ce1 - ce0) / delta;
+
+            MyAssert.ApproximatelyEqual(expected, der[0], 0.0001);
+        }
+
+        [Fact]
+        public void SoftmaxCrossEntropyTest2()
+        {
+            var y = new double[] { 0, 1, 0, 0 };
+            var yHat = new double[] { 0.1, 0.7, 0.15, 0.05 };
+            var der = Derivatives.CrossEntropy(y, yHat);
+
+            var delta = 0.00001;
+            var ce0 = Functions.CrossEntropy(y, yHat);
+            yHat[1] += delta;
+            var ce1 = Functions.CrossEntropy(y, yHat);
+            var expected = (ce1 - ce0) / delta;
+
+            MyAssert.ApproximatelyEqual(expected, der[1], 0.0001);
+        }
+
+        [Fact]
+        public void CrossEntropyTest()
+        {
+            var y = new double[] { 0.1, 0.7, 0.15, 0.05 };
+            var yHat = new double[] { 0.2, 0.6, 0.15, 0.05 };
+            var der = Derivatives.CrossEntropy(y, yHat);
+
+            var delta = 0.00001;
+            var ce0 = Functions.CrossEntropy(y, yHat);
+            yHat[3] += delta;
+            var ce1 = Functions.CrossEntropy(y, yHat);
+            var expected = (ce1 - ce0) / delta;
+
+            MyAssert.ApproximatelyEqual(expected, der[3], 0.0001);
+        }
     }
 }

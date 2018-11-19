@@ -442,6 +442,13 @@ namespace MLStudy
             return new Tensor(data, newShape);
         }
 
+        public void GetByDim1(int index, double[] result)
+        {
+            var len = result.Length;
+            var start = index * len;
+            Array.Copy(values, start, result, 0, len);
+        }
+
         /// <summary>
         /// 当前Tensor的所有元素应用function，结果保存在当前Tensor
         /// </summary>

@@ -69,11 +69,11 @@ namespace MLStudy.Deep
         public override Tensor Backward(Tensor error)
         {
             ComputeDerivative();
-            Parallel.For(0, sampleNumber, i =>
+            Parallel.For(0, sampleNumber, (Action<int>)(i =>
             {
                 //这个方法直接将计算结果写入result，不需要开辟中间内存
-                ErrorBP(ForwardOutput, error, BackwardOutput, i);
-            });
+                ErrorBP((Tensor)base.ForwardOutput, error, BackwardOutput, i);
+            }));
 
             return BackwardOutput;
         }
@@ -123,21 +123,21 @@ namespace MLStudy.Deep
         {
             var derData = Derivative.GetRawValues();
             var outData = ForwardOutput.GetRawValues();
-            Parallel.For(0, sampleNumber, sampleIndex =>
+            Parallel.For(0, sampleNumber, (Action<int>)(sampleIndex =>
             {
-                var outStart = ForwardOutput.GetRawOffset(sampleIndex, 0);
+                var outStart = base.ForwardOutput.GetRawOffset(sampleIndex, 0);
                 Parallel.For(0, categoryNumber, i =>
                 {
                     var derStart = Derivative.GetRawOffset(sampleIndex, i, 0);
                     for (int j = 0; j < categoryNumber; j++)
                     {
                         if (i == j)
-                            derData[derStart + j] = outData[outStart + i] * (1 - outData[outStart + j]);
+                            derData[derStart + j] = outData[(int)(outStart + i)] * (1 - outData[(int)(outStart + j)]);
                         else
-                            derData[derStart + j] = -outData[outStart + i] * outData[outStart + j];
+                            derData[derStart + j] = -outData[(int)(outStart + i)] * outData[(int)(outStart + j)];
                     }
                 });
-            });
+            }));
         }
     }
 }

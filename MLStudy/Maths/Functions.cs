@@ -74,5 +74,45 @@ namespace MLStudy
             }
             return result;
         }
+
+        public static double CrossEntropy(double[] y, double[] yHat)
+        {
+            if (y.Length != yHat.Length)
+                throw new Exception("y and yhat must be the same length");
+
+            if (y.Length == 1)
+                return CrossEntropy(y[0], yHat[0]);
+
+            var result = 0d;
+            for (int i = 0; i < y.Length; i++)
+            {
+                if (y[i] == 0)
+                    continue;
+
+                result -= y[i] * Math.Log(yHat[i]);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 这个方法主要用于二分类问题，只求得正分类概率的情况下
+        /// 例如使用Sigmoid输出
+        /// </summary>
+        /// <param name="y">真实值</param>
+        /// <param name="yHat">预测值</param>
+        /// <returns>交叉熵</returns>
+        public static double CrossEntropy(double y, double yHat)
+        {
+            if (y == 1)
+                return -Math.Log(yHat);
+
+            if (y == 0)
+                return -Math.Log(1 - yHat);
+
+            return -y * Math.Log(yHat) - (1 - y) * Math.Log(1 - yHat);
+        }
+
+        
     }
 }

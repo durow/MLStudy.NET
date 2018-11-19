@@ -1,76 +1,42 @@
 ﻿using MLStudy.Abstraction;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MLStudy.Deep
 {
-    public class CrossEntropy : ILossFunction
+    public class CrossEntropy : LossFunction
     {
-        public Tensor GetGradient(Tensor y, Tensor yHat)
-        {
-            Tensor.CheckShape(y, yHat);
+        private double[] yBuff;
+        private double[] yHatBuff;
+        private double[] derBuff;
+        private int sampleNumber;
 
-            return Tensor.DivideElementWise(y, yHat).Multiple(-1);
-        }
-
-        public double GetLoss(Tensor y, Tensor yHat)
+        public override void PrepareTrain(Tensor y, Tensor yHat)
         {
             Tensor.CheckShape(y, yHat);
             if (y.Rank != 2)
-                throw new TensorShapeException("to compute cross entropy, Tensor.Rank must be 2!");
+                throw new TensorShapeException("y and yHat must Rank=2");
 
-            var sampleCount = y.Shape[0];
-            var result = 0d;
-            for (int i = 0; i < sampleCount; i++)
-            {
-                result += Function(y.GetTensorByDim1(i).GetRawValues(), yHat.GetTensorByDim1(i).GetRawValues());
-            }
-            return result / sampleCount;
+            ForwardOutput = new Tensor(y.Shape[0]);
+            BackwardOutput = yHat.GetSameShape();
+            yBuff = new double[y.Shape[1]];
+            yHatBuff = new double[y.Shape[1]];
+            derBuff = new double[y.Shape[1]];
+            sampleNumber = y.Shape[0];
         }
 
-        public static double Function(double[] y, double[] yHat)
+        public override void Compute(Tensor y, Tensor yHat)
         {
-            if (y.Length != yHat.Length)
-                throw new Exception("y and yhat must be the same length");
+            var outData = ForwardOutput.GetRawValues();
+            var derData = BackwardOutput.GetRawValues();
 
-            if (y.Length == 1)
-                return Function(y[0], yHat[0]);
-
-            var result = 0d;
-            for (int i = 0; i < y.Length; i++)
+            for (int i = 0; i < sampleNumber; i++)
             {
-                if (y[i] == 0)
-                    continue;
-
-                result -= y[i] * Math.Log(yHat[i]);
+                y.GetByDim1(i, yBuff);
+                yHat.GetByDim1(i, yHatBuff);
+                outData[i] = Functions.CrossEntropy(yBuff, yHatBuff);
+                Derivatives.CrossEntropy(yBuff, yHatBuff, derBuff);
+                Array.Copy(derBuff, 0, derData, i * derBuff.Length, derBuff.Length);
             }
-
-            return result;
-        }
-
-        public static double Function(double y, double yHat)
-        {
-            if (y == 1)
-                return -Math.Log(yHat);
-
-            if (y == 0)
-                return -Math.Log(1 - yHat);
-
-            return -y * Math.Log(yHat) - (1 - y) * Math.Log(1 - yHat);
-        }
-
-        public static double[] Derivative(double[] y, double[] yHat)
-        {
-            if (y.Length != yHat.Length)
-                throw new Exception("y and yhat must be the same length");
-
-            var result = new double[y.Length];
-            for (int i = 0; i < y.Length; i++)
-            {
-                result[i] = -y[i] / yHat[i];
-            }
-            return result;
         }
     }
 }

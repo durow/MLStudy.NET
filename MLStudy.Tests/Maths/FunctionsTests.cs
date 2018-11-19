@@ -64,5 +64,17 @@ namespace MLStudy.Tests.Maths
             var o3 = Functions.Tanh(x3);
             Assert.True(o3 > -1);
         }
+
+        [Fact]
+        public void CrossEntropyTest()
+        {
+            var loss1 = Functions.CrossEntropy(1, 0.7);
+            var loss2 = Functions.CrossEntropy(1, 0.9);
+            Assert.True(loss1 > loss2);
+
+            var loss3 = Functions.CrossEntropy(new double[] { 0.2, 0.3, 0.5 }, new double[] { 0.2, 0.3, 0.5 });
+            var loss4 = Functions.CrossEntropy(new double[] { 0.2, 0.3, 0.5 }, new double[] { 0.3, 0.2, 0.5 });
+            Assert.True(loss3 < loss4);
+        }
     }
 }
