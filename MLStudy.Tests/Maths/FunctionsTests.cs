@@ -48,5 +48,21 @@ namespace MLStudy.Tests.Maths
             Assert.Equal(max, output[0]);
             Assert.Equal(min, output[2]);
         }
+
+        [Fact]
+        public void TanhTest()
+        {
+            var x = 0;
+            var o = Functions.Tanh(x);
+            Assert.Equal(0, o);
+
+            var x2 = 10;
+            var o2 = Functions.Tanh(x2);
+            Assert.True(o2 < 1);
+
+            var x3 = -10;
+            var o3 = Functions.Tanh(x3);
+            Assert.True(o3 > -1);
+        }
     }
 }

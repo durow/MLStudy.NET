@@ -278,7 +278,7 @@ namespace MLStudy
         {
             CorrectIndex(index);
 
-            if (index.Length == 1)
+            if (index.Length == 0)
                 return 0;
 
             if (index.Length == 1)

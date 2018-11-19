@@ -38,5 +38,15 @@ namespace MLStudy.Tests.Maths
             var actual = Derivatives.SoftmaxFromOutput(output);
             MyAssert.ApproximatelyEqual(expected, actual);
         }
+
+        [Fact]
+        public void TanhTest()
+        {
+            var x = 0;
+            var d = Derivatives.Tanh(x);
+            var delta = 0.0001;
+            var expected = (Functions.Tanh(x + delta) - Functions.Tanh(x)) / delta;
+            MyAssert.ApproximatelyEqual(expected, d);
+        }
     }
 }
