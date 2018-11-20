@@ -4,6 +4,8 @@
  * Date:2018.11.19
  */
 
+using MLStudy.Abstraction;
+
 namespace MLStudy.Deep
 {
     /// <summary>
@@ -21,6 +23,12 @@ namespace MLStudy.Deep
             ForwardOutput = input.GetSameShape();
             BackwardOutput = input.GetSameShape();
             Derivative = input.GetSameShape();
+            return ForwardOutput;
+        }
+
+        public override Tensor PreparePredict(Tensor input)
+        {
+            ForwardOutput = input.GetSameShape();
             return ForwardOutput;
         }
 
@@ -45,6 +53,11 @@ namespace MLStudy.Deep
             Tensor.Apply(ForwardOutput, Derivative, Derivatives.ReLU);
             Tensor.MultipleElementWise(Derivative, error, BackwardOutput);
             return BackwardOutput;
+        }
+
+        public override ILayer CreateSame()
+        {
+            return new ReLU();
         }
     }
 }

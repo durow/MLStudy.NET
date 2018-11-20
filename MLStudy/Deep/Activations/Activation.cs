@@ -61,5 +61,18 @@ namespace MLStudy.Deep.Activations
         /// <param name="error">传回来的误差</param>
         /// <returns>传到前面的误差</returns>
         public abstract Tensor Backward(Tensor error);
+
+        /// <summary>
+        /// 用于预测时的准备工作
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public abstract Tensor PreparePredict(Tensor input);
+
+        /// <summary>
+        /// 创建一个同样结构的层
+        /// </summary>
+        /// <returns></returns>
+        public abstract ILayer CreateSame();
     }
 }

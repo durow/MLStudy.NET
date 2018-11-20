@@ -7,6 +7,7 @@
 
 using System;
 using System.Threading.Tasks;
+using MLStudy.Abstraction;
 
 namespace MLStudy.Deep
 {
@@ -40,6 +41,15 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
+        public override Tensor PreparePredict(Tensor input)
+        {
+            if (input.Rank != 2)
+                throw new TensorShapeException("input.Rank must be 2");
+
+            ForwardOutput = input.GetSameShape();
+            return ForwardOutput;
+        }
+
         /// <summary>
         /// 正向传播或叫向后传播
         /// </summary>
@@ -69,31 +79,31 @@ namespace MLStudy.Deep
         public override Tensor Backward(Tensor error)
         {
             ComputeDerivative();
-            Parallel.For(0, sampleNumber, (Action<int>)(i =>
-            {
-                //这个方法直接将计算结果写入result，不需要开辟中间内存
-                ErrorBP((Tensor)base.ForwardOutput, error, BackwardOutput, i);
-            }));
-
+            //Parallel.For(0, sampleNumber, (Action<int>)(i =>
+            //{
+            //    //这个方法直接将计算结果写入result，不需要开辟中间内存
+            //    ErrorBP((Tensor)base.ForwardOutput, error, BackwardOutput, i);
+            //}));
+            ErrorBP(error);
             return BackwardOutput;
         }
 
         //这个方法不会产生多余的临时对象，问题就是不再存储Derivative
-        private void ErrorBP(Tensor output, Tensor error, Tensor result, int sampleIndex)
-        {
-            for (int i = 0; i < categoryNumber; i++)
-            {
-                var der = 0d;
-                for (int j = 0; j < categoryNumber; j++)
-                {
-                    if (i == j)
-                        der += output[sampleIndex, i] * (1 - output[sampleIndex, j]) * error[sampleIndex, j];
-                    else
-                        der += -output[sampleIndex, i] * output[sampleIndex, j] * error[sampleIndex, j];
-                }
-                result[sampleIndex, i] = der;
-            }
-        }
+        //private void ErrorBP(Tensor output, Tensor error, Tensor result, int sampleIndex)
+        //{
+        //    for (int i = 0; i < categoryNumber; i++)
+        //    {
+        //        var der = 0d;
+        //        for (int j = 0; j < categoryNumber; j++)
+        //        {
+        //            if (i == j)
+        //                der += output[sampleIndex, i] * (1 - output[sampleIndex, j]) * error[sampleIndex, j];
+        //            else
+        //                der += -output[sampleIndex, i] * output[sampleIndex, j] * error[sampleIndex, j];
+        //        }
+        //        result[sampleIndex, i] = der;
+        //    }
+        //}
 
         private void ErrorBP(Tensor error)
         {
@@ -108,7 +118,7 @@ namespace MLStudy.Deep
                 //因为jacob矩阵是对称的所以使用jacob每行和error相乘的内积，循环写起来方便
                 Parallel.For(0, categoryNumber, i =>
                 {
-                    var derStart = Derivative.GetRawOffset(sampleNumber, i, 0);
+                    var derStart = Derivative.GetRawOffset(sampleIndex, i, 0);
                     var sum = 0d;
                     for (int j = 0; j < categoryNumber; j++)
                     {
@@ -138,6 +148,11 @@ namespace MLStudy.Deep
                     }
                 });
             }));
+        }
+
+        public override ILayer CreateSame()
+        {
+            return new Softmax();
         }
     }
 }

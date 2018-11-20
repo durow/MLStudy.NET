@@ -7,5 +7,6 @@ namespace MLStudy.Abstraction
     public interface IOptimizable
     {
         void Optimize(IOptimizer optimizer);
+        ILayer CreateMirror();
     }
 }

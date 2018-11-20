@@ -5,6 +5,8 @@
  */
 
 
+using MLStudy.Abstraction;
+
 namespace MLStudy.Deep
 {
     /// <summary>
@@ -19,9 +21,15 @@ namespace MLStudy.Deep
         /// <returns></returns>
         public override Tensor PrepareTrain(Tensor input)
         {
-            BackwardOutput = input.GetSameShape();
             ForwardOutput = input.GetSameShape();
+            BackwardOutput = input.GetSameShape();
             Derivative = input.GetSameShape();
+            return ForwardOutput;
+        }
+
+        public override Tensor PreparePredict(Tensor input)
+        {
+            ForwardOutput = input.GetSameShape();
             return ForwardOutput;
         }
 
@@ -46,6 +54,11 @@ namespace MLStudy.Deep
             Tensor.Apply(ForwardOutput, Derivative, Derivatives.SigmoidFromOutput);
             Tensor.MultipleElementWise(Derivative, error, BackwardOutput);
             return BackwardOutput;
+        }
+
+        public override ILayer CreateSame()
+        {
+            return new Sigmoid();
         }
     }
 }

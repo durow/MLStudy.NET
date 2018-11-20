@@ -77,10 +77,18 @@ namespace MLStudy.Deep
 
             ForwardOutput = new Tensor(input.shape[0], UnitCount);
             BackwardOutput = input.GetSameShape();
-            Weights = new Tensor(input.shape[1], UnitCount);
-            WeightsGradient = Weights.GetSameShape();
-            Bias = new Tensor(1, UnitCount);
-            BiasGradient = Bias.GetSameShape();
+
+            if(Weights == null)
+            {
+                Weights = Tensor.RandGaussian(input.shape[1], UnitCount);
+                WeightsGradient = Weights.GetSameShape();
+            }
+
+            if (Bias == null)
+            {
+                Bias = Tensor.Zeros(1, UnitCount);
+                BiasGradient = Bias.GetSameShape();
+            }
 
             sampleStartIndex = new int[input.shape[0]];
             errorStartIndex = new int[input.shape[0]];
@@ -90,6 +98,20 @@ namespace MLStudy.Deep
                 errorStartIndex[i] = i * UnitCount;
             }
 
+            return ForwardOutput;
+        }
+
+        /// <summary>
+        /// 用于预测时的内存分配
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Tensor PreparePredict(Tensor input)
+        {
+            if (input.Rank != 2)
+                throw new TensorShapeException("input tensor must have Rank=2");
+
+            ForwardOutput = new Tensor(input.shape[0], UnitCount);
             return ForwardOutput;
         }
 
@@ -150,6 +172,27 @@ namespace MLStudy.Deep
         {
             Tensor.CheckShape(Bias, bias);
             Array.Copy(bias.GetRawValues(), 0, Bias.GetRawValues(), 0, Bias.ElementCount);
+        }
+
+        /// <summary>
+        /// 获取一个共享可优化部分的镜像
+        /// </summary>
+        /// <returns></returns>
+        public ILayer CreateMirror()
+        {
+            var result = new FullLayer(UnitCount);
+            result.Weights = Weights;
+            result.Bias = Bias;
+            return result;
+        }
+
+        /// <summary>
+        /// 创建一个同样类型的层
+        /// </summary>
+        /// <returns></returns>
+        public ILayer CreateSame()
+        {
+            return new FullLayer(UnitCount);
         }
 
         //正向传播输出加上偏置

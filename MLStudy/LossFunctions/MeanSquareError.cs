@@ -37,5 +37,16 @@ namespace MLStudy
             Functions.SquareError(y, yHat, ForwardOutput);
             Derivatives.MeanSquareError(y, yHat, ForwardOutput);
         }
+
+        /// <summary>
+        /// 根据预测值和真实值返回Loss
+        /// </summary>
+        /// <param name="y">真实值</param>
+        /// <param name="yHat">预测值</param>
+        /// <returns>Loss</returns>
+        public override double GetLoss(Tensor y, Tensor yHat)
+        {
+            return Functions.MeanSquareError(y, yHat);
+        }
     }
 }

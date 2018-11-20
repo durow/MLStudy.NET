@@ -30,6 +30,14 @@ namespace MLStudy.Abstraction
         }
 
         /// <summary>
+        /// 模型预测后可以使用这个函数计算Loss
+        /// </summary>
+        /// <param name="y">真实值</param>
+        /// <param name="yHat">预测值</param>
+        /// <returns>Loss</returns>
+        public abstract double GetLoss(Tensor y, Tensor yHat);
+
+        /// <summary>
         /// 训练前的准备工作，检查并确定所需Tensor的结构并分配好内存
         /// </summary>
         /// <param name="y">样本标签</param>

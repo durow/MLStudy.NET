@@ -50,12 +50,33 @@ namespace MLStudy
 
             for (int i = 0; i < sampleNumber; i++)
             {
+                //取出一个样本及其对应的Label
                 y.GetByDim1(i, yBuff);
                 yHat.GetByDim1(i, yHatBuff);
+                //计算交叉熵
                 outData[i] = Functions.CrossEntropy(yBuff, yHatBuff);
+
+                //计算损失函数关于输入的导数
                 Derivatives.CrossEntropy(yBuff, yHatBuff, derBuff);
                 Array.Copy(derBuff, 0, derData, i * derBuff.Length, derBuff.Length);
             }
+        }
+
+        public override double GetLoss(Tensor y, Tensor yHat)
+        {
+            var outData = ForwardOutput.GetRawValues();
+            var derData = BackwardOutput.GetRawValues();
+
+            var result = 0d;
+            for (int i = 0; i < sampleNumber; i++)
+            {
+                //取出一个样本及其对应的Label
+                y.GetByDim1(i, yBuff);
+                yHat.GetByDim1(i, yHatBuff);
+                //计算交叉熵
+                result += Functions.CrossEntropy(yBuff, yHatBuff);
+            }
+            return result / sampleNumber;
         }
     }
 }
