@@ -496,6 +496,30 @@ namespace MLStudy
                 });
         }
 
+        /// <summary>
+        /// a和b对应位置元素执行function操作，结果写入result对应位置，要求a，b，result结构一致
+        /// 该方法不做结构一致性检查，必要时在调用之前检查。
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="result"></param>
+        /// <param name="function"></param>
+        public static void Apply(Tensor a, Tensor b, Tensor result, Func<double,double,double> function)
+        {
+            //这个方法中不进行Tensor结构一致性的检查
+            //所有的Tensor结构的问题都放到Prepare过程中
+            //或者必要的时候在调用这个函数之前执行Tensor结构一致性的检查
+
+            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
+                arg =>
+                {
+                    for (long i = arg.Item1; i < arg.Item2; i++)
+                    {
+                        result.values[i] = function(a.values[i], b.values[i]);
+                    }
+                });
+        }
+
 
         #region Add
 
@@ -557,6 +581,7 @@ namespace MLStudy
             if (b.ElementCount == 1)
                 return Add(a, b.GetValue());
 
+            CheckShape(a, b);
             var result = a.GetSameShape();
             Add(a, b, result);
             return result;
@@ -573,14 +598,7 @@ namespace MLStudy
         {
             //放弃Tensor结构的检查
 
-            Parallel.ForEach(Partitioner.Create(0, result.ElementCount),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        result.values[i] = a.values[i] + b.values[i];
-                    }
-                });
+            Apply(a, b, result, (x, y) => x + y);
         }
 
         public static Tensor operator +(Tensor t, double d)
@@ -678,7 +696,10 @@ namespace MLStudy
             if (b.ElementCount == 1)
                 return Minus(a, b.GetValue());
 
-            return a.Clone().Minus(b);
+            CheckShape(a, b);
+            var result = a.GetSameShape();
+            Minus(a, b, result);
+            return result;
         }
 
         /// <summary>
@@ -701,14 +722,7 @@ namespace MLStudy
         /// <param name="result">结果</param>
         public static void Minus(Tensor a, Tensor b, Tensor result)
         {
-            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        result.values[i] = a.values[i] - b.values[i];
-                    }
-                });
+            Apply(a, b, result, (x, y) => x - y);
         }
 
         public static Tensor operator -(Tensor t, double d)
@@ -754,14 +768,7 @@ namespace MLStudy
 
             CheckShape(shape, t.shape);
 
-            Parallel.ForEach(Partitioner.Create(0, values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        values[i] *= t.values[i];
-                    }
-                });
+            MultipleElementWise(this, t, this);
             return this;
         }
 
@@ -858,14 +865,7 @@ namespace MLStudy
         /// <param name="result"></param>
         public static void MultipleElementWise(Tensor a, Tensor b, Tensor result)
         {
-            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        result.values[i] = a.values[i] * b.values[i];
-                    }
-                });
+            Apply(a, b, result, (x, y) => x * y);
         }
 
         public static Tensor operator *(Tensor t, double d)
@@ -966,7 +966,10 @@ namespace MLStudy
             if (b.ElementCount == 1)
                 return Divide(a, b.GetValue());
 
-            return a.Clone().DivideElementWise(b);
+            CheckShape(a, b);
+            var result = a.GetSameShape();
+            DivideElementWise(a, b, result);
+            return result;
         }
 
         /// <summary>
@@ -978,14 +981,7 @@ namespace MLStudy
         /// <param name="result">结果</param>
         public static void DivideElementWise(Tensor a, Tensor b, Tensor result)
         {
-            Parallel.ForEach(Partitioner.Create(0, result.values.Length),
-                arg =>
-                {
-                    for (long i = arg.Item1; i < arg.Item2; i++)
-                    {
-                        result.values[i] = a.values[i] / b.values[i];
-                    }
-                });
+            Apply(a, b, result, (x, y) => x / y);
         }
 
         public static Tensor operator /(Tensor t, double d)
