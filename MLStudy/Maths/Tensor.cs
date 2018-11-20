@@ -20,7 +20,7 @@ namespace MLStudy
     public sealed class Tensor
     {
         private double[] values; //存放底层数据
-        private int[] shape; //Tensor结构信息
+        internal int[] shape; //Tensor结构信息
         private int[] dimensionSize; //存储各个维度的大小
 
         /// <summary>

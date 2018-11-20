@@ -9,7 +9,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 创建使用Tanh函数的激活层
     /// </summary>
-    public class Tanh : Activations.Activation
+    public sealed class Tanh : Activations.Activation
     {
         /// <summary>
         /// 运行前的准备，用于初始化所有Tensor的结构

@@ -11,7 +11,7 @@ namespace MLStudy
     /// <summary>
     /// 使用最小二乘的损失函数
     /// </summary>
-    public class MeanSquareError: LossFunction
+    public sealed class MeanSquareError: LossFunction
     {
         /// <summary>
         /// 训练前的准备工作，检查并确定所需Tensor的结构并分配好内存

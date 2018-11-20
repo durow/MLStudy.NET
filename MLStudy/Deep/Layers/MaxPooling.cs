@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy.Deep
 {
-    class MaxPooling
+    public sealed class MaxPooling
     {
     }
 }

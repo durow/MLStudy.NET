@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MLStudy.Deep
 {
-    public class Network
+    public sealed class Network
     {
         List<ILayer> Layers = new List<ILayer>();
 

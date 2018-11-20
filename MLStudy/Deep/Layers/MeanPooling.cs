@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy.Deep
 {
-    class MeanPooling
+    public sealed class MeanPooling
     {
     }
 }

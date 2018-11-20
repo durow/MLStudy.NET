@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy.Deep
 {
-    class ConvLayer
+    public sealed class ConvLayer
     {
     }
 }

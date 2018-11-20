@@ -12,7 +12,7 @@ namespace MLStudy
     /// <summary>
     /// 创建使用交叉熵的损失函数
     /// </summary>
-    public class CrossEntropy : LossFunction
+    public sealed class CrossEntropy : LossFunction
     {
         private double[] yBuff;
         private double[] yHatBuff;

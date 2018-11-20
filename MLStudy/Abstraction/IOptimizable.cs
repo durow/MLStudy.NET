@@ -6,7 +6,6 @@ namespace MLStudy.Abstraction
 {
     public interface IOptimizable
     {
-        Tensor GetOptimizeTarget();
-        Tensor GetGradient();
+        void Optimize(IOptimizer optimizer);
     }
 }

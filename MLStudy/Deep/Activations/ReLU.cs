@@ -9,7 +9,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 使用ReLU函数的激活层
     /// </summary>
-    public class ReLU : Activations.Activation
+    public sealed class ReLU : Activations.Activation
     {
         /// <summary>
         /// 运行前的准备，用于初始化所有Tensor的结构
