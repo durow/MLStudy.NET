@@ -32,9 +32,9 @@ namespace MLStudy
 
             ForwardOutput = new Tensor(y.Shape[0]);
             BackwardOutput = yHat.GetSameShape();
-            yBuff = new double[y.Shape[1]];
-            yHatBuff = new double[y.Shape[1]];
-            derBuff = new double[y.Shape[1]];
+            yBuff = new double[y.shape[1]];
+            yHatBuff = new double[y.shape[1]];
+            derBuff = new double[y.shape[1]];
             sampleNumber = y.Shape[0];
         }
 

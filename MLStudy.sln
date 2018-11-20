@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLStudy.Tests", "MLStudy.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLView", "MLView\MLView.csproj", "{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayGround", "PlayGround\PlayGround.csproj", "{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

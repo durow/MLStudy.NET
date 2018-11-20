@@ -83,6 +83,11 @@ namespace MLStudy.Deep
                 Weights = Tensor.RandGaussian(input.shape[1], UnitCount);
                 WeightsGradient = Weights.GetSameShape();
             }
+            else
+            {
+                if (input.shape[1] != Weights.shape[0])
+                    throw new TensorShapeException("input and weights are not match!");
+            }
 
             if (Bias == null)
             {
