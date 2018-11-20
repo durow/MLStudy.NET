@@ -349,6 +349,14 @@ namespace MLStudy
             return values.Min();
         }
 
+        public void Clear(double defaultValue = 0)
+        {
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = 0;
+            }
+        }
+
         /// <summary>
         /// 转换Tensor的结构，新结构与原结构需要在元素数量上一致。
         /// 新的Tensor是原Tensor的新视图，与原Tensor共享同一个底层数据。
