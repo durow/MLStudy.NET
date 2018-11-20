@@ -1,7 +1,12 @@
-﻿using MLStudy.Abstraction;
-using System;
+﻿/*
+ * Description:神经网络
+ * Author:YunXiao An
+ * Date:2015.11.20
+ */
+
+
+using MLStudy.Abstraction;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MLStudy.Deep
 {
@@ -118,6 +123,27 @@ namespace MLStudy.Deep
                 if (item is IOptimizable opt)
                     opt.Optimize(Optimizer);
             }
+        }
+
+        public Network AddGroup(int groupCount, params ILayer[] layers)
+        {
+            if (groupCount < 1)
+                return this;
+
+            for (int i = 0; i < layers.Length; i++)
+            {
+                AddLayer(layers[i]);
+            }
+
+            for (int i = 1; i < groupCount; i++)
+            {
+                for (int j = 0; j < layers.Length; j++)
+                {
+                    AddLayer(layers[i].CreateSame());
+                }
+            }
+
+            return this;
         }
 
         public Network AddFullLayer(int unitCount)
