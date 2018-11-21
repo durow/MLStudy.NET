@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlayGround.Plays;
+using System;
 
 namespace PlayGround
 {
@@ -6,7 +7,7 @@ namespace PlayGround
     {
         static void Main(string[] args)
         {
-            IPlay play = new XOR();
+            IPlay play = new Iris();
             play.Play();
 
             Console.ReadKey();

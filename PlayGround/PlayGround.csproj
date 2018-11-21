@@ -9,4 +9,10 @@
     <ProjectReference Include="..\MLStudy\MLStudy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\iris.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
