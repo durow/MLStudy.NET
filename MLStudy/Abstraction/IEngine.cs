@@ -8,5 +8,7 @@ namespace MLStudy.Abstraction
     {
         Tensor Predict(Tensor input);
         void Step(Tensor X, Tensor y);
+        double GetTrainLoss();
+        double GetLoss(Tensor y, Tensor yHat);
     }
 }

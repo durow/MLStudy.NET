@@ -96,14 +96,14 @@ namespace MLStudy
                     if (MaxStep > 0 && StepCounter >= MaxStep)
                         State = TrainerState.MaxStepsStopped;
 
-                    if (ErrorLimit > 0 )
+                    if (ErrorLimit > 0)
                     {
                         loss = Machine.Loss(X, y);
                         if (loss <= ErrorLimit)
                             State = TrainerState.ErrorLimitStopped;
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     if (ErrorOut != null)
                     {
@@ -156,7 +156,7 @@ namespace MLStudy
                 return;
         }
 
-        public static (Matrix,Vector) GetBatchX(Matrix X, Vector y, int start, int count)
+        public static (Matrix, Vector) GetBatchX(Matrix X, Vector y, int start, int count)
         {
             if (count <= 0 || count >= X.Rows)
                 return (X, y);
@@ -195,7 +195,7 @@ namespace MLStudy
         }
     }
 
-    public class NotifyEventArgs:EventArgs
+    public class NotifyEventArgs : EventArgs
     {
         public ITrainable Machine { get; internal set; }
         public Matrix X { get; internal set; }

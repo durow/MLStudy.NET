@@ -6,7 +6,10 @@ namespace PlayGround
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            IPlay play = new XOR();
+            play.Play();
+
+            Console.ReadKey();
         }
     }
 }

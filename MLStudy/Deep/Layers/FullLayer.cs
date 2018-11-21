@@ -7,6 +7,7 @@
 
 using MLStudy.Abstraction;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MLStudy.Deep
@@ -53,6 +54,7 @@ namespace MLStudy.Deep
         /// </summary>
         public int UnitCount { get; set; }
 
+        private List<FullLayer> mirrorList = new List<FullLayer>();
         private int[] sampleStartIndex;
         private int[] errorStartIndex;
 
@@ -63,6 +65,7 @@ namespace MLStudy.Deep
         public FullLayer(int unitCount)
         {
             UnitCount = unitCount;
+            mirrorList.Add(this);
         }
 
         /// <summary>
@@ -80,7 +83,7 @@ namespace MLStudy.Deep
 
             if(Weights == null)
             {
-                Weights = Tensor.RandGaussian(input.shape[1], UnitCount);
+                SetWeights(Tensor.RandGaussian(input.shape[1], UnitCount));
                 WeightsGradient = Weights.GetSameShape();
             }
             else
@@ -91,7 +94,7 @@ namespace MLStudy.Deep
 
             if (Bias == null)
             {
-                Bias = Tensor.Zeros(1, UnitCount);
+                SetBias(Tensor.Zeros(1, UnitCount));
                 BiasGradient = Bias.GetSameShape();
             }
 
@@ -170,6 +173,13 @@ namespace MLStudy.Deep
         /// <param name="weights"></param>
         public void SetWeights(Tensor weights)
         {
+            if(Weights == null)
+            {
+                foreach (var item in mirrorList)
+                {
+                    item.Weights = weights;
+                }
+            }
             Tensor.CheckShape(weights, Weights);
             Array.Copy(weights.GetRawValues(), 0, Weights.GetRawValues(), 0, Weights.ElementCount);
         }
@@ -180,6 +190,13 @@ namespace MLStudy.Deep
         /// <param name="bias"></param>
         public void SetBias(Tensor bias)
         {
+            if (Bias == null)
+            {
+                foreach (var item in mirrorList)
+                {
+                    item.Bias = bias;
+                }
+            }
             Tensor.CheckShape(Bias, bias);
             Array.Copy(bias.GetRawValues(), 0, Bias.GetRawValues(), 0, Bias.ElementCount);
         }
@@ -193,6 +210,8 @@ namespace MLStudy.Deep
             var result = new FullLayer(UnitCount);
             result.Weights = Weights;
             result.Bias = Bias;
+            mirrorList.Add(result);
+            result.mirrorList = mirrorList;
             return result;
         }
 

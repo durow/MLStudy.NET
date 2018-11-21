@@ -6,6 +6,7 @@
 
 
 using MLStudy.Abstraction;
+using MLStudy.Regularizations;
 using System.Collections.Generic;
 
 namespace MLStudy.Deep
@@ -58,7 +59,7 @@ namespace MLStudy.Deep
 
             for (int i = 0; i < PredictLayers.Count; i++)
             {
-                X = TrainingLayers[i].Forward(X);
+                X = PredictLayers[i].Forward(X);
             }
             return X;
         }
@@ -99,6 +100,16 @@ namespace MLStudy.Deep
             {
                 X = PredictLayers[i].PreparePredict(X);
             }
+        }
+
+        public double GetTrainLoss()
+        {
+            return LossFunction.GetLoss();
+        }
+
+        public double GetLoss(Tensor y, Tensor yHat)
+        {
+            return LossFunction.GetLoss(y, yHat);
         }
 
         public Tensor Forward(Tensor input)
@@ -210,6 +221,18 @@ namespace MLStudy.Deep
             return this;
         }
 
+        public Network UseLASSO(double strength)
+        {
+            UseRegularizer(new Lasso(strength));
+            return this;
+        }
+
+        public Network UseRidge(double strength)
+        {
+            UseRegularizer(new Ridge(strength));
+            return this;
+        }
+
         public Network AddLayer(ILayer layer)
         {
             TrainingLayers.Add(layer);
@@ -233,6 +256,12 @@ namespace MLStudy.Deep
             return this;
         }
 
+        public Network UseRegularizer(IRegularizer regularizer)
+        {
+            Regularizer = regularizer;
+            return this;
+        }
+
         private void CheckTrainShape(Tensor input, Tensor y)
         {
             if (CheckShape(input.shape, trainInputShape) &&
@@ -252,6 +281,9 @@ namespace MLStudy.Deep
 
         private bool CheckShape(int[] a, int[] b)
         {
+            if (a == null || b == null)
+                return false;
+
             if (a.Length != b.Length)
                 return false;
 

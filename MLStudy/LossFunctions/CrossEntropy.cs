@@ -68,7 +68,7 @@ namespace MLStudy
             var derData = BackwardOutput.GetRawValues();
 
             var result = 0d;
-            for (int i = 0; i < sampleNumber; i++)
+            for (int i = 0; i < y.shape[0]; i++)
             {
                 //取出一个样本及其对应的Label
                 y.GetByDim1(i, yBuff);
