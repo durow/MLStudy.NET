@@ -8,23 +8,24 @@ namespace MLStudy.Tests.PreProcessing
 {
     public class DiscreteCodecTests
     {
-        DiscreteCodec<string> oh = new DiscreteCodec<string>(new List<string>
-            {
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "f",
-                "f",
-                "c",
-                "a"
-            });
+        List<string> data = new List<string>
+        {
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "f",
+            "c",
+            "a"
+        };
 
         [Fact]
         public void OneHotTest()
         {
-            Assert.Equal(6, oh.OneHotLength);
+            var oh = new OneHotCodec<string>(data);
+            Assert.Equal(6, oh.Length);
 
             var test = new List<string> { "a", "c", "d", "a" };
             var expected = new Tensor(new double[,]
@@ -32,17 +33,18 @@ namespace MLStudy.Tests.PreProcessing
             { 0,0,1,0,0,0},
             { 0,0,0,1,0,0},
             { 1,0,0,0,0,0}, });
-            var encode = oh.OneHotEncode(test);
+            var encode = oh.Encode(test);
             Assert.Equal(expected, encode);
 
-            var decode = oh.OneHotDecode(encode);
+            var decode = oh.Decode(encode);
             Assert.Equal(decode, test);
         }
 
         [Fact]
         public void DummyTest()
         {
-            Assert.Equal(5, oh.DummyLength);
+            var dm = new DummyCodec<string>(data);
+            Assert.Equal(5, dm.Length);
 
             var test = new List<string> { "a", "c", "d", "f" };
             var expected = new Tensor(new double[,]
@@ -50,24 +52,25 @@ namespace MLStudy.Tests.PreProcessing
             { 0,0,1,0,0},
             { 0,0,0,1,0},
             { 0,0,0,0,0}, });
-            var encode = oh.DummyEncode(test);
+            var encode = dm.Encode(test);
             Assert.Equal(expected, encode);
 
-            var decode = oh.DummyDecode(encode);
+            var decode = dm.Decode(encode);
             Assert.Equal(decode, test);
         }
 
         [Fact]
         public void MapTest()
         {
+            var oh = new MapCodec<string>(data);
             oh.MapStart = 10;
             oh.MapStep = 5;
             var test = new List<string> { "a", "c", "d", "f" };
             var expected = new Tensor(new double[] { 10, 20, 25, 35 }, 4, 1);
-            var encode = oh.MapEncode(test);
+            var encode = oh.Encode(test);
             Assert.Equal(expected, encode);
 
-            var decode = oh.MapDecode(encode);
+            var decode = oh.Decode(encode);
             Assert.Equal(decode, test);
         }
     }

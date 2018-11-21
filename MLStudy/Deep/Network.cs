@@ -13,7 +13,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 神经网络
     /// </summary>
-    public sealed class Network
+    public sealed class Network : IEngine
     {
         /// <summary>
         /// 用于训练的层
@@ -34,6 +34,8 @@ namespace MLStudy.Deep
         /// 优化器
         /// </summary>
         public IOptimizer Optimizer { get; private set; }
+
+        public IRegularizer Regularizer { get; private set; }
 
         //记录最近一次训练的输入结构
         private int[] trainInputShape;
@@ -71,6 +73,8 @@ namespace MLStudy.Deep
             LossFunction.Compute(y, yHat);
             //反向传播
             Backward(LossFunction.BackwardOutput);
+            //正则化
+            Regularize();
             //更新参数
             Optimize();
         }
@@ -97,7 +101,7 @@ namespace MLStudy.Deep
             }
         }
 
-        private Tensor Forward(Tensor input)
+        public Tensor Forward(Tensor input)
         {
             for (int i = 0; i < TrainingLayers.Count; i++)
             {
@@ -106,7 +110,7 @@ namespace MLStudy.Deep
             return input;
         }
 
-        private Tensor Backward(Tensor error)
+        public Tensor Backward(Tensor error)
         {
             var layers = TrainingLayers.Count - 1;
             for (int i = layers; i > -1; i--)
@@ -122,6 +126,18 @@ namespace MLStudy.Deep
             {
                 if (item is IOptimizable opt)
                     opt.Optimize(Optimizer);
+            }
+        }
+
+        public void Regularize()
+        {
+            if (Regularizer == null)
+                return;
+
+            foreach (var item in TrainingLayers)
+            {
+                if (item is IOptimizable opt)
+                    opt.Regularize(Regularizer);
             }
         }
 

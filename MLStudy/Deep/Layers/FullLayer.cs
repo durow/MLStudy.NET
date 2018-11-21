@@ -159,6 +159,11 @@ namespace MLStudy.Deep
             optimizer.Optimize(Bias, BiasGradient);
         }
 
+        public void Regularize(IRegularizer regularizer)
+        {
+            regularizer.Regularize(Weights, WeightsGradient);
+        }
+
         /// <summary>
         /// 手动设置权重
         /// </summary>
@@ -238,5 +243,6 @@ namespace MLStudy.Deep
                 });
             });
         }
+
     }
 }
