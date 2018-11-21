@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MLStudy.Abstraction;
 using System.Text;
 
 namespace MLStudy.PreProcessing
@@ -16,7 +17,7 @@ namespace MLStudy.PreProcessing
         /// </summary>
         public int MapStep { get; set; } = 1;
 
-        public MapCodec(List<T> categories)
+        public MapCodec(IEnumerable<T> categories)
             : base(categories)
         { }
 

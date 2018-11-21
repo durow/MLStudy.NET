@@ -8,7 +8,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MLStudy.PreProcessing
+namespace MLStudy.Abstraction
 {
     public abstract class DiscreteCodec<T>
     {

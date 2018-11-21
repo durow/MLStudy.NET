@@ -1,27 +1,29 @@
-﻿using System;
+﻿using MLStudy.Abstraction;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
-using MLStudy.Abstraction;
+using System.Linq;
+using System.Text;
 
 namespace MLStudy
 {
-    public class Machine
+    public class Machine : Machine<double>
     {
-        public INormalizer Normalizer { get; set; }
-        public IEngine Engine { get; set; }
-
-        Tensor X;
-        Tensor y;
-
         public Machine(IEngine engine)
-        {
+            : base(engine)
+        { }
 
+        public new List<double> Predict(Tensor X)
+        {
+            X = Normalize(X);
+            var result = Engine.Predict(X);
+            return result.GetRawValues().ToList();
         }
 
-        public void Train()
+        public new List<double> Predict(DataTable table)
         {
-
+            var x = PreProcessor.PreProcess(table);
+            return Predict(x);
         }
     }
 }

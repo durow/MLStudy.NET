@@ -1,16 +1,21 @@
-﻿using System;
+﻿using MLStudy.Abstraction;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MLStudy.PreProcessing
 {
     public class DummyCodec<T> : DiscreteCodec<T>
     {
+
         public int Length { get { return categories.Count - 1; } }
 
-        public DummyCodec(List<T> categories)
-            : base(categories)
-        { }
+        public DummyCodec(IEnumerable<T> categories)
+            :base(categories)
+        {
+        }
+
 
         /// <summary>
         /// Dummy编码
