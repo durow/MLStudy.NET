@@ -47,6 +47,9 @@ namespace MLStudy.Deep
                 throw new TensorShapeException("input.Rank must be 2");
 
             ForwardOutput = input.GetSameShape();
+            sampleNumber = input.Shape[0];
+            categoryNumber = input.Shape[1];
+            sampleBuff = new double[categoryNumber];
             return ForwardOutput;
         }
 

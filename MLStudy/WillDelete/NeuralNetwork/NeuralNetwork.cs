@@ -29,12 +29,6 @@ namespace MLStudy
             FCLayers = new List<FullyConnectedLayer>();
         }
 
-        public NeuralNetwork(int fcInputFeatures, params int[] FCLayers)
-        {
-            InputFeatures = fcInputFeatures;
-            InitFCLayers(FCLayers);
-        }
-
         private void InitFCLayers(int[] fcLayers)
         {
             FCLayers = new List<FullyConnectedLayer>();
