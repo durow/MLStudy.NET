@@ -12,7 +12,6 @@ namespace MLStudy
         public int BatchSize { get; set; }
         public int Epoch { get; set; }
         public bool RandomBatch { get; set; }
-        public int Seed { get; set; }
 
         public Tensor TrainX { get; private set; }
         public Tensor TrainY { get; private set; }
@@ -21,7 +20,6 @@ namespace MLStudy
 
         private Tensor xBuff;
         private Tensor yBuff;
-        private Random rand { get; set; }
         private int pointer = 0;
         private int batchPerEpoch;
         private int sampleCount;
@@ -57,9 +55,6 @@ namespace MLStudy
             batchPerEpoch = trainX.shape[0] / BatchSize;
             if (trainX.shape[0] % BatchSize != 0)
                 batchPerEpoch++;
-
-            if (RandomBatch)
-                rand = new Random(Seed);
 
             Training = true;
             epochCounter = 0;
@@ -127,7 +122,7 @@ namespace MLStudy
 
         private void SetBatchDataRandom()
         {
-            var selected = GetRandomDistinct(0, sampleCount, BatchSize, Seed);
+            var selected = Utilities.GetRandomDistinct(0, sampleCount, BatchSize);
             for (int i = 0; i < selected.Count; i++)
             {
                 CopyToBatch(selected[i], i);
@@ -165,38 +160,6 @@ namespace MLStudy
         {
             Array.Copy(TrainX.GetRawValues(), trainIndex * xWidth, xBuff.GetRawValues(), batchIndex * xWidth, xWidth);
             Array.Copy(TrainY.GetRawValues(), trainIndex * yWidth, yBuff.GetRawValues(), batchIndex * yWidth, yWidth);
-        }
-
-        public static List<int> GetRandomDistinct(int min, int max, int count, int seed)
-        {
-            if (count < 1)
-                return new List<int>();
-
-            if (count > (max - min))
-                throw new Exception("count must < max-min");
-
-            if (count > (max - min) / 2)
-            {
-                var temp = GetRandomDistinct(min, max, max - min - count, seed);
-                var remain = new List<int>();
-                for (int i = min; i < max; i++)
-                {
-                    if (temp.Contains(i))
-                        continue;
-                    remain.Add(i);
-                }
-                return remain;
-            }
-
-            var rand = new Random(seed);
-            var result = new List<int>();
-            while (result.Count < count)
-            {
-                var r = rand.Next(min, max);
-                if (!result.Contains(r))
-                    result.Add(r);
-            }
-            return result;
         }
 
         private string GetTimeSpanFormat(TimeSpan ts)

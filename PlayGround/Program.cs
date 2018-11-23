@@ -7,7 +7,7 @@ namespace PlayGround
     {
         static void Main(string[] args)
         {
-            IPlay play = new XOR();
+            IPlay play = new Iris();
             play.Play();
 
             Console.ReadKey();
