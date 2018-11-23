@@ -10,5 +10,7 @@ namespace MLStudy.Abstraction
         void Step(Tensor X, Tensor y);
         double GetTrainLoss();
         double GetLoss(Tensor y, Tensor yHat);
+        double GetTrainAccuracy();
+        double GetAccuracy(Tensor y, Tensor yHat);
     }
 }

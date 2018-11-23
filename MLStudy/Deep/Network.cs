@@ -112,6 +112,16 @@ namespace MLStudy.Deep
             return LossFunction.GetLoss(y, yHat);
         }
 
+        public double GetTrainAccuracy()
+        {
+            return LossFunction.GetAccuracy();
+        }
+
+        public double GetAccuracy(Tensor y, Tensor yHat)
+        {
+            return LossFunction.GetAccuracy(y, yHat);
+        }
+
         public Tensor Forward(Tensor input)
         {
             for (int i = 0; i < TrainingLayers.Count; i++)

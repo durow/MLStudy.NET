@@ -33,7 +33,7 @@ namespace PlayGround.Plays
             var trainer = new Train(engine, 16, 100, true);
             trainer.StartTrain(X, y, null, null);
 
-            var machine = new Machine<string>(engine);
+            var machine = new Machine<string>(engine, MachineType.Classification);
             machine.LabelCodec = codec;
 
             while (true)

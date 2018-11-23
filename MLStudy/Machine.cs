@@ -9,15 +9,22 @@ namespace MLStudy
 {
     public class Machine : Machine<double>
     {
-        public Machine(IEngine engine)
-            : base(engine)
+        public Machine(IEngine engine, MachineType type)
+            : base(engine, type)
         { }
 
         public new List<double> Predict(Tensor X)
         {
             X = Normalize(X);
-            var result = Engine.Predict(X);
-            return result.GetRawValues().ToList();
+            LastRawResult = Engine.Predict(X);
+
+            if (MachineType == MachineType.Classification)
+            {
+                LastResultCodec = Utilities.ProbabilityToCode(LastRawResult);
+                return LastResultCodec.GetRawValues().ToList();
+            }
+            else
+                return LastRawResult.GetRawValues().ToList();
         }
 
         public new List<double> Predict(DataTable table)

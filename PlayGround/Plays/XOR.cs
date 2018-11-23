@@ -21,7 +21,9 @@ namespace PlayGround
                 .AddSigmoid()
                 .UseCrossEntropyLoss()
                 .UseGradientDescent(0.01)
-                .UseRidge(0.0001);
+                .UseRidge(0.001);
+
+            var machine = new Machine(engine, MachineType.Classification);
 
             var (trainX, trainY) = GetXorData(1000);
             var (testX, testY) = GetXorData(500);
@@ -30,7 +32,6 @@ namespace PlayGround
             tain.StartTrain(trainX, trainY, testX, testY);
 
             Console.WriteLine("Complete!");
-            var machine = new Machine(engine);
 
             while (true)
             {
@@ -42,9 +43,10 @@ namespace PlayGround
                 var a1 = double.Parse(str1);
                 var a2 = double.Parse(str2);
 
-                var result = machine.Predict(new Tensor(new double[] { a1, a2 }, 1, 2));
-
-                Console.WriteLine(string.Join(",", result));
+                var output = machine.Predict(new Tensor(new double[] { a1, a2 }, 1, 2));
+                var result = output[0];
+                var p = machine.LastRawResult.GetValue();
+                Console.WriteLine($"result is {result} with probability:{result * p + (1 - result) * (1 - p)}");
             }
         }
 
@@ -56,7 +58,7 @@ namespace PlayGround
             }
         }
 
-        public (Tensor,Tensor) GetXorData(int count)
+        public (Tensor, Tensor) GetXorData(int count)
         {
             var xbuff = DataEmulator.Instance.RandomArray(count, 2);
             var x = new Tensor(xbuff);
@@ -65,9 +67,9 @@ namespace PlayGround
             for (int i = 0; i < count; i++)
             {
                 if (x[i, 0] * x[i, 1] > 0)
-                    y[i,0] = 0;
+                    y[i, 0] = 0;
                 else
-                    y[i,0] = 1;
+                    y[i, 0] = 1;
             }
             return (x, y);
         }

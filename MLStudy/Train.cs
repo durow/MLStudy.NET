@@ -29,6 +29,7 @@ namespace MLStudy
         private int yWidth;
         private int batchCounter = 1;
         private int epochCounter = 0;
+        private DateTime startTime;
 
         public event EventHandler BatchComplete;
 
@@ -63,21 +64,33 @@ namespace MLStudy
             Training = true;
             epochCounter = 0;
             batchCounter = 1;
+            startTime = DateTime.Now;
             while (Training && epochCounter < Epoch)
             {
-                //Console.WriteLine($"============== Epoch {epochCounter + 1} ==============");
+                Console.WriteLine($"============== Epoch {epochCounter + 1} ==============");
+                var epochStart = DateTime.Now;
+
                 TrainEpoch();
 
                 var trainLoss = Engine.GetTrainLoss();
+                var trainAcc = Engine.GetTrainAccuracy();
+
+                ShowTime(epochStart);
+                ShowTrainLoss(trainLoss, trainAcc);
+
                 var testLoss = 0d;
+                var testAcc = 0d;
                 if (TestX != null && TestY != null)
                 {
                     var testYHat = Engine.Predict(TestX);
                     testLoss = Engine.GetLoss(TestY, testYHat);
+                    testAcc = Engine.GetAccuracy(testY, testYHat);
+                    ShowTestLoss(testLoss, testAcc);
                 }
-                ConsoleOut(trainLoss, testLoss);
+
                 epochCounter++;
             }
+            ShowCompelteInfo();
         }
 
         public void Stop()
@@ -121,9 +134,31 @@ namespace MLStudy
             }
         }
 
-        private void ConsoleOut(double trainLoss, double testLoss)
+        private void ShowTime(DateTime epochStart)
         {
-            Console.WriteLine($"Epoch:{epochCounter + 1}>>Train Loss: {trainLoss},  Test Loss: {testLoss}");
+            var cost = DateTime.Now - epochStart;
+            var passed = DateTime.Now - startTime;
+            var remain = GetRemainTimeSpan(passed);
+            var estimate = DateTime.Now + remain;
+
+            Console.WriteLine($"Time>>cost:{cost.TotalSeconds.ToString("F2")}s  passed:{GetTimeSpanFormat(passed)} remain:{GetTimeSpanFormat(remain)}  ETA:{estimate.ToString("yyyy-MM-dd HH:mm:ss")}");
+        }
+
+        private void ShowTrainLoss(double trainLoss, double trainAccuracy)
+        {
+
+            Console.WriteLine($"Train>>Loss:{trainLoss}\tAccuracy:{trainAccuracy}");
+        }
+
+        private void ShowTestLoss(double testLoss, double testAccuracy)
+        {
+            Console.WriteLine($"Test>>Loss:{testLoss}\tAccuracy:{testAccuracy}");
+        }
+
+        private void ShowCompelteInfo()
+        {
+            var ts = DateTime.Now - startTime;
+            Console.WriteLine($"Train complete, use total time:{GetTimeSpanFormat(ts)}");
         }
 
         private void CopyToBatch(int trainIndex, int batchIndex)
@@ -162,6 +197,37 @@ namespace MLStudy
                     result.Add(r);
             }
             return result;
+        }
+
+        private string GetTimeSpanFormat(TimeSpan ts)
+        {
+            var start = false;
+            var result = new List<string>();
+            if (ts.Days > 0 || start)
+            {
+                result.Add($"{ts.Days}d");
+                start = true;
+            }
+            if (ts.Hours > 0 || start)
+            {
+                result.Add($"{ts.Hours}h");
+                start = true;
+
+            }
+            if (ts.Minutes > 0 || start)
+            {
+                result.Add($"{ts.Minutes}m");
+
+            }
+            result.Add($"{ts.Seconds}s");
+
+            return string.Join("", result);
+        }
+
+        private TimeSpan GetRemainTimeSpan(TimeSpan passed)
+        {
+            var ms = passed.TotalMilliseconds * (Epoch - epochCounter + 1) / (epochCounter + 1);
+            return TimeSpan.FromMilliseconds(ms);
         }
     }
 }

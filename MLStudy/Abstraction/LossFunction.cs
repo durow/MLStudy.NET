@@ -29,6 +29,8 @@ namespace MLStudy.Abstraction
             return ForwardOutput.Mean();
         }
 
+        public abstract double GetAccuracy();
+
         /// <summary>
         /// 模型预测后可以使用这个函数计算Loss
         /// </summary>
@@ -36,6 +38,8 @@ namespace MLStudy.Abstraction
         /// <param name="yHat">预测值</param>
         /// <returns>Loss</returns>
         public abstract double GetLoss(Tensor y, Tensor yHat);
+
+        public abstract double GetAccuracy(Tensor y, Tensor yHat);
 
         /// <summary>
         /// 训练前的准备工作，检查并确定所需Tensor的结构并分配好内存

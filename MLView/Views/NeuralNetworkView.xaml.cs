@@ -36,7 +36,7 @@ namespace MLView.Views
             TrainerConfig.Config = trainerConfig;
             DataConfig.Config = dataConfig;
             LinearRegConfig.Config = lrConfig;
-            nn = new NeuralNetwork(2,4).UseLogisticRegressionOutLayer();
+            nn = new NeuralNetwork().UseLogisticRegressionOutLayer();
             trainer = new Trainer(nn);
             TrainerControl.Trainer = trainer;
 

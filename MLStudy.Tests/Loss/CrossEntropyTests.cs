@@ -51,5 +51,25 @@ namespace MLStudy.Tests.Deep
 
             Assert.True(loss < loss2);
         }
+
+        [Fact]
+        public void AccuracyTest()
+        {
+            var y = new Tensor(new double[] { 1, 0, 1, 0, 1, 0 }, 6, 1);
+            var yHat = new Tensor(new double[] { 0, 1, 1, 1, 1, 0 }, 6, 1);
+            var expected = 0.5;
+            var actual = CrossEntropy.ComputeAccuracy(y, yHat);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void AccuracyTest2()
+        {
+            var y = new Tensor(new double[] { 0, 0, 1, 0, 1, 0 }, 2, 3);
+            var yHat = new Tensor(new double[] { 0, 1, 0, 0, 1, 0 }, 2, 3);
+            var expected = 0.5;
+            var actual = CrossEntropy.ComputeAccuracy(y, yHat);
+            Assert.Equal(expected, actual);
+        }
     }
 }

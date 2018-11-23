@@ -5,6 +5,7 @@
  */
 
 using MLStudy.Abstraction;
+using System;
 
 namespace MLStudy
 {
@@ -35,7 +36,7 @@ namespace MLStudy
         {
             //只记录了平方误差，使用GetLoss可获取均方误差
             Functions.SquareError(y, yHat, ForwardOutput);
-            Derivatives.MeanSquareError(y, yHat, ForwardOutput);
+            Derivatives.MeanSquareError(y, yHat, BackwardOutput);
         }
 
         /// <summary>
@@ -47,6 +48,17 @@ namespace MLStudy
         public override double GetLoss(Tensor y, Tensor yHat)
         {
             return Functions.MeanSquareError(y, yHat);
+        }
+
+        public override double GetAccuracy()
+        {
+            return Math.Sqrt(ForwardOutput.Mean());
+        }
+
+        public override double GetAccuracy(Tensor y, Tensor yHat)
+        {
+            var mse = Functions.MeanSquareError(y, yHat);
+            return Math.Sqrt(mse);
         }
     }
 }

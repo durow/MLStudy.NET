@@ -18,6 +18,8 @@ namespace MLStudy
         private double[] yHatBuff;
         private double[] derBuff;
         private int sampleNumber;
+        private Tensor LastY;
+        private Tensor LastYHat;
 
         /// <summary>
         /// 训练前的准备工作，检查并确定所需Tensor的结构并分配好内存
@@ -30,7 +32,7 @@ namespace MLStudy
             if (y.Rank != 2)
                 throw new TensorShapeException("y and yHat must Rank=2");
 
-            ForwardOutput = new Tensor(y.Shape[0]);
+            ForwardOutput = new Tensor(y.shape[0]);
             BackwardOutput = yHat.GetSameShape();
             yBuff = new double[y.shape[1]];
             yHatBuff = new double[y.shape[1]];
@@ -44,6 +46,41 @@ namespace MLStudy
         /// <param name="y"></param>
         /// <param name="yHat"></param>
         public override void Compute(Tensor y, Tensor yHat)
+        {
+            LastY = y;
+            LastYHat = yHat;
+            ComputeCrossEntropy(y, yHat);
+        }
+
+        public override double  GetLoss(Tensor y, Tensor yHat)
+        {
+            var outData = ForwardOutput.GetRawValues();
+
+            var result = 0d;
+            for (int i = 0; i < y.shape[0]; i++)
+            {
+                //取出一个样本及其对应的Label
+                y.GetByDim1(i, yBuff);
+                yHat.GetByDim1(i, yHatBuff);
+                //计算交叉熵
+                result += Functions.CrossEntropy(yBuff, yHatBuff);
+            }
+
+            return result / sampleNumber;
+        }
+
+        public override double GetAccuracy()
+        {
+            return GetAccuracy(LastY, LastYHat);
+        }
+
+        public override double GetAccuracy(Tensor y, Tensor yHat)
+        {
+            var code = Utilities.ProbabilityToCode(yHat);
+            return ComputeAccuracy(y, code);
+        }
+
+        private void ComputeCrossEntropy(Tensor y, Tensor yHat)
         {
             var outData = ForwardOutput.GetRawValues();
             var derData = BackwardOutput.GetRawValues();
@@ -62,21 +99,28 @@ namespace MLStudy
             }
         }
 
-        public override double GetLoss(Tensor y, Tensor yHat)
+        public static double ComputeAccuracy(Tensor y, Tensor yHat)
         {
-            var outData = ForwardOutput.GetRawValues();
-            var derData = BackwardOutput.GetRawValues();
-
-            var result = 0d;
-            for (int i = 0; i < y.shape[0]; i++)
+            var count = y.shape[0];
+            var eq = 0d;
+            for (int i = 0; i < count; i++)
             {
-                //取出一个样本及其对应的Label
-                y.GetByDim1(i, yBuff);
-                yHat.GetByDim1(i, yHatBuff);
-                //计算交叉熵
-                result += Functions.CrossEntropy(yBuff, yHatBuff);
+                if (RowEqual(y, yHat, i * y.shape[1], y.shape[1]))
+                    eq++;
             }
-            return result / sampleNumber;
+            return eq / count;
         }
+
+        private static bool RowEqual(Tensor t1, Tensor t2, int start, int len)
+        {
+            for (int i = 0; i < len; i++)
+            {
+                if (t1.GetRawValues()[start + i] != t2.GetRawValues()[start + i])
+                    return false;
+            }
+            return true;
+        }
+
+        
     }
 }
