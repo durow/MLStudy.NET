@@ -6,7 +6,7 @@ using Xunit;
 
 namespace MLStudy.Tests.Deep.Layers
 {
-    public class PoolingLayerTests
+    public class MaxPoolingTests
     {
         [Fact]
         public void ForwardBackwardTest()
@@ -47,7 +47,7 @@ namespace MLStudy.Tests.Deep.Layers
         }
 
         [Fact]
-        public void ForwardTest2()
+        public void ForwardBackwardTest2()
         {
             var data = new double[]
             {
@@ -117,7 +117,7 @@ namespace MLStudy.Tests.Deep.Layers
         }
 
         [Fact]
-        public void ForwardTest3()
+        public void ForwardBackwardTest3()
         {
             var data = new double[]
             {

@@ -90,7 +90,7 @@ namespace MLStudy.Deep
 
         public ILayer CreateSame()
         {
-            throw new NotImplementedException();
+            return new MaxPooling(Rows, Columns, RowStride, ColumnStride);
         }
 
         private void PoolingChannel(Tensor input, int sample, int channel)
