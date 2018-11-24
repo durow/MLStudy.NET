@@ -98,9 +98,9 @@ namespace MLStudy.Deep
             var maxIndex = 0;
             for (int row = 0; row < outRows; row++)
             {
+                var inputRow = row * RowStride;
                 for (int col = 0; col < outColumns; col++)
                 {
-                    var inputRow = row * RowStride;
                     var inputColumn = col * ColumnStride;
                     var max = input[sample, channel, inputRow, inputColumn];
                     var maxRow = inputRow;

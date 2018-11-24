@@ -95,9 +95,9 @@ namespace MLStudy.Deep
         {
             for (int row = 0; row < outRows; row++)
             {
+                var inputRow = row * RowStride;
                 for (int col = 0; col < outColumns; col++)
                 {
-                    var inputRow = row * RowStride;
                     var inputColumn = col * ColumnStride;
                     var sum = 0d;
 
@@ -118,9 +118,9 @@ namespace MLStudy.Deep
         {
             for (int row = 0; row < outRows; row++)
             {
+                var inputRow = row * RowStride;
                 for (int col = 0; col < outColumns; col++)
                 {
-                    var inputRow = row * RowStride;
                     var inputColumn = col * ColumnStride;
                     var e = error[sample, channel, row, col] / poolElements;
                     for (int i = 0; i < Rows; i++)
