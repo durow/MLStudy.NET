@@ -123,7 +123,7 @@ namespace MLStudy
         private void SetBatchDataRandom()
         {
             var selected = Utilities.GetRandomDistinct(0, sampleCount, BatchSize);
-            for (int i = 0; i < selected.Count; i++)
+            for (int i = 0; i < selected.Length; i++)
             {
                 CopyToBatch(selected[i], i);
             }
