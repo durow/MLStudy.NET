@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLStudy", "MLStudy\MLStudy.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLStudy.Tests", "MLStudy.Tests\MLStudy.Tests.csproj", "{2EEEE15A-614B-4143-9781-155133A820F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLView", "MLView\MLView.csproj", "{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayGround", "PlayGround\PlayGround.csproj", "{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayGround", "PlayGround\PlayGround.csproj", "{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{2EEEE15A-614B-4143-9781-155133A820F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EEEE15A-614B-4143-9781-155133A820F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EEEE15A-614B-4143-9781-155133A820F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F7E3ACB-A046-4AAD-A931-6CFD6B056C59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA4F7903-EA3B-45F4-A548-23CE5F91EFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
