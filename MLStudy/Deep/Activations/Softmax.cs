@@ -136,9 +136,9 @@ namespace MLStudy.Deep
         {
             var derData = Derivative.GetRawValues();
             var outData = ForwardOutput.GetRawValues();
-            Parallel.For(0, sampleNumber, (Action<int>)(sampleIndex =>
+            Parallel.For(0, sampleNumber, sampleIndex =>
             {
-                var outStart = base.ForwardOutput.GetRawOffset(sampleIndex, 0);
+                var outStart = ForwardOutput.GetRawOffset(sampleIndex, 0);
                 Parallel.For(0, categoryNumber, i =>
                 {
                     var derStart = Derivative.GetRawOffset(sampleIndex, i, 0);
@@ -150,7 +150,7 @@ namespace MLStudy.Deep
                             derData[derStart + j] = -outData[(int)(outStart + i)] * outData[(int)(outStart + j)];
                     }
                 });
-            }));
+            });
         }
 
         public override ILayer CreateSame()
