@@ -5,10 +5,10 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class Train
+    public class Trainer
     {
         public bool Training { get; private set; }
-        public IEngine Engine { get; private set; }
+        public IModel Model { get; private set; }
         public int BatchSize { get; set; }
         public int Epoch { get; set; }
         public bool RandomBatch { get; set; }
@@ -31,9 +31,9 @@ namespace MLStudy
 
         public event EventHandler BatchComplete;
 
-        public Train(IEngine engine, int batchSize, int epoch, bool randomBatch = false)
+        public Trainer(IModel model, int batchSize, int epoch, bool randomBatch = false)
         {
-            Engine = engine;
+            Model = model;
             BatchSize = batchSize;
             Epoch = epoch;
             RandomBatch = randomBatch;
@@ -67,8 +67,8 @@ namespace MLStudy
 
                 TrainEpoch();
 
-                var trainLoss = Engine.GetTrainLoss();
-                var trainAcc = Engine.GetTrainAccuracy();
+                var trainLoss = Model.GetTrainLoss();
+                var trainAcc = Model.GetTrainAccuracy();
 
                 ShowTime(epochStart);
                 ShowTrainLoss(trainLoss, trainAcc);
@@ -77,9 +77,9 @@ namespace MLStudy
                 var testAcc = 0d;
                 if (TestX != null && TestY != null)
                 {
-                    var testYHat = Engine.Predict(TestX);
-                    testLoss = Engine.GetLoss(TestY, testYHat);
-                    testAcc = Engine.GetAccuracy(testY, testYHat);
+                    var testYHat = Model.Predict(TestX);
+                    testLoss = Model.GetLoss(TestY, testYHat);
+                    testAcc = Model.GetAccuracy(testY, testYHat);
                     ShowTestLoss(testLoss, testAcc);
                 }
 
@@ -99,7 +99,7 @@ namespace MLStudy
             while (Training && counter < batchPerEpoch)
             {
                 SetBatchData();
-                Engine.Step(xBuff, yBuff);
+                Model.Step(xBuff, yBuff);
                 counter++;
                 batchCounter++;
             }

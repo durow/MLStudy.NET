@@ -14,7 +14,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 神经网络
     /// </summary>
-    public sealed class Network : IEngine
+    public sealed class Network : IModel
     {
         /// <summary>
         /// 用于训练的层

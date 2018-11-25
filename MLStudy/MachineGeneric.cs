@@ -10,13 +10,13 @@ namespace MLStudy
     public class Machine<T>
     {
         public INormalizer Normalizer { get; set; }
-        public IEngine Engine { get; set; }
+        public IModel Model { get; set; }
         public IPreProcessor PreProcessor { get; set; }
         public DiscreteCodec<T> LabelCodec { get; set; }
         public MachineType MachineType { get; private set; }
-        public Machine(IEngine engine, MachineType type)
+        public Machine(IModel model, MachineType type)
         {
-            Engine = engine;
+            Model = model;
             MachineType = type;
         }
 
@@ -26,7 +26,7 @@ namespace MLStudy
         public List<T>Predict(Tensor X)
         {
             X = Normalize(X);
-            LastRawResult = Engine.Predict(X);
+            LastRawResult = Model.Predict(X);
             if (LabelCodec == null)
             {
                 throw new Exception("you need a LabelDecoder!");

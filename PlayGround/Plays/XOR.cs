@@ -12,7 +12,7 @@ namespace PlayGround
         {
             Console.WriteLine("XOR Learn!");
 
-            var engine = new Network()
+            var model = new Network()
                 .AddFullLayer(2)
                 .AddSigmoid()
                 .AddFullLayer(2)
@@ -23,12 +23,12 @@ namespace PlayGround
                 .UseGradientDescent(0.01)
                 .UseRidge(0.001);
 
-            var machine = new Machine(engine, MachineType.Classification);
+            var machine = new Machine(model, MachineType.Classification);
 
             var (trainX, trainY) = GetXorData(1000);
             var (testX, testY) = GetXorData(500);
 
-            var tain = new Train(engine, 32, 200);
+            var tain = new Trainer(model, 32, 200);
             tain.StartTrain(trainX, trainY, testX, testY);
 
             Console.WriteLine("Complete!");

@@ -9,14 +9,14 @@ namespace MLStudy
 {
     public class Machine : Machine<double>
     {
-        public Machine(IEngine engine, MachineType type)
-            : base(engine, type)
+        public Machine(IModel model, MachineType type)
+            : base(model, type)
         { }
 
         public new List<double> Predict(Tensor X)
         {
             X = Normalize(X);
-            LastRawResult = Engine.Predict(X);
+            LastRawResult = Model.Predict(X);
 
             if (MachineType == MachineType.Classification)
             {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy.Abstraction
 {
-    public interface IEngine
+    public interface IModel
     {
         Tensor Predict(Tensor input);
         void Step(Tensor X, Tensor y);

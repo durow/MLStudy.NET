@@ -20,7 +20,7 @@ namespace PlayGround.Plays
             var y = codec.Encode(labels);
             var X = DataFormat.DataTableToTensor(iris, 1, 2, 3, 4);
 
-            var engine = new Network()
+            var model = new Network()
                 .AddFullLayer(10)
                 .AddSigmoid()
                 .AddFullLayer(6)
@@ -30,10 +30,10 @@ namespace PlayGround.Plays
                 .UseCrossEntropyLoss()
                 .UseGradientDescent(0.01);
 
-            var trainer = new Train(engine, 16, 100, true);
+            var trainer = new Trainer(model, 16, 100, true);
             trainer.StartTrain(X, y, null, null);
 
-            var machine = new Machine<string>(engine, MachineType.Classification);
+            var machine = new Machine<string>(model, MachineType.Classification);
             machine.LabelCodec = codec;
 
             while (true)
