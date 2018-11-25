@@ -26,23 +26,6 @@ namespace MLStudy
         private static Random rand1 = new Random((int)DateTime.Now.Ticks);
         private static Random rand2 = new Random((int)DateTime.Now.Ticks);
 
-        public (Matrix,Vector,Matrix,Vector) GetTrainTestData(int rows, int columns, int testSize, double min, double max, Func<Matrix,Vector> F)
-        {
-            Matrix trainX, testX;
-            Vector trainY, testY;
-            (trainX, trainY) = GetTrainData(rows, columns, min, max, F);
-            (testX, testY) = GetTrainData(testSize, columns, min, max, F);
-
-            return (trainX, trainY, testX, testY);
-        }
-
-        public (Matrix, Vector) GetTrainData(int rows, int columns, double min, double max, Func<Matrix, Vector> F)
-        {
-            var trainX = RandomMatrix(rows, columns) * (max - min) + min;
-            var trainY = F(trainX);
-            return (trainX, trainY);
-        }
-
         public double Random()
         {
             return rand1.NextDouble();
@@ -97,48 +80,6 @@ namespace MLStudy
             var result = new double[rows, columns];
             var rand = RandomArrayGaussian(len);
             return D1ToD2(rand, rows, columns);
-        }
-
-        public Vector RandomVector(int length)
-        {
-            return new Vector(RandomArray(length));
-        }
-
-        public Vector RandomVector(int length, double min, double max)
-        {
-            return RandomVector(length) * (max - min) + min;
-        }
-
-        public Matrix RandomMatrix(int rows, int columns)
-        {
-            return new Matrix(RandomArray(rows,columns));
-        }
-
-        public Matrix RandomMatrix(int rows, int columns, double min, double max)
-        {
-            return RandomMatrix(rows, columns) * (max - min) + min;
-        }
-
-        public Vector RandomVectorGaussian(int length, double mean = 0, double variance = 1)
-        {
-            return new Vector(RandomArrayGaussian(length, mean, variance));
-        }
-
-        public Matrix RandomMatrixGaussian(int rows, int columns, double mean = 0, double variance = 1)
-        {
-            return new Matrix(RandomArrayGaussian(rows, columns, mean, variance));
-        }
-
-        public Vector AddGaussianNoise(Vector v, double mean = 0, double variance = 1)
-        {
-            var noise = RandomVectorGaussian(v.Length, mean, variance);
-            return v + noise;
-        }
-
-        public Matrix AddGaussianNoise(Matrix m, double mean = 0, double variance = 1)
-        {
-            var noise = RandomMatrixGaussian(m.Rows, m.Columns, mean, variance);
-            return m + noise;
         }
 
         //z0 = sqrt(-2 * log(u)) * cos(2*pi * v);

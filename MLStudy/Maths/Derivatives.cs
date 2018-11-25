@@ -6,11 +6,6 @@ namespace MLStudy
 {
     public class Derivatives
     {
-        public static Matrix ReLU(Matrix input)
-        {
-            return input.ApplyFunction(a => ReLU(a));
-        }
-
         public static double ReLU(double d)
         {
             return d > 0 ? 1 : 0;

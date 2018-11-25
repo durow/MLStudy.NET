@@ -34,26 +34,6 @@ namespace MLStudy.Data
         public string TestImagesFile { get; set; }
         public string TestLabelsFile { get; set; }
 
-        public Matrix ReadTrainImagesToMatrix()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Vector ReadTrainLabels()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Tensor3 ReadTrainImagesToTensor3()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Vector ReadTestLabels()
-        {
-            throw new NotImplementedException();
-        }
-
         /*
          *  TRAINING SET LABEL FILE (train-labels-idx1-ubyte):
          *  [offset] [type]          [value]          [description] 
@@ -66,7 +46,7 @@ namespace MLStudy.Data
          *   The labels values are 0 to 9.
          */
 
-        public static Vector ReadLabels(string filename)
+        public static double[] ReadLabels(string filename)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -74,7 +54,7 @@ namespace MLStudy.Data
                 {
                     br.ReadInt32(); //skip the 32bit magic number
                     var count = ReadInt32BigEndian(br); //read the number of labels
-                    var result = new Vector(count);
+                    var result = new double[count];
 
                     for (int i = 0; i < count; i++)
                     {
@@ -109,7 +89,12 @@ namespace MLStudy.Data
          *   Pixels are organized row-wise. Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black).
          */
 
-        public static Matrix ReadImagesToMatrix(string filename)
+        /// <summary>
+        /// read images to Tensor rank=2, used for FullyConnected network
+        /// </summary>
+        /// <param name="filename">filename</param>
+        /// <returns></returns>
+        public static Tensor ReadImagesToMatrix(string filename)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -120,7 +105,7 @@ namespace MLStudy.Data
                     var rows = ReadInt32BigEndian(br);  //read the number of rows
                     var columns = ReadInt32BigEndian(br); //read the number of columns
                     var length = rows * columns;
-                    var result = new Matrix(count,length);
+                    var result = new Tensor(count,length);
 
                     for (int i = 0; i < count; i++)
                     {
@@ -134,7 +119,12 @@ namespace MLStudy.Data
             }
         }
 
-        public static Tensor3 ReadImagesToTensor3(string filename)
+        /// <summary>
+        /// Read images as Tensor rank=4, used for CNN
+        /// </summary>
+        /// <param name="filename">filename</param>
+        /// <returns>result</returns>
+        public static Tensor ReadImagesToTensor4(string filename)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -144,34 +134,7 @@ namespace MLStudy.Data
                     var count = ReadInt32BigEndian(br); //read the number of images
                     var rows = ReadInt32BigEndian(br);  //read the number of rows
                     var columns = ReadInt32BigEndian(br); //read the number of columns
-                    var result = new Tensor3(count, rows, columns);
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        for (int j = 0; j < rows; j++)
-                        {
-                            for (int k = 0; k < columns; k++)
-                            {
-                                result[i, j, k] = br.ReadByte();
-                            }
-                        }
-                    }
-                    return result;
-                }
-            }
-        }
-
-        public static Tensor4 ReadImagesToTensor4(string filename)
-        {
-            using (var fs = new FileStream(filename, FileMode.Open))
-            {
-                using (var br = new BinaryReader(fs))
-                {
-                    br.ReadInt32(); //skip the 32bit magic number
-                    var count = ReadInt32BigEndian(br); //read the number of images
-                    var rows = ReadInt32BigEndian(br);  //read the number of rows
-                    var columns = ReadInt32BigEndian(br); //read the number of columns
-                    var result = new Tensor4(count, 1, rows, columns);
+                    var result = new Tensor(count, 1, rows, columns);
 
                     for (int i = 0; i < count; i++)
                     {

@@ -53,28 +53,6 @@ namespace MLStudy
             }
         }
 
-        public static Vector Softmax(Vector v)
-        {
-            var max = v.Max();
-            v -= max;
-            v = v.ApplyFunction(a => Math.Pow(Math.E, a));
-            return v / v.Sum();
-        }
-
-        public static Matrix SoftmaxByRow(Matrix m)
-        {
-            var result = m.GetSameShape();
-            for (int i = 0; i < m.Rows; i++)
-            {
-                var s = Softmax(m[i]);
-                for (int j = 0; j < m.Columns; j++)
-                {
-                    result[i, j] = s[j];
-                }
-            }
-            return result;
-        }
-
         public static double CrossEntropy(double[] y, double[] yHat)
         {
             if (y.Length != yHat.Length)
