@@ -6,20 +6,8 @@ using System.Threading.Tasks;
 
 namespace MLStudy.Deep
 {
-    public sealed class MeanPooling : ILayer
+    public sealed class MeanPooling : PoolingLayer
     {
-        public string Name { get; set; }
-        public int Rows { get; private set; }
-        public int Columns { get; private set; }
-        public int RowStride { get; private set; }
-        public int ColumnStride { get; private set; }
-        public Tensor ForwardOutput { get; private set; }
-        public Tensor BackwardOutput { get; private set; }
-
-        private int samples;
-        private int channels;
-        private int outRows;
-        private int outColumns;
         private int poolElements;
 
         public MeanPooling(int sizeAndStride)
@@ -38,14 +26,14 @@ namespace MLStudy.Deep
             ColumnStride = columnStride;
         }
 
-        public Tensor PrepareTrain(Tensor input)
+        public override Tensor PrepareTrain(Tensor input)
         {
             PreparePredict(input);
             BackwardOutput = input.GetSameShape();
             return ForwardOutput;
         }
 
-        public Tensor PreparePredict(Tensor input)
+        public override Tensor PreparePredict(Tensor input)
         {
             if (input.Rank != 4)
                 throw new Exception("MaxPooling layer input rank must be 4!");
@@ -60,7 +48,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public Tensor Forward(Tensor input)
+        public override Tensor Forward(Tensor input)
         {
             Parallel.For(0, ForwardOutput.shape[0], sampleIndex =>
             {
@@ -72,7 +60,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public Tensor Backward(Tensor error)
+        public override Tensor Backward(Tensor error)
         {
             BackwardOutput.Clear();
 
@@ -86,7 +74,7 @@ namespace MLStudy.Deep
             return BackwardOutput;
         }
 
-        public ILayer CreateSame()
+        public override ILayer CreateSame()
         {
             return new MeanPooling(Rows, Columns, RowStride, ColumnStride);
         }

@@ -6,7 +6,7 @@
 
 using MLStudy.Abstraction;
 
-namespace MLStudy.Deep.Activations
+namespace MLStudy.Deep
 {
     public abstract class Activation : ILayer
     {

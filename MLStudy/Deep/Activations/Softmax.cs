@@ -14,7 +14,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 使用Softmax函数的激活层
     /// </summary>
-    public sealed class Softmax : Activations.Activation
+    public sealed class Softmax : Activation
     {
         private double[] sampleBuff;
         private int sampleNumber;
