@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace MLStudy.Storage
+namespace MLStudy.Storages
 {
     public static class XmlLossStorage
     {
@@ -40,20 +40,8 @@ namespace MLStudy.Storage
         public static void AddEmpty<T>() where T : LossFunction
         {
             var type = typeof(T);
-            LossSaver[type] = (d, o) => SaveEmptyObject<T>(d);
-            LossLoader[type.Name] = e => CreateEmptyObject<T>();
-        }
-
-        internal static XmlElement SaveEmptyObject<T>(XmlDocument doc)
-        {
-            var type = typeof(T);
-            var el = doc.CreateElement(type.Name);
-            return el;
-        }
-
-        internal static T CreateEmptyObject<T>()
-        {
-            return Activator.CreateInstance<T>();
+            LossSaver[type] = (d, o) => XmlStorage.SaveEmptyObject<T>(d);
+            LossLoader[type.Name] = e => XmlStorage.CreateEmptyObject<T>();
         }
     }
 }

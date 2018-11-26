@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MLStudy.Storage
+namespace MLStudy.Storages
 {
     class TrainLog
     {

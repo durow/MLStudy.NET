@@ -1,5 +1,5 @@
 ﻿using MLStudy.Deep;
-using MLStudy.Storage;
+using MLStudy.Storages;
 using System;
 using System.Collections.Generic;
 using System.IO;
