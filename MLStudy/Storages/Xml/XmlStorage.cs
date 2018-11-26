@@ -16,10 +16,18 @@ namespace MLStudy.Storages
         {
             var ifType = typeof(IXmlStorage);
             var ass = Assembly.GetExecutingAssembly();
-            var types = ass.GetTypes().Where(t => !t.IsGenericType && t.GetInterfaces().Contains(ifType));
+            var types = ass.GetTypes().Where(t=>t.GetInterfaces().Contains(ifType));
             foreach (var type in types)
             {
-                var instance = (IXmlStorage)Activator.CreateInstance(type);
+                IXmlStorage instance;
+                if (type.IsGenericType)
+                {
+                    var gType = type.MakeGenericType(type.GetGenericTypeDefinition());
+                    instance = (IXmlStorage)Activator.CreateInstance(gType);
+                }
+                else
+                    instance = (IXmlStorage)Activator.CreateInstance(type);
+
                 typeDict[instance.Type] = instance;
                 nameDict[instance.Type.Name] = instance;
             }

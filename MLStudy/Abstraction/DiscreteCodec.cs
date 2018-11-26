@@ -12,11 +12,11 @@ namespace MLStudy.Abstraction
 {
     public abstract class DiscreteCodec<T>
     {
-        protected List<T> categories;
+        public List<T> Categories { get; private set; }
 
         public DiscreteCodec(IEnumerable<T> categories)
         {
-            this.categories = categories.Distinct().ToList();
+            this.Categories = categories.Distinct().ToList();
         }
 
         public abstract Tensor Encode(List<T> data);

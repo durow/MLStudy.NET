@@ -7,7 +7,7 @@ namespace MLStudy.PreProcessing
 {
     public class OneHotCodec<T> : DiscreteCodec<T>
     {
-        public int Length { get { return categories.Count; } }
+        public int Length { get { return Categories.Count; } }
 
         public OneHotCodec(List<T> categories)
             :base(categories)
@@ -24,7 +24,7 @@ namespace MLStudy.PreProcessing
 
             for (int i = 0; i < list.Count; i++)
             {
-                var index = categories.IndexOf(list[i]);
+                var index = Categories.IndexOf(list[i]);
                 if (index == -1)
                     throw new Exception($"{list[i]} is not in categories list!");
 
@@ -51,7 +51,7 @@ namespace MLStudy.PreProcessing
             {
                 t.GetByDim1(i, buff);
                 var index = OneHot2Index(buff);
-                result.Add(categories[index]);
+                result.Add(Categories[index]);
             }
 
             return result;

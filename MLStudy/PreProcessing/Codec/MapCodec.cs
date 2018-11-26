@@ -7,7 +7,7 @@ namespace MLStudy.PreProcessing
 {
     public class MapCodec<T>:DiscreteCodec<T>
     {
-        public int CategoriesCount { get { return categories.Count; } }
+        public int CategoriesCount { get { return Categories.Count; } }
         /// <summary>
         /// Map编码的起始值
         /// </summary>
@@ -32,7 +32,7 @@ namespace MLStudy.PreProcessing
 
             for (int i = 0; i < list.Count; i++)
             {
-                var index = categories.IndexOf(list[i]);
+                var index = Categories.IndexOf(list[i]);
                 if (index == -1)
                     throw new Exception($"{list[i]} is not in categories list!");
 
@@ -54,7 +54,7 @@ namespace MLStudy.PreProcessing
             for (int i = 0; i < t.shape[0]; i++)
             {
                 var index = Map2Index((int)t.GetRawValues()[i]);
-                result.Add(categories[index]);
+                result.Add(Categories[index]);
             }
 
             return result;
