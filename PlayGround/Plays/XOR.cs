@@ -12,7 +12,7 @@ namespace PlayGround
         {
             Console.WriteLine("XOR Learn!");
 
-            var model = new Network()
+            var model = new NeuralNetwork()
                 .AddFullLayer(2)
                 .AddSigmoid()
                 .AddFullLayer(2)

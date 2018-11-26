@@ -14,7 +14,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 神经网络
     /// </summary>
-    public sealed class Network : IModel
+    public sealed class NeuralNetwork : IModel
     {
         /// <summary>
         /// 用于训练的层
@@ -47,7 +47,7 @@ namespace MLStudy.Deep
         /// <summary>
         /// 创建一个神经网络
         /// </summary>
-        public Network()
+        public NeuralNetwork()
         {
             TrainingLayers = new List<ILayer>();
             PredictLayers = new List<ILayer>();
@@ -162,7 +162,7 @@ namespace MLStudy.Deep
             }
         }
 
-        public Network AddGroup(int groupCount, params ILayer[] layers)
+        public NeuralNetwork AddGroup(int groupCount, params ILayer[] layers)
         {
             if (groupCount < 1)
                 return this;
@@ -183,67 +183,67 @@ namespace MLStudy.Deep
             return this;
         }
 
-        public Network AddFullLayer(int unitCount)
+        public NeuralNetwork AddFullLayer(int unitCount)
         {
             AddLayer(new FullLayer(unitCount));
             return this;
         }
 
-        public Network AddReLU()
+        public NeuralNetwork AddReLU()
         {
             AddLayer(new ReLU());
             return this;
         }
 
-        public Network AddSigmoid()
+        public NeuralNetwork AddSigmoid()
         {
             AddLayer(new Sigmoid());
             return this;
         }
 
-        public Network AddSoftmax()
+        public NeuralNetwork AddSoftmax()
         {
             AddLayer(new Softmax());
             return this;
         }
 
-        public Network AddTanh()
+        public NeuralNetwork AddTanh()
         {
             AddLayer(new Tanh());
             return this;
         }
 
-        public Network UseCrossEntropyLoss()
+        public NeuralNetwork UseCrossEntropyLoss()
         {
             UseLossFunction(new CrossEntropy());
             return this;
         }
 
-        public Network UseMeanSquareError()
+        public NeuralNetwork UseMeanSquareError()
         {
             UseLossFunction(new MeanSquareError());
             return this;
         }
 
-        public Network UseGradientDescent(double learningRate)
+        public NeuralNetwork UseGradientDescent(double learningRate)
         {
             Optimizer = new GradientDescent(learningRate);
             return this;
         }
 
-        public Network UseLASSO(double strength)
+        public NeuralNetwork UseLASSO(double strength)
         {
             UseRegularizer(new Lasso(strength));
             return this;
         }
 
-        public Network UseRidge(double strength)
+        public NeuralNetwork UseRidge(double strength)
         {
             UseRegularizer(new Ridge(strength));
             return this;
         }
 
-        public Network AddLayer(ILayer layer)
+        public NeuralNetwork AddLayer(ILayer layer)
         {
             TrainingLayers.Add(layer);
             if (layer is IOptimizable opt)
@@ -254,19 +254,19 @@ namespace MLStudy.Deep
             return this;
         }
 
-        public Network UseLossFunction(LossFunction loss)
+        public NeuralNetwork UseLossFunction(LossFunction loss)
         {
             LossFunction = loss;
             return this;
         }
 
-        public Network UseOptimizer(IOptimizer optimizer)
+        public NeuralNetwork UseOptimizer(IOptimizer optimizer)
         {
             Optimizer = optimizer;
             return this;
         }
 
-        public Network UseRegularizer(IRegularizer regularizer)
+        public NeuralNetwork UseRegularizer(IRegularizer regularizer)
         {
             Regularizer = regularizer;
             return this;

@@ -1,17 +1,22 @@
-﻿using System;
+﻿using MLStudy.Storages.Xml;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
 namespace MLStudy.Storages
 {
-    public static class XmlTensorStorage
+    public class XmlTensorStorage : XmlStorageBase<Tensor>
     {
-        public static XmlElement Save(XmlDocument doc, Tensor tensor)
+        public override XmlElement Save(XmlDocument doc, object o)
         {
             var el = doc.CreateElement("Tensor");
-            if (tensor == null)
+
+            if (o == null)
                 return el;
+
+            if (!(o is Tensor tensor))
+                throw new Exception("layer must be Tensor!");
 
             XmlStorage.AddArrayChild(el, "Shape", tensor.shape);
             XmlStorage.AddArrayChild(el, "Values", tensor.GetRawValues());
@@ -19,7 +24,7 @@ namespace MLStudy.Storages
             return el;
         }
 
-        public static Tensor Load(XmlNode node)
+        public override object Load(XmlNode node)
         {
             if (node == null)
                 return null;
@@ -30,7 +35,7 @@ namespace MLStudy.Storages
             var shape = XmlStorage.GetIntArray(node, "Shape");
             var values = XmlStorage.GetDoubleArray(node, "Values");
 
-            return (Tensor)Activator.CreateInstance(typeof(Tensor), values, shape);
+            return Activator.CreateInstance(typeof(Tensor), values, shape);
         }
     }
 }

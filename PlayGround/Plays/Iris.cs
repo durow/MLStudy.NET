@@ -20,7 +20,7 @@ namespace PlayGround.Plays
             var y = codec.Encode(labels);
             var X = DataFormat.DataTableToTensor(iris, 1, 2, 3, 4);
 
-            var model = new Network()
+            var model = new NeuralNetwork()
                 .AddFullLayer(10)
                 .AddSigmoid()
                 .AddFullLayer(6)

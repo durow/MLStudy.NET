@@ -1,4 +1,6 @@
 ﻿using MLStudy.Abstraction;
+using MLStudy.Deep;
+using MLStudy.Storages.Xml;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,44 +8,50 @@ using System.Xml;
 
 namespace MLStudy.Storages
 {
-    public static class XmlModelStorage
+    public class XmlNetworkStorage : XmlStorageBase<NeuralNetwork>
     {
-        private static Dictionary<Type, Func<XmlDocument, IModel, XmlElement>> ModelSaver = new Dictionary<Type, Func<XmlDocument, IModel, XmlElement>>();
-
-        private static Dictionary<string, Func<XmlNode, IModel>> ModelLoader = new Dictionary<string, Func<XmlNode, IModel>>();
-
-        static XmlModelStorage()
+        public override XmlElement Save(XmlDocument doc, object o)
         {
+            if (!(o is NeuralNetwork nn))
+                throw new Exception("object must be NeuralNetwork");
+
+            var el = GetRootElement(doc);
+
+            XmlStorage.AddObjectChild(el, "LossFunction", nn.LossFunction);
+            XmlStorage.AddObjectChild(el, "Optimizer", nn.Optimizer);
+            XmlStorage.AddObjectChild(el, "Regularizer", nn.Regularizer);
+
+            var layers = doc.CreateElement("Layers");
+            foreach (var item in nn.TrainingLayers)
+            {
+                XmlStorage.AddObjectChild(layers, item);
+            }
+            XmlStorage.AddChild(el, layers);
+
+            return el;
         }
 
-        public static void Add<T>(Func<XmlDocument, IModel, XmlElement> saver, Func<XmlNode, IModel> loader)
+        public override object Load(XmlNode node)
         {
-            var type = typeof(T);
-            ModelSaver[type] = saver;
-            ModelLoader[type.Name] = loader;
+            var result = (NeuralNetwork)Activator.CreateInstance(Type);
+
+            var loss = XmlStorage.GetObjectValue<LossFunction>(node, "LossFunction");
+            result.UseLossFunction(loss);
+
+            var optimizer = XmlStorage.GetObjectValue<IOptimizer>(node, "Optimizer");
+            result.UseOptimizer(optimizer);
+
+            var regularizer = XmlStorage.GetObjectValue<IRegularizer>(node, "Regularizer");
+            result.UseRegularizer(regularizer);
+
+            var nodeList = node.SelectSingleNode("Layers").ChildNodes;
+            foreach (XmlNode n in nodeList)
+            {
+                var layer = XmlStorage.LoadFromNode<ILayer>(n);
+                result.AddLayer(layer);
+            }
+
+            return result;
         }
-
-        public static XmlElement Save<T>(XmlDocument doc, T model) where T : IModel
-        {
-            var type = typeof(T);
-
-            if (!ModelSaver.ContainsKey(type))
-                throw new Exception($"can't find {type.Name}'s saver!");
-
-            return ModelSaver[type](doc, model);
-        }
-
-        public static IModel Load(XmlNode node)
-        {
-            var type = node.Name;
-            if(!ModelLoader.ContainsKey(type))
-                throw new Exception($"can't find {type}'s loader!");
-
-            return ModelLoader[type](node);
-        }
-
-        
-
-        
     }
 }
