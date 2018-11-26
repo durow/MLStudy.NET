@@ -83,7 +83,7 @@ namespace MLStudy.Deep
 
             if(Weights == null)
             {
-                SetWeights(Tensor.RandGaussian(input.shape[1], UnitCount));
+                SetWeights(Tensor.Rand(input.shape[1], UnitCount));
                 WeightsGradient = Weights.GetSameShape();
             }
             else
@@ -147,7 +147,21 @@ namespace MLStudy.Deep
             //计算Weights和Bias的梯度
             ComputeGradient(error);
             //反向传播的误差
-            Tensor.Multiple(error, Weights.Transpose(), BackwardOutput);
+            //var trans = Weights.Transpose();
+            //Tensor.Multiple(error, trans, BackwardOutput);
+
+            Parallel.For(0, error.shape[0], i =>
+            {
+                Parallel.For(0, Weights.shape[0], j =>
+                {
+                    var sum = 0d;
+                    for (int k = 0; k < error.shape[1]; k++)
+                    {
+                        sum += error[i, k] * Weights[j, k];
+                    }
+                    BackwardOutput[i, j] = sum;
+                });
+            });
 
             return BackwardOutput;
         }

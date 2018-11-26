@@ -21,16 +21,16 @@ namespace PlayGround.Plays
             var X = DataFormat.DataTableToTensor(iris, 1, 2, 3, 4);
 
             var model = new NeuralNetwork()
-                .AddFullLayer(10)
-                .AddSigmoid()
-                .AddFullLayer(6)
-                .AddSigmoid()
+                .AddFullLayer(5)
+                .AddReLU()
+                .AddFullLayer(5)
+                .AddReLU()
                 .AddFullLayer(codec.Length)
                 .AddSoftmax()
                 .UseCrossEntropyLoss()
-                .UseGradientDescent(0.01);
+                .UseGradientDescent(0.001);
 
-            var trainer = new Trainer(model, 16, 100, true);
+            var trainer = new Trainer(model, 16, 200, true);
             trainer.StartTrain(X, y, null, null);
 
             var machine = new Machine<string>(model, MachineType.Classification);

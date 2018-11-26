@@ -12,6 +12,7 @@ namespace MLStudy
         public int BatchSize { get; set; }
         public int Epoch { get; set; }
         public bool RandomBatch { get; set; }
+        public int CounterLimit { get; set; } = 10000;
 
         public Tensor TrainX { get; private set; }
         public Tensor TrainY { get; private set; }
@@ -64,24 +65,22 @@ namespace MLStudy
             {
                 Console.WriteLine($"============== Epoch {epochCounter + 1} ==============");
                 var epochStart = DateTime.Now;
-
                 TrainEpoch();
-
-                var trainLoss = Model.GetTrainLoss();
-                var trainAcc = Model.GetTrainAccuracy();
-
                 ShowTime(epochStart);
-                ShowTrainLoss(trainLoss, trainAcc);
+                //var trainLoss = Model.GetTrainLoss();
+                //var trainAcc = Model.GetTrainAccuracy();
 
-                var testLoss = 0d;
-                var testAcc = 0d;
-                if (TestX != null && TestY != null)
-                {
-                    var testYHat = Model.Predict(TestX);
-                    testLoss = Model.GetLoss(TestY, testYHat);
-                    testAcc = Model.GetAccuracy(testY, testYHat);
-                    ShowTestLoss(testLoss, testAcc);
-                }
+                //ShowTrainLoss(trainLoss, trainAcc);
+
+                //var testLoss = 0d;
+                //var testAcc = 0d;
+                //if (TestX != null && TestY != null)
+                //{
+                //    var testYHat = Model.Predict(TestX);
+                //    testLoss = Model.GetLoss(TestY, testYHat);
+                //    testAcc = Model.GetAccuracy(TestY, testYHat);
+                //    ShowTestLoss(testLoss, testAcc);
+                //}
 
                 epochCounter++;
             }
@@ -95,14 +94,34 @@ namespace MLStudy
 
         private void TrainEpoch()
         {
-            var counter = 0;
-            while (Training && counter < batchPerEpoch)
+            var counter = 1;
+            while (Training && counter <= batchPerEpoch)
             {
                 SetBatchData();
                 Model.Step(xBuff, yBuff);
+                //Console.Write(">");
+                //if(counter % CounterLimit == 0)
+                //{
+                //    Console.WriteLine(CounterLimit);
+                //}
+                var trainLoss = Model.GetTrainLoss();
+                var trainAcc = Model.GetTrainAccuracy();
+
+                ShowTrainLoss(trainLoss, trainAcc);
+
+                var testLoss = 0d;
+                var testAcc = 0d;
+                if (TestX != null && TestY != null)
+                {
+                    var testYHat = Model.Predict(TestX);
+                    testLoss = Model.GetLoss(TestY, testYHat);
+                    testAcc = Model.GetAccuracy(TestY, testYHat);
+                    ShowTestLoss(testLoss, testAcc);
+                }
                 counter++;
                 batchCounter++;
             }
+            Console.WriteLine();
         }
 
         private void SetBatchData()

@@ -83,6 +83,7 @@ namespace MLStudy.Deep
         public void PrepareTrain(Tensor X, Tensor y)
         {
             trainInputShape = X.shape;
+            trainYShape = y.shape;
 
             for (int i = 0; i < TrainingLayers.Count; i++)
             {

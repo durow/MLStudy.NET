@@ -27,7 +27,7 @@ using System.IO;
 
 namespace MLStudy.Data
 {
-    public class MINISTReader
+    public class MNISTReader
     {
         public string TrainImagesFile { get; set; }
         public string TrainLabelsFile { get; set; }
@@ -46,7 +46,13 @@ namespace MLStudy.Data
          *   The labels values are 0 to 9.
          */
 
-        public static double[] ReadLabels(string filename)
+        public static Tensor ReadLabelsToMatrix(string filename, int number = 0)
+        {
+            var data = ReadLabels(filename, number);
+            return new Tensor(data, data.Length, 1);
+        }
+
+        public static double[] ReadLabels(string filename, int number = 0)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -54,10 +60,16 @@ namespace MLStudy.Data
                 {
                     br.ReadInt32(); //skip the 32bit magic number
                     var count = ReadInt32BigEndian(br); //read the number of labels
+                    if (number > 0)
+                        count = number;
+
                     var result = new double[count];
 
                     for (int i = 0; i < count; i++)
                     {
+                        if (number > 0 && i >= number)
+                            break;
+
                         result[i] = br.ReadByte();
                     }
                     return result;
@@ -94,7 +106,7 @@ namespace MLStudy.Data
         /// </summary>
         /// <param name="filename">filename</param>
         /// <returns></returns>
-        public static Tensor ReadImagesToMatrix(string filename)
+        public static Tensor ReadImagesToMatrix(string filename, int number = 0)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -105,6 +117,9 @@ namespace MLStudy.Data
                     var rows = ReadInt32BigEndian(br);  //read the number of rows
                     var columns = ReadInt32BigEndian(br); //read the number of columns
                     var length = rows * columns;
+                    if (number > 0)
+                        count = number;
+
                     var result = new Tensor(count,length);
 
                     for (int i = 0; i < count; i++)
@@ -124,7 +139,7 @@ namespace MLStudy.Data
         /// </summary>
         /// <param name="filename">filename</param>
         /// <returns>result</returns>
-        public static Tensor ReadImagesToTensor4(string filename)
+        public static Tensor ReadImagesToTensor4(string filename, int number=0)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -134,10 +149,16 @@ namespace MLStudy.Data
                     var count = ReadInt32BigEndian(br); //read the number of images
                     var rows = ReadInt32BigEndian(br);  //read the number of rows
                     var columns = ReadInt32BigEndian(br); //read the number of columns
+                    if (number > 0)
+                        count = number;
+
                     var result = new Tensor(count, 1, rows, columns);
 
                     for (int i = 0; i < count; i++)
                     {
+                        if (number > 0 && i >= number)
+                            break;
+
                         for (int j = 0; j < rows; j++)
                         {
                             for (int k = 0; k < columns; k++)
