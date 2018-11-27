@@ -8,4 +8,8 @@
     <Folder Include="Others\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ILNumerics" Version="4.8.0" />
+  </ItemGroup>
+
 </Project>
