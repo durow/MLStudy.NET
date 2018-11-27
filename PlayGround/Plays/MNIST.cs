@@ -7,6 +7,7 @@ using MLStudy;
 using MLStudy.Abstraction;
 using MLStudy.Data;
 using MLStudy.Deep;
+using MLStudy.Optimization;
 using MLStudy.PreProcessing;
 
 namespace PlayGround.Plays
@@ -15,15 +16,15 @@ namespace PlayGround.Plays
     {
         public void Play()
         {
-            var trainX = MNISTReader.ReadImagesToMatrix("Data\\train-images.idx3-ubyte", 6000);
-            var trainY = MNISTReader.ReadLabelsToMatrix("Data\\train-labels.idx1-ubyte", 6000);
+            var trainX = MNISTReader.ReadImagesToMatrix("Data\\train-images.idx3-ubyte", 60000);
+            var trainY = MNISTReader.ReadLabelsToMatrix("Data\\train-labels.idx1-ubyte", 60000);
 
             var nn = new NeuralNetwork()
                 .AddFullLayer(20)
-                .AddReLU()
+                .AddTanh()
                 .AddFullLayer(10)
                 .AddSoftmax()
-                .UseGradientDescent(0.5)
+                .UseOptimizer(new Adam())
                 .UseCrossEntropyLoss();
 
             var cate = trainY.GetRawValues().Select(a => a.ToString()).ToList();
@@ -33,7 +34,7 @@ namespace PlayGround.Plays
             //var norm = new ZScoreNorm(trainX - 128);
             var X = (trainX-128) / (255);
 
-            var trainer = new Trainer(nn, 50, 10);
+            var trainer = new Trainer(nn, 64, 10, true);
             trainer.StartTrain(X, y, null, null);
 
             

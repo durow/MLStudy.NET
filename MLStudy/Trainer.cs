@@ -72,15 +72,15 @@ namespace MLStudy
 
                 //ShowTrainLoss(trainLoss, trainAcc);
 
-                //var testLoss = 0d;
-                //var testAcc = 0d;
-                //if (TestX != null && TestY != null)
-                //{
-                //    var testYHat = Model.Predict(TestX);
-                //    testLoss = Model.GetLoss(TestY, testYHat);
-                //    testAcc = Model.GetAccuracy(TestY, testYHat);
-                //    ShowTestLoss(testLoss, testAcc);
-                //}
+                var testLoss = 0d;
+                var testAcc = 0d;
+                if (TestX != null && TestY != null)
+                {
+                    var testYHat = Model.Predict(TestX);
+                    testLoss = Model.GetLoss(TestY, testYHat);
+                    testAcc = Model.GetAccuracy(TestY, testYHat);
+                    ShowTestLoss(testLoss, testAcc);
+                }
 
                 epochCounter++;
             }
@@ -98,26 +98,14 @@ namespace MLStudy
             while (Training && counter <= batchPerEpoch)
             {
                 SetBatchData();
+
                 Model.Step(xBuff, yBuff);
-                //Console.Write(">");
-                //if(counter % CounterLimit == 0)
-                //{
-                //    Console.WriteLine(CounterLimit);
-                //}
+
                 var trainLoss = Model.GetTrainLoss();
                 var trainAcc = Model.GetTrainAccuracy();
 
-                ShowTrainLoss(trainLoss, trainAcc);
+                ShowTrainLoss(trainLoss, trainAcc, counter);
 
-                var testLoss = 0d;
-                var testAcc = 0d;
-                if (TestX != null && TestY != null)
-                {
-                    var testYHat = Model.Predict(TestX);
-                    testLoss = Model.GetLoss(TestY, testYHat);
-                    testAcc = Model.GetAccuracy(TestY, testYHat);
-                    ShowTestLoss(testLoss, testAcc);
-                }
                 counter++;
                 batchCounter++;
             }
@@ -158,10 +146,10 @@ namespace MLStudy
             Console.WriteLine($"Time>>cost:{cost.TotalSeconds.ToString("F2")}s  passed:{GetTimeSpanFormat(passed)} remain:{GetTimeSpanFormat(remain)}  ETA:{estimate.ToString("yyyy-MM-dd HH:mm:ss")}");
         }
 
-        private void ShowTrainLoss(double trainLoss, double trainAccuracy)
+        private void ShowTrainLoss(double trainLoss, double trainAccuracy, int counter)
         {
 
-            Console.WriteLine($"Train>>Loss:{trainLoss}\tAccuracy:{trainAccuracy}");
+            Console.WriteLine($"Epoch:{epochCounter+1}>>Batch:{counter*BatchSize}/{sampleCount}>>Loss:{trainLoss.ToString("F4")}  Accuracy:{trainAccuracy.ToString("F4")}");
         }
 
         private void ShowTestLoss(double testLoss, double testAccuracy)

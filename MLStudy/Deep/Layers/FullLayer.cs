@@ -83,7 +83,7 @@ namespace MLStudy.Deep
 
             if(Weights == null)
             {
-                SetWeights(Tensor.Rand(input.shape[1], UnitCount));
+                SetWeights(Tensor.RandGaussian(input.shape[1], UnitCount));
                 WeightsGradient = Weights.GetSameShape();
             }
             else

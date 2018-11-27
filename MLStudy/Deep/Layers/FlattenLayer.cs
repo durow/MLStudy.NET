@@ -22,6 +22,7 @@ namespace MLStudy.Deep
 
         public Tensor Forward(Tensor input)
         {
+            lastInputShape = input.shape;
             return GetFlatten(input);
         }
 
@@ -32,7 +33,6 @@ namespace MLStudy.Deep
 
         public Tensor PrepareTrain(Tensor input)
         {
-            lastInputShape = input.shape;
             return GetFlatten(input);
         }
 

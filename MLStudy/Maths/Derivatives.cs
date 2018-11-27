@@ -96,8 +96,6 @@ namespace MLStudy
             {
                 if (y[i] == 0)
                     result[i] = 0;
-                else if (yHat[i] == 0)
-                    result[i] = -y[i];
                 else
                     result[i] = -y[i] / yHat[i];
             }

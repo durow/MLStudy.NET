@@ -6,6 +6,6 @@ namespace MLStudy.Abstraction
 {
     public interface IOptimizer
     {
-        void Optimize(Tensor target, Tensor graident);
+        void Optimize(Tensor target, Tensor gradient);
     }
 }
