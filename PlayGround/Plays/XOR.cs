@@ -23,7 +23,7 @@ namespace PlayGround
                 .UseGradientDescent(0.01)
                 .UseRidge(0.001);
 
-            var machine = new Machine(model, MachineType.Classification);
+            var machine = new ClassificationMachine(model);
 
             var (trainX, trainY) = GetXorData(1000);
             var (testX, testY) = GetXorData(500);
@@ -43,7 +43,7 @@ namespace PlayGround
                 var a1 = double.Parse(str1);
                 var a2 = double.Parse(str2);
 
-                var output = machine.Predict(new Tensor(new double[] { a1, a2 }, 1, 2));
+                var output = machine.PredictValue(new Tensor(new double[] { a1, a2 }, 1, 2));
                 var result = output[0];
                 var p = machine.LastRawResult.GetValue();
                 Console.WriteLine($"result is {result} with probability:{result * p + (1 - result) * (1 - p)}");

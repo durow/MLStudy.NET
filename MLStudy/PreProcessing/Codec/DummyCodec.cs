@@ -6,12 +6,12 @@ using System.Text;
 
 namespace MLStudy.PreProcessing
 {
-    public class DummyCodec<T> : DiscreteCodec<T>
+    public class DummyCodec : DiscreteCodec
     {
 
         public int Length { get { return Categories.Count - 1; } }
 
-        public DummyCodec(IEnumerable<T> categories)
+        public DummyCodec(IEnumerable<string> categories)
             :base(categories)
         {
         }
@@ -22,8 +22,9 @@ namespace MLStudy.PreProcessing
         /// </summary>
         /// <param name="list">要编码的数据</param>
         /// <returns>编码结果</returns>
-        public override Tensor Encode(List<T> list)
+        public override Tensor Encode(IEnumerable<string> data)
         {
+            var list = data.ToList();
             var result = new Tensor(list.Count, Length);
 
             for (int i = 0; i < list.Count; i++)
@@ -44,12 +45,12 @@ namespace MLStudy.PreProcessing
         /// </summary>
         /// <param name="t">要解码的数据</param>
         /// <returns>解码结果</returns>
-        public override List<T> Decode(Tensor t)
+        public override List<string> Decode(Tensor t)
         {
             if (t.Rank != 2)
                 throw new TensorShapeException("one hot decode tensor.Rank must be 2!");
 
-            var result = new List<T>(t.shape[0]);
+            var result = new List<string>(t.shape[0]);
             var buff = new double[t.shape[1]];
             for (int i = 0; i < t.shape[0]; i++)
             {

@@ -1,6 +1,7 @@
 ﻿using MLStudy.Abstraction;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MLStudy
@@ -9,6 +10,8 @@ namespace MLStudy
     {
         public bool Training { get; private set; }
         public IModel Model { get; private set; }
+        public DiscreteCodec LabelCodec { get; set; }
+        public INormalizer Normalizer { get; set; }
         public int BatchSize { get; set; }
         public int Epoch { get; set; }
         public bool RandomBatch { get; set; }
@@ -42,10 +45,28 @@ namespace MLStudy
 
         public void StartTrain(Tensor trainX, Tensor trainY, Tensor testX, Tensor testY)
         {
-            TrainX = trainX;
-            TrainY = trainY;
-            TestX = testX;
-            TestY = testY;
+            if (Normalizer != null)
+            {
+                TrainX = Normalizer.Normalize(trainX);
+                if (testX != null)
+                    TestX = Normalizer.Normalize(testX);
+            }
+            else
+            {
+                TrainX = trainX;
+                TestX = testX;
+            }
+            if (LabelCodec != null)
+            {
+                TrainY = LabelCodec.Encode(trainY.GetRawValues());
+                if(testY != null)
+                    TestY = LabelCodec.Encode(testY.GetRawValues());
+            }
+            else
+            {
+                TrainY = trainY;
+                TestY = testY;
+            }
 
             xBuff = new Tensor(BatchSize, trainX.shape[1]);
             yBuff = new Tensor(BatchSize, trainY.shape[1]);

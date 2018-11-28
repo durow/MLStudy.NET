@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using MLStudy.Abstraction;
 using System.Text;
+using System.Linq;
 
 namespace MLStudy.PreProcessing
 {
-    public class MapCodec<T>:DiscreteCodec<T>
+    public class MapCodec:DiscreteCodec
     {
         public int CategoriesCount { get { return Categories.Count; } }
         /// <summary>
@@ -17,7 +18,11 @@ namespace MLStudy.PreProcessing
         /// </summary>
         public int MapStep { get; set; } = 1;
 
-        public MapCodec(IEnumerable<T> categories)
+        public MapCodec(IEnumerable<string> categories)
+            : base(categories)
+        { }
+
+        public MapCodec(IEnumerable<double> categories)
             : base(categories)
         { }
 
@@ -26,8 +31,9 @@ namespace MLStudy.PreProcessing
         /// </summary>
         /// <param name="list">要编码的数据</param>
         /// <returns>编码结果</returns>
-        public override Tensor Encode(List<T> list)
+        public override Tensor Encode(IEnumerable<string> data)
         {
+            var list = data.ToList();
             var result = new Tensor(list.Count, 1);
 
             for (int i = 0; i < list.Count; i++)
@@ -48,9 +54,9 @@ namespace MLStudy.PreProcessing
         /// </summary>
         /// <param name="t">要解码的数据</param>
         /// <returns>解码结果</returns>
-        public override List<T> Decode(Tensor t)
+        public override List<string> Decode(Tensor t)
         {
-            var result = new List<T>(t.ElementCount);
+            var result = new List<string>(t.ElementCount);
             for (int i = 0; i < t.shape[0]; i++)
             {
                 var index = Map2Index((int)t.GetRawValues()[i]);

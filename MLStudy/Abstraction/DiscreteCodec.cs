@@ -10,16 +10,26 @@ using System.Linq;
 
 namespace MLStudy.Abstraction
 {
-    public abstract class DiscreteCodec<T>
+    public abstract class DiscreteCodec
     {
-        public List<T> Categories { get; private set; }
+        public List<string> Categories { get; private set; }
 
-        public DiscreteCodec(IEnumerable<T> categories)
+        public DiscreteCodec(IEnumerable<string> categories)
         {
-            this.Categories = categories.Distinct().ToList();
+            Categories = categories.Distinct().ToList();
         }
 
-        public abstract Tensor Encode(List<T> data);
-        public abstract List<T> Decode(Tensor t);
+        public DiscreteCodec(IEnumerable<double> categories)
+            : this(categories.Distinct().Select(a => a.ToString()))
+        {
+        }
+
+        public Tensor Encode(IEnumerable<double> data)
+        {
+            return Encode(data.Select(a => a.ToString()));
+        }
+
+        public abstract Tensor Encode(IEnumerable<string> data);
+        public abstract List<string> Decode(Tensor t);
     }
 }

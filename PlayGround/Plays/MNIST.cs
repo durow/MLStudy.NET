@@ -27,18 +27,23 @@ namespace PlayGround.Plays
                 .UseOptimizer(new Adam())
                 .UseCrossEntropyLoss();
 
-            var cate = trainY.GetRawValues().Select(a => a.ToString()).ToList();
-            var codec = new OneHotCodec<string>(cate);
-            var y = codec.Encode(cate);
+            var cate = trainY
+                .GetRawValues()
+                .Distinct()
+                .OrderBy(a => a)
+                .Select(a => a.ToString())
+                .ToList();
 
+            var codec = new OneHotCodec(cate);
             var norm = new ZScoreNorm(trainX);
-            var X = norm.Normalize(trainX);
-            //var X = (trainX-128) / (255);
 
-            var trainer = new Trainer(nn, 64, 10, true);
-            trainer.StartTrain(X, y, null, null);
+            var trainer = new Trainer(nn, 64, 10, true)
+            {
+                LabelCodec = codec,
+                Normalizer = norm,
+            };
 
-            
+            trainer.StartTrain(trainX, trainY, null, null);
         }
     }
 }

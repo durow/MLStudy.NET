@@ -24,7 +24,7 @@ namespace MLStudy.Tests.PreProcessing
         [Fact]
         public void OneHotTest()
         {
-            var oh = new OneHotCodec<string>(data);
+            var oh = new OneHotCodec(data);
             Assert.Equal(6, oh.Length);
 
             var test = new List<string> { "a", "c", "d", "a" };
@@ -43,7 +43,7 @@ namespace MLStudy.Tests.PreProcessing
         [Fact]
         public void DummyTest()
         {
-            var dm = new DummyCodec<string>(data);
+            var dm = new DummyCodec(data);
             Assert.Equal(5, dm.Length);
 
             var test = new List<string> { "a", "c", "d", "f" };
@@ -62,7 +62,7 @@ namespace MLStudy.Tests.PreProcessing
         [Fact]
         public void MapTest()
         {
-            var oh = new MapCodec<string>(data);
+            var oh = new MapCodec(data);
             oh.MapStart = 10;
             oh.MapStep = 5;
             var test = new List<string> { "a", "c", "d", "f" };

@@ -16,7 +16,7 @@ namespace PlayGround.Plays
         {
             var iris = AyxCsvReader.Instance.ReadCsvFileDataTable("Data/iris.csv");
             var labels = DataFormat.DataTableToList(iris, "Species").ToList();
-            var codec = new OneHotCodec<string>(labels);
+            var codec = new OneHotCodec(labels);
             var y = codec.Encode(labels);
             var X = DataFormat.DataTableToTensor(iris, 1, 2, 3, 4);
 
@@ -33,7 +33,7 @@ namespace PlayGround.Plays
             var trainer = new Trainer(model, 16, 200, true);
             trainer.StartTrain(X, y, null, null);
 
-            var machine = new Machine<string>(model, MachineType.Classification);
+            var machine = new ClassificationMachine(model);
             machine.LabelCodec = codec;
 
             while (true)
@@ -48,7 +48,7 @@ namespace PlayGround.Plays
                 var a4 = double.Parse(Console.ReadLine());
 
                 var input = new Tensor(new double[] { a1, a2, a3, a4 }, 1, 4);
-                Console.WriteLine($"you input is {machine.Predict(input).First()},  Codec:{machine.LastResultCodec},  Raw:{machine.LastRawResult}");
+                Console.WriteLine($"you input is {machine.Predict(input).First()},  Codec:{machine.LastCodecResult},  Raw:{machine.LastRawResult}");
             }
         }
     }
