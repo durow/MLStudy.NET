@@ -20,8 +20,8 @@ namespace PlayGround.Plays
             var trainY = MNISTReader.ReadLabelsToMatrix("Data\\train-labels.idx1-ubyte", 60000);
 
             var nn = new NeuralNetwork()
-                .AddFullLayer(20)
-                .AddTanh()
+                .AddFullLayer(50)
+                .AddSigmoid()
                 .AddFullLayer(10)
                 .AddSoftmax()
                 .UseOptimizer(new Adam())
@@ -31,8 +31,9 @@ namespace PlayGround.Plays
             var codec = new OneHotCodec<string>(cate);
             var y = codec.Encode(cate);
 
-            //var norm = new ZScoreNorm(trainX - 128);
-            var X = (trainX-128) / (255);
+            var norm = new ZScoreNorm(trainX);
+            var X = norm.Normalize(trainX);
+            //var X = (trainX-128) / (255);
 
             var trainer = new Trainer(nn, 64, 10, true);
             trainer.StartTrain(X, y, null, null);

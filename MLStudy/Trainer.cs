@@ -12,7 +12,7 @@ namespace MLStudy
         public int BatchSize { get; set; }
         public int Epoch { get; set; }
         public bool RandomBatch { get; set; }
-        public int CounterLimit { get; set; } = 10000;
+        public int PrintSteps { get; set; } = 10;
 
         public Tensor TrainX { get; private set; }
         public Tensor TrainY { get; private set; }
@@ -67,11 +67,8 @@ namespace MLStudy
                 var epochStart = DateTime.Now;
                 TrainEpoch();
                 ShowTime(epochStart);
-                //var trainLoss = Model.GetTrainLoss();
-                //var trainAcc = Model.GetTrainAccuracy();
 
-                //ShowTrainLoss(trainLoss, trainAcc);
-
+                //test the test data when one Epoch complete
                 var testLoss = 0d;
                 var testAcc = 0d;
                 if (TestX != null && TestY != null)
@@ -101,10 +98,12 @@ namespace MLStudy
 
                 Model.Step(xBuff, yBuff);
 
-                var trainLoss = Model.GetTrainLoss();
-                var trainAcc = Model.GetTrainAccuracy();
-
-                ShowTrainLoss(trainLoss, trainAcc, counter);
+                if (counter % PrintSteps == 0)
+                {
+                    var trainLoss = Model.GetTrainLoss();
+                    var trainAcc = Model.GetTrainAccuracy();
+                    ShowTrainLoss(trainLoss, trainAcc, counter);
+                }
 
                 counter++;
                 batchCounter++;

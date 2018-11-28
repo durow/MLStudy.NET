@@ -16,7 +16,7 @@ namespace MLStudy.Storages
         {
             var ifType = typeof(IXmlStorage);
             var ass = Assembly.GetExecutingAssembly();
-            var types = ass.GetTypes().Where(t=>t.GetInterfaces().Contains(ifType));
+            var types = ass.GetTypes().Where(t=>!t.IsGenericType && t.GetInterfaces().Contains(ifType));
             foreach (var type in types)
             {
                 IXmlStorage instance;

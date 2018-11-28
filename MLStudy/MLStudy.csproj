@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Others\" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;-Optimize+ -Debug-</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ILNumerics" Version="4.8.0" />
+    <Folder Include="Others\" />
   </ItemGroup>
 
 </Project>
