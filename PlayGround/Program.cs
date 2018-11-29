@@ -7,7 +7,7 @@ namespace PlayGround
     {
         static void Main(string[] args)
         {
-            IPlay play = new MNIST();
+            IPlay play = new Test();
             play.Play();
 
             Console.ReadKey();
