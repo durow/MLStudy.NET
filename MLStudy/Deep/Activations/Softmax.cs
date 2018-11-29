@@ -32,8 +32,8 @@ namespace MLStudy.Deep
 
             ForwardOutput = input.GetSameShape();
             BackwardOutput = input.GetSameShape();
-            sampleNumber = input.Shape[0];
-            categoryNumber = input.Shape[1];
+            sampleNumber = input.shape[0];
+            categoryNumber = input.shape[1];
             sampleBuff = new double[categoryNumber];
             //向量对向量求导的结果是个矩阵
             //多个样本下，softmax的导数是一个三阶张量，第一维是样本数量，后面两维是jacob矩阵
@@ -60,16 +60,14 @@ namespace MLStudy.Deep
         /// <returns>输出的数值</returns>
         public override Tensor Forward(Tensor input)
         {
-            var src = input.GetRawValues();
-            var des = ForwardOutput.GetRawValues();
             int startIndex;
 
             for (int i = 0; i < sampleNumber; i++)
             {
                 startIndex = categoryNumber * i;
-                Array.Copy(src, startIndex, sampleBuff, 0, categoryNumber);
+                Array.Copy(input.values, startIndex, sampleBuff, 0, categoryNumber);
                 Functions.Softmax(sampleBuff, sampleBuff);
-                Array.Copy(sampleBuff, 0, des, startIndex, categoryNumber);
+                Array.Copy(sampleBuff, 0, ForwardOutput.values, startIndex, categoryNumber);
             }
             return ForwardOutput;
         }

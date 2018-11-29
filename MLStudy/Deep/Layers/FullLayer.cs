@@ -241,15 +241,13 @@ namespace MLStudy.Deep
         //正向传播输出加上偏置
         private void AddBias()
         {
-            var outData = ForwardOutput.GetRawValues();
-            var biasData = Bias.GetRawValues();
-
-            Parallel.For(0, ForwardOutput.shape[0], i =>
+            var samples = ForwardOutput.shape[0];
+            Parallel.For(0, samples, i =>
             {
                 var start = i * UnitCount;
                 for (int j = 0; j < UnitCount; j++)
                 {
-                    outData[start + j] += biasData[j];
+                    ForwardOutput.values[start + j] += Bias.values[j];
                 }
             });
         }
@@ -259,8 +257,8 @@ namespace MLStudy.Deep
         {
             var inputData = ForwardInput.GetRawValues();
             var errorData = error.GetRawValues();
-
-            Parallel.For(0, WeightsGradient.shape[0], i =>
+            var features = WeightsGradient.shape[0];
+            Parallel.For(0, features, i =>
             {
                 Parallel.For(0, UnitCount, j =>
                 {

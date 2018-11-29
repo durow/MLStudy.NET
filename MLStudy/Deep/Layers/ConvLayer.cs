@@ -137,7 +137,7 @@ namespace MLStudy.Deep
                 }
             }
             Tensor.CheckShape(filters, Filters);
-            Array.Copy(filters.GetRawValues(), 0, Filters.GetRawValues(), 0, Filters.ElementCount);
+            Array.Copy(filters.values, 0, Filters.values, 0, Filters.ElementCount);
         }
 
         public void SetBias(Tensor bias)
@@ -155,10 +155,10 @@ namespace MLStudy.Deep
 
         private void Forward(Tensor input, int sampleIndex, int filterIndex)
         {
-            for (int row = 0; row < outRows; row++)
+            Parallel.For(0, outRows, row =>
             {
                 var startRow = row * RowStride;
-                for (int col = 0; col < outColumns; col++)
+                Parallel.For(0, outColumns, col =>
                 {
                     var startCol = col * ColumnStride;
                     var sum = 0d;
@@ -177,8 +177,8 @@ namespace MLStudy.Deep
                         }
                     }
                     ForwardOutput[sampleIndex, filterIndex, row, col] = sum + Bias.GetRawValues()[filterIndex];
-                }
-            }
+                });
+            });
         }
 
         private void ErrorBackward(Tensor error)

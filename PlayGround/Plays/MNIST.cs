@@ -21,7 +21,7 @@ namespace PlayGround.Plays
 
             var nn = new NeuralNetwork()
                 .AddFullLayer(50)
-                .AddReLU()
+                .AddSigmoid()
                 .AddFullLayer(10)
                 .AddSoftmax()
                 .UseOptimizer(new Adam())

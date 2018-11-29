@@ -104,15 +104,23 @@ namespace MLStudy
 
         public static void Multiple(Tensor a, Tensor b, Tensor result)
         {
-            Parallel.For(0, a.shape[0], i =>
+            var rows = a.shape[0];
+            var cols = b.shape[1];
+            var bStep = a.shape[1];
+
+            Parallel.For(0, rows, i =>
             {
-                Parallel.For(0, b.shape[1], j =>
+                var aStart = a.GetRawOffset(i, 0);
+                var resultStart = result.GetRawOffset(i, 0);
+                Parallel.For(0, cols, j =>
                 {
                     var sum = 0d;
-                    for (int k = 0; k < a.shape[1]; k++)
+                    var bStart = b.GetRawOffset(0, j);
+                    for (int k = 0; k < bStep; k++)
                     {
-                        sum += a.GetValueFast(i,k) * b.GetValueFast(k, j);
+                        sum += a.values[aStart + k] * b.values[k * cols + j];
                     }
+                    //result.values[i * cols + j] = sum;
                     result.SetValueFast(sum, i, j);
                 });
             });
