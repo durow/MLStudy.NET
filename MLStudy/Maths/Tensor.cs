@@ -19,7 +19,7 @@ namespace MLStudy
     /// </summary>
     public sealed class Tensor
     {
-        private double[] values; //存放底层数据
+        internal double[] values; //存放底层数据
         internal int[] shape; //Tensor结构信息
         private int[] dimensionSize; //存储各个维度的大小
 
@@ -229,15 +229,6 @@ namespace MLStudy
             if (index.Length != Rank)
                 throw new TensorShapeException("index must be the same length as Rank!");
 
-            for (int i = 0; i < Rank; i++)
-            {
-                if (index[i] >= shape[i])
-                    throw new TensorShapeException($"index out of range! index is {index}, shape is {shape}");
-            }
-
-            if (index.Length == 0)
-                return values[0];
-
             var offset = GetRawOffset(index);
             return values[offset];
         }
@@ -249,7 +240,7 @@ namespace MLStudy
         /// <param name="index">要设定的位置</param>
         public void SetValue(double value, params int[] index)
         {
-            if (index.Length == 0 && ElementCount == 1)
+            if (index.Length == 0)
             {
                 values[0] = value;
                 return;
@@ -258,29 +249,12 @@ namespace MLStudy
             if (index.Length != Rank)
                 throw new TensorShapeException("index must be the same length as Rank!");
 
-            for (int i = 0; i < Rank; i++)
-            {
-                if (index[i] >= shape[i])
-                    throw new TensorShapeException($"index out of range! index is {index}, shape is {shape}");
-            }
-
-            if (index.Length == 0)
-            {
-                values[0] = value;
-                return;
-            }
-
             var offset = GetRawOffset(index);
             values[offset] = value;
         }
 
         public int GetRawOffset(params int[] index)
         {
-            CorrectIndex(index);
-
-            if (index.Length == 0)
-                return 0;
-
             if (index.Length == 1)
                 return index[0];
 

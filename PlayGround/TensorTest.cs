@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace MLStudy.Playground
 {
-    public unsafe sealed class TensorTest
+    public sealed class TensorTest
     {
         private double[] values;
         internal int[] shape; //TensorTest结构信息
@@ -185,15 +185,6 @@ namespace MLStudy.Playground
             if (index.Length != Rank)
                 throw new TensorShapeException("index must be the same length as Rank!");
 
-            for (int i = 0; i < Rank; i++)
-            {
-                if (index[i] >= shape[i])
-                    throw new TensorShapeException($"index out of range! index is {index}, shape is {shape}");
-            }
-
-            if (index.Length == 0)
-                return values[0];
-
             var offset = GetRawOffset(index);
             return values[offset];
         }
@@ -205,26 +196,9 @@ namespace MLStudy.Playground
         /// <param name="index">要设定的位置</param>
         public void SetValue(double value, params int[] index)
         {
-            if (index.Length == 0 && ElementCount == 1)
-            {
-                values[0] = value;
-                return;
-            }
 
             if (index.Length != Rank)
                 throw new TensorShapeException("index must be the same length as Rank!");
-
-            for (int i = 0; i < Rank; i++)
-            {
-                if (index[i] >= shape[i])
-                    throw new TensorShapeException($"index out of range! index is {index}, shape is {shape}");
-            }
-
-            if (index.Length == 0)
-            {
-                values[0] = value;
-                return;
-            }
 
             var offset = GetRawOffset(index);
             values[offset] = value;
@@ -232,8 +206,6 @@ namespace MLStudy.Playground
 
         public int GetRawOffset(params int[] index)
         {
-            CorrectIndex(index);
-
             if (index.Length == 0)
                 return 0;
 
