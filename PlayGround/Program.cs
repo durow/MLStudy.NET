@@ -7,7 +7,7 @@ namespace PlayGround
     {
         static void Main(string[] args)
         {
-            IPlay play = new Test();
+            IPlay play = new Performance();
             play.Play();
 
             Console.ReadKey();

@@ -68,8 +68,8 @@ namespace MLStudy
                 TestY = testY;
             }
 
-            xBuff = new Tensor(BatchSize, trainX.shape[1]);
-            yBuff = new Tensor(BatchSize, trainY.shape[1]);
+            xBuff = new Tensor(BatchSize, TrainX.shape[1]);
+            yBuff = new Tensor(BatchSize, TrainY.shape[1]);
             sampleCount = TrainX.shape[0];
             xWidth = TrainX.shape[1];
             yWidth = TrainY.shape[1];

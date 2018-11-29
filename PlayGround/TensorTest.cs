@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace MLStudy.Playground
 {
-    public sealed class TensorTest
+    public class TensorTest
     {
         private double[] values;
         internal int[] shape; //TensorTest结构信息
@@ -22,8 +22,8 @@ namespace MLStudy.Playground
 
         public int ElementCount { get; private set; }
 
-        public int Rank { get { return shape.Length; } }
-        
+        public int Rank { get; private set; }
+
         public int[] Shape
         {
             get
@@ -32,6 +32,17 @@ namespace MLStudy.Playground
             }
         }
 
+        public double this[int d1, int d2]
+        {
+            get
+            {
+                return GetValue(d1, d2);
+            }
+            set
+            {
+                SetValue(value, d1, d2);
+            }
+        }
         
         public double this[params int[] index]
         {
@@ -172,21 +183,76 @@ namespace MLStudy.Playground
 
         #endregion
 
-        /// <summary>
-        /// 获取TensorTest指定位置的值，Rank为0，也就是TensorTest为标量时指定index为空返回标量的值
-        /// </summary>
-        /// <param name="index">指定的位置</param>
-        /// <returns>指定位置返回的值</returns>
+        public double GetValue(int d1, int d2)
+        {
+            if (Rank != 2)
+                throw new Exception();
+
+            var off = d1 * dimensionSize[0] + d2;
+            return values[off];
+        }
+
+        public void SetValue(double value, int d1, int d2)
+        {
+            if (Rank != 2)
+                throw new Exception();
+
+            var off = d1 * dimensionSize[0] + d2;
+            values[off] = value;
+        }
+
+        public double GetValueArray(int[] index)
+        {
+            var result = 0;
+
+            //if (index.Length == 1)
+            //    result = index[0];
+            //else
+            //{
+                for (int i = 0; i < dimensionSize.Length; i++)
+                {
+                    result += dimensionSize[i] * index[i];
+                }
+                result += index[index.Length - 1];
+            //}
+            return values[result];
+        }
+
+        public void SetValueArray(double value, int[] index)
+        {
+            var result = 0;
+
+            //if (index.Length == 1)
+            //    result = index[0];
+            //else
+            //{
+                for (int i = 0; i < dimensionSize.Length; i++)
+                {
+                    result += dimensionSize[i] * index[i];
+                }
+                result += index[index.Length - 1];
+            //}
+            values[result] = value;
+        }
+        
         public double GetValue(params int[] index)
         {
-            if (index.Length == 0)
-                return values[0];
+            //if (index.Length != Rank)
+            //    throw new Exception();
 
-            if (index.Length != Rank)
-                throw new TensorShapeException("index must be the same length as Rank!");
+            var result = 0;
 
-            var offset = GetRawOffset(index);
-            return values[offset];
+            //if (index.Length == 1)
+            //    result = index[0];
+            //else
+            //{
+                for (int i = 0; i < dimensionSize.Length; i++)
+                {
+                    result += dimensionSize[i] * index[i];
+                }
+                result += index[index.Length - 1];
+            //}
+            return values[result];
         }
 
         /// <summary>
@@ -196,12 +262,22 @@ namespace MLStudy.Playground
         /// <param name="index">要设定的位置</param>
         public void SetValue(double value, params int[] index)
         {
+            //if (index.Length != Rank)
+            //    throw new Exception();
 
-            if (index.Length != Rank)
-                throw new TensorShapeException("index must be the same length as Rank!");
+            var result = 0;
 
-            var offset = GetRawOffset(index);
-            values[offset] = value;
+            //if (index.Length == 1)
+            //    result = index[0];
+            //else
+            //{
+                for (int i = 0; i < dimensionSize.Length; i++)
+                {
+                    result += dimensionSize[i] * index[i];
+                }
+                result += index[index.Length - 1];
+            //}
+            values[result] = value;
         }
 
         public int GetRawOffset(params int[] index)
@@ -989,6 +1065,7 @@ namespace MLStudy.Playground
         {
             CheckShape(shape);
             this.shape = shape;
+            Rank = shape.Length;
             SetDimensionSize();
         }
 
