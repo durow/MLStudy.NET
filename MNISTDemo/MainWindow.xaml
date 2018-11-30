@@ -17,7 +17,7 @@
             <Button Content="识别" DockPanel.Dock="Bottom" Click="Button_Click_1"/>
             <InkCanvas x:Name="WritingBoard" Width="280" Height="280" Background="White">
                 <InkCanvas.DefaultDrawingAttributes>
-                    <DrawingAttributes Width="20" Height="20" Color="Blue"/>
+                    <DrawingAttributes Width="25" Height="25" Color="Black"/>
                 </InkCanvas.DefaultDrawingAttributes>
             </InkCanvas>
         </DockPanel>
@@ -26,8 +26,8 @@
         </DockPanel>
         <DockPanel Grid.Column="2">
             <TextBlock DockPanel.Dock="Top" Text="识别结果:" Margin="2"/>
-            <Image x:Name="Test" Stretch="Uniform"/>
-            <!--<TextBlock TextAlignment="Center" VerticalAlignment="Center"  FontSize="200" Text="6" FontWeight="ExtraBold"/>-->
+            <!--<Image x:Name="Test" Stretch="Uniform"/>-->
+            <TextBlock x:Name="PredictText" TextAlignment="Center" VerticalAlignment="Center"  FontSize="200" FontWeight="ExtraBold"/>
         </DockPanel>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MLStudy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,14 +22,24 @@ namespace MNISTDemo
     /// </summary>
     public partial class MainWindow : Window
     {
+        ClassificationMachine machine;
+        List<Probability> pList;
+        List<Trainer> trainerList;
+
         public MainWindow()
         {
             InitializeComponent();
+            var trainer = Storage.Load<Trainer>("Trainers\\MNIST_Trainer_2018_11_30_16_11_45.xml");
+            machine = trainer.GetClassificationMachine();
         }
+
+        private void LoadTrainers()
+        { }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             WritingBoard.Strokes.Clear();
+            PredictText.Text = "";
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -42,7 +53,6 @@ namespace MNISTDemo
             con.Source = bmp;
             con.DestinationFormat = PixelFormats.Gray8;
             con.EndInit();
-            Test.Source = con;
 
             var trans = new TransformedBitmap();
             trans.BeginInit();
@@ -51,11 +61,17 @@ namespace MNISTDemo
             trans.EndInit();
 
             var buff = BitmapSourceToArray(trans);
+            var data = new double[buff.Length];
             for (int i = 0; i < buff.Length; i++)
             {
-                buff[i] = (byte)(255 - buff[i]);
+                data[i] = (255 - buff[i]);
             }
-            
+
+            var tensor = new Tensor(data, 1, buff.Length);
+            var predict = machine.Predict(tensor);
+            PredictText.Text = predict[0];
+
+            ShowProbability();
         }
 
         private byte[] BitmapSourceToArray(BitmapSource bitmapSource)
@@ -76,6 +92,39 @@ namespace MNISTDemo
             bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * (bitmap.Format.BitsPerPixel / 8), 0);
 
             return bitmap;
+        }
+
+        private void ShowProbability()
+        {
+            if(pList == null)
+            {
+                var raw = machine.LastRawResult.GetRawValues();
+                var codec = machine.LastCodecResult.GetRawValues();
+                pList = new List<Probability>();
+                for (int i = 0; i < raw.Length; i++)
+                {
+                    var p = new Probability()
+                    {
+                        Category = i.ToString(),
+                        Codec = codec[i].ToString(),
+                        P = raw[i].ToString("F8"),
+                    };
+                    pList.Add(p);
+                }
+                ResultGrid.ItemsSource = pList;
+            }
+            else
+            {
+                var raw = machine.LastRawResult.GetRawValues();
+                var codec = machine.LastCodecResult.GetRawValues();
+
+                for (int i = 0; i < raw.Length; i++)
+                {
+                    var item = ResultGrid.Items[i] as Probability;
+                    item.Codec = codec[i].ToString();
+                    item.P = raw[i].ToString("F8");
+                }
+            }
         }
     }
 }

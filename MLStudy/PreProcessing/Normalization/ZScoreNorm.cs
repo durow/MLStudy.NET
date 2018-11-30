@@ -10,6 +10,12 @@ namespace MLStudy.PreProcessing
         public double Mean { get; private set; }
         public double Delta { get; private set; }
 
+        public ZScoreNorm(double mean, double delta)
+        {
+            Mean = mean;
+            Delta = delta;
+        }
+
         public ZScoreNorm(Tensor tensor)
         {
             Mean = tensor.Mean();
