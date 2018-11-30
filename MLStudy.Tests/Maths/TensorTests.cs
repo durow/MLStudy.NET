@@ -212,17 +212,17 @@ namespace MLStudy.Tests.Maths
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
-        public void NegativeIndexTest()
-        {
-            var t = new Tensor(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, 3);
+        //[Fact]
+        //public void NegativeIndexTest()
+        //{
+        //    var t = new Tensor(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, 3);
 
-            Assert.Equal(9, t[-1, -1]);
-            Assert.Equal(8, t[-1, -2]);
+        //    Assert.Equal(9, t[-1, -1]);
+        //    Assert.Equal(8, t[-1, -2]);
 
-            var test = t.GetTensorByDim1(-2);
-            var expected = new Tensor(new double[] { 4, 5, 6 });
-            Assert.Equal(expected, test);
-        }
+        //    var test = t.GetTensorByDim1(-2);
+        //    var expected = new Tensor(new double[] { 4, 5, 6 });
+        //    Assert.Equal(expected, test);
+        //}
     }
 }

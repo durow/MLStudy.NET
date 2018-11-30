@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace MLStudy
 {
@@ -56,17 +53,17 @@ namespace MLStudy
         /// <returns>包含结果的新的Tensor</returns>
         public static Tensor Multiple(Tensor a, Tensor b)
         {
-            //if (a.ElementCount == 1)
-            //    return Multiple(b, a.GetValue());
-            //if (b.ElementCount == 1)
-            //    return Multiple(a, b.GetValue());
+            if (a.ElementCount == 1)
+                return Multiple(b, a.GetValue());
+            if (b.ElementCount == 1)
+                return Multiple(a, b.GetValue());
 
-            //if (a.Rank == 1)
-            //    a = a.Reshape(1, a.ElementCount);
-            //if (b.Rank == 1)
-            //    b = b.Reshape(b.ElementCount, 1);
+            if (a.Rank == 1)
+                a = a.Reshape(1, a.ElementCount);
+            if (b.Rank == 1)
+                b = b.Reshape(b.ElementCount, 1);
 
-            //CheckMultipleShape(a, b);
+            CheckMultipleShape(a, b);
             var result = new Tensor(a.shape[0], b.shape[1]);
             Multiple(a, b, result);
 
@@ -81,10 +78,10 @@ namespace MLStudy
         /// <returns>包含结果的新的Tensor</returns>
         public static Tensor MultipleElementWise(Tensor a, Tensor b)
         {
-            //if (a.ElementCount == 1)
-            //    return Multiple(b, a.GetValue());
-            //if (b.ElementCount == 1)
-            //    return Multiple(a, b.GetValue());
+            if (a.ElementCount == 1)
+                return Multiple(b, a.GetValue());
+            if (b.ElementCount == 1)
+                return Multiple(a, b.GetValue());
 
             var result = a.GetSameShape();
             MultipleElementWise(a, b, result);
