@@ -41,6 +41,9 @@ namespace PlayGround.Plays
             {
                 LabelCodec = codec,
                 Normalizer = norm,
+                SaveDir = "Trainers",
+                Mission = "MNIST",
+                SaveTrainerEpochs = 1,
             };
 
             trainer.StartTrain(trainX, trainY, null, null);

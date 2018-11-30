@@ -6,66 +6,94 @@ using System.Xml;
 
 namespace MLStudy.Storages.Xml
 {
-    //public class XmlOneHotStorage<T> : XmlStorageBase<OneHotCodec<T>>
-    //{
-    //    public override XmlElement Save(XmlDocument doc, object o)
-    //    {
-    //        if (o == null)
-    //            return null;
+    public class XmlOneHotCodecStorage : XmlStorageBase<OneHotCodec>
+    {
+        public override XmlElement Save(XmlDocument doc, object o)
+        {
+            if (o == null)
+                return null;
 
-    //        if (!(o is OneHotCodec<T> codec))
-    //            throw new Exception("layer must be FullLayer!");
+            if (!(o is OneHotCodec codec))
+                throw new Exception("Codec must be OneHotCodec!");
 
-    //        var el = GetRootElement(doc);
-    //        var text = string.Join(",", codec.Categories);
-    //        el.InnerText = text;
+            var el = GetRootElement(doc);
+            var text = string.Join(",", codec.Categories);
+            el.InnerText = text;
 
-    //        return el;
-    //    }
+            return el;
+        }
 
-    //    public override object Load(XmlNode node)
-    //    {
-    //        if (node == null) return null;
+        public override object Load(XmlNode node)
+        {
+            if (node == null) return null;
+            var cate = CodecHelper.GetCategories(node);
+            return Activator.CreateInstance(Type, cate);
+        }
+    }
 
-    //        var split = node.InnerText.Split(',');
-    //        var gType = typeof(T);
-            
-    //        if(gType == typeof(int))
-    //        {
-    //            var result = new List<int>();
-    //            foreach (var item in split)
-    //            {
-    //                result.Add(int.Parse(item));
-    //            }
-    //            return Activator.CreateInstance(Type, result);
-    //        }
+    public class XmlDummyCodecStorage : XmlStorageBase<DummyCodec>
+    {
+        public override XmlElement Save(XmlDocument doc, object o)
+        {
+            if (o == null)
+                return null;
 
-    //        if(gType == typeof(double))
-    //        {
-    //            var result = new List<double>();
-    //            foreach (var item in split)
-    //            {
-    //                result.Add(double.Parse(item));
-    //            }
-    //            return Activator.CreateInstance(Type, result);
-    //        }
+            if (!(o is DummyCodec codec))
+                throw new Exception("Codec must be DummyCodec!");
 
-    //        if(gType == typeof(string))
-    //        {
-    //            var result = new List<string>();
-    //            foreach (var item in split)
-    //            {
-    //                result.Add(item);
-    //            }
-    //            return Activator.CreateInstance(Type, result);
-    //        }
+            var el = GetRootElement(doc);
+            var text = string.Join(",", codec.Categories);
+            el.InnerText = text;
 
-    //        var list = new List<T>();
-    //        foreach (var item in split)
-    //        {
-    //            list.Add(Activator.CreateInstance<T>());
-    //        }
-    //        return list;
-    //    }
-    //}
+            return el;
+        }
+
+        public override object Load(XmlNode node)
+        {
+            if (node == null) return null;
+            var cate = CodecHelper.GetCategories(node);
+            return Activator.CreateInstance(Type, cate);
+        }
+    }
+
+    public class XmlMapCodecStorage : XmlStorageBase<MapCodec>
+    {
+        public override XmlElement Save(XmlDocument doc, object o)
+        {
+            if (o == null)
+                return null;
+
+            if (!(o is MapCodec codec))
+                throw new Exception("Codec must be MapCodec!");
+
+            var el = GetRootElement(doc);
+            var text = string.Join(",", codec.Categories);
+            el.InnerText = text;
+
+            return el;
+        }
+
+        public override object Load(XmlNode node)
+        {
+            if (node == null) return null;
+            var cate = CodecHelper.GetCategories(node);
+            return Activator.CreateInstance(Type, cate);
+        }
+    }
+
+    internal static class CodecHelper
+    {
+        internal static List<string> GetCategories(XmlNode node)
+        {
+            var split = node.InnerText.Split(',');
+            var result = new List<string>();
+
+            foreach (var item in split)
+            {
+                result.Add(item);
+            }
+
+            return result;
+        }
+    }
 }

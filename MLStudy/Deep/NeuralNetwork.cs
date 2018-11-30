@@ -6,6 +6,7 @@
 
 
 using MLStudy.Abstraction;
+using MLStudy.Optimization;
 using MLStudy.Regularizations;
 using System.Collections.Generic;
 
@@ -229,6 +230,17 @@ namespace MLStudy.Deep
         public NeuralNetwork UseGradientDescent(double learningRate)
         {
             Optimizer = new GradientDescent(learningRate);
+            return this;
+        }
+
+        public NeuralNetwork UseAdam(double alpha=0.001, double beta1 = 0.9, double beta2 = 0.999)
+        {
+            UseOptimizer(new Adam()
+            {
+                Alpha = alpha,
+                Beta1 = beta1,
+                Beta2 = beta2,
+            });
             return this;
         }
 

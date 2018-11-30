@@ -41,7 +41,7 @@ namespace MLStudy
 
         public List<string> Predict(DataTable table)
         {
-            var x = PreProcessor.PreProcess(table);
+            var x = PreProcessor.PreProcessX(table);
             return Predict(x);
         }
     }

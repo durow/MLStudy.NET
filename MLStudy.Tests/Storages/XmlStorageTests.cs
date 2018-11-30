@@ -140,5 +140,30 @@ namespace MLStudy.Tests.Storages
             Assert.IsType<GradientDescent>(test.Optimizer);
             Assert.IsType<CrossEntropy>(test.LossFunction);
         }
+
+        [Fact]
+        public void TrainerTest()
+        {
+            var model = new NeuralNetwork()
+                .AddFullLayer(10)
+                .AddSigmoid()
+                .AddFullLayer(6)
+                .AddSigmoid()
+                .AddFullLayer(3)
+                .AddSoftmax()
+                .UseCrossEntropyLoss()
+                .UseAdam();
+
+            var trainer = new Trainer(model, 64, 10)
+            {
+                Mission = "MNIST",
+                LabelCodec = new OneHotCodec(new List<string> { "a", "b", "c" }),
+            };
+
+            var doc = new XmlDocument();
+            Storage.Save(trainer, "trainer.xml");
+
+            var test = Storage.Load<Trainer>("trainer.xml");
+        }
     }
 }

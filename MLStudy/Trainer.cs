@@ -1,6 +1,8 @@
 ﻿using MLStudy.Abstraction;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -8,19 +10,31 @@ namespace MLStudy
 {
     public class Trainer
     {
+        public string Mission { get; set; }
+        public string SaveDir { get; set; }
         public bool Training { get; private set; }
-        public IModel Model { get; private set; }
+        public IPreProcessor PreProcessor { get; set; }
         public DiscreteCodec LabelCodec { get; set; }
         public INormalizer Normalizer { get; set; }
         public int BatchSize { get; set; }
         public int Epoch { get; set; }
         public bool RandomBatch { get; set; }
         public int PrintSteps { get; set; } = 10;
+        public IModel Model { get; private set; }
+
+        public int SaveLogSteps { get; set; } = 0;
+        public int SaveTrainerEpochs { get; set; } = 0;
 
         public Tensor TrainX { get; private set; }
         public Tensor TrainY { get; private set; }
         public Tensor TestX { get; private set; }
         public Tensor TestY { get; private set; }
+
+        public double LastTrainLoss { get; internal set; }
+        public double LastTrainAccuracy { get; internal set; }
+        public double LastTestLoss { get; internal set; }
+        public double LastTestAccuracy { get; internal set; }
+        public TrainLog Log { get; private set; }
 
         private Tensor xBuff;
         private Tensor yBuff;
@@ -34,6 +48,7 @@ namespace MLStudy
         private DateTime startTime;
 
         public event EventHandler BatchComplete;
+        public event EventHandler StepComplete;
 
         public Trainer(IModel model, int batchSize, int epoch, bool randomBatch = false)
         {
@@ -43,7 +58,92 @@ namespace MLStudy
             RandomBatch = randomBatch;
         }
 
+        public void StartTrain(DataTable trainX, DataTable trainY, DataTable testX, DataTable testY)
+        {
+            if (PreProcessor == null)
+                throw new Exception("you need a PreProcessor!");
+
+            StartTrain(
+                PreProcessor.PreProcessX(trainX),
+                PreProcessor.PreProcessY(trainY),
+                PreProcessor.PreProcessX(testX),
+                PreProcessor.PreProcessY(testY));
+        }
+
         public void StartTrain(Tensor trainX, Tensor trainY, Tensor testX, Tensor testY)
+        {
+            Console.WriteLine("Preparing data...");
+            SetTrainingData(trainX, trainY, testX, testY);
+            Console.WriteLine("Complete!");
+
+            Training = true;
+            epochCounter = 0;
+            batchCounter = 1;
+            startTime = DateTime.Now;
+            var lastSave = false;
+
+            while (Training && epochCounter < Epoch)
+            {
+                Console.WriteLine($"\n==================== Epoch {epochCounter + 1} ====================\n");
+                var epochStart = DateTime.Now;
+                TrainEpoch();
+                ShowTime(epochStart);
+
+                //test the test data when one Epoch complete
+                if (TestX != null && TestY != null)
+                {
+                    var testYHat = Model.Predict(TestX);
+                    LastTestLoss = Model.GetLoss(TestY, testYHat);
+                    LastTestAccuracy = Model.GetAccuracy(TestY, testYHat);
+                    ShowTestLoss();
+                }
+
+                if (SaveTrainerEpochs > 0 && epochCounter % SaveTrainerEpochs == 0)
+                {
+                    SaveTrainer();
+                    if (Epoch - epochCounter == 1)
+                        lastSave = true;
+                }
+
+                epochCounter++;
+            }
+
+            if (SaveTrainerEpochs > 0 && !lastSave)
+                SaveTrainer();
+
+            ShowCompelteInfo();
+        }
+
+        public ClassificationMachine GetClassificationMachine()
+        {
+            return new ClassificationMachine(Model)
+            {
+                LabelCodec = LabelCodec,
+                Normalizer = Normalizer,
+                PreProcessor = PreProcessor,
+            };
+        }
+
+        public RegressionMachine GetRegressionMachine()
+        {
+            return new RegressionMachine(Model)
+            {
+                Normalizer = Normalizer,
+                PreProcessor = PreProcessor,
+            };
+        }
+
+        public void SaveTrainer()
+        {
+            if (!Directory.Exists(SaveDir))
+                Directory.CreateDirectory(SaveDir);
+
+            var time = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
+            var filename = $"{SaveDir}\\{Mission}_Trainer_{time}.xml";
+            Storage.Save(this, filename);
+        }
+
+        private void SetTrainingData(Tensor trainX, Tensor trainY, Tensor testX, Tensor testY)
         {
             if (Normalizer != null)
             {
@@ -59,7 +159,7 @@ namespace MLStudy
             if (LabelCodec != null)
             {
                 TrainY = LabelCodec.Encode(trainY.GetRawValues());
-                if(testY != null)
+                if (testY != null)
                     TestY = LabelCodec.Encode(testY.GetRawValues());
             }
             else
@@ -70,6 +170,7 @@ namespace MLStudy
 
             xBuff = new Tensor(BatchSize, TrainX.shape[1]);
             yBuff = new Tensor(BatchSize, TrainY.shape[1]);
+
             sampleCount = TrainX.shape[0];
             xWidth = TrainX.shape[1];
             yWidth = TrainY.shape[1];
@@ -77,32 +178,6 @@ namespace MLStudy
             batchPerEpoch = trainX.shape[0] / BatchSize;
             if (trainX.shape[0] % BatchSize != 0)
                 batchPerEpoch++;
-
-            Training = true;
-            epochCounter = 0;
-            batchCounter = 1;
-            startTime = DateTime.Now;
-            while (Training && epochCounter < Epoch)
-            {
-                Console.WriteLine($"============== Epoch {epochCounter + 1} ==============");
-                var epochStart = DateTime.Now;
-                TrainEpoch();
-                ShowTime(epochStart);
-
-                //test the test data when one Epoch complete
-                var testLoss = 0d;
-                var testAcc = 0d;
-                if (TestX != null && TestY != null)
-                {
-                    var testYHat = Model.Predict(TestX);
-                    testLoss = Model.GetLoss(TestY, testYHat);
-                    testAcc = Model.GetAccuracy(TestY, testYHat);
-                    ShowTestLoss(testLoss, testAcc);
-                }
-
-                epochCounter++;
-            }
-            ShowCompelteInfo();
         }
 
         public void Stop()
@@ -121,15 +196,14 @@ namespace MLStudy
 
                 if (counter % PrintSteps == 0)
                 {
-                    var trainLoss = Model.GetTrainLoss();
-                    var trainAcc = Model.GetTrainAccuracy();
-                    ShowTrainLoss(trainLoss, trainAcc, counter);
+                    LastTrainLoss = Model.GetTrainLoss();
+                    LastTrainAccuracy = Model.GetTrainAccuracy();
+                    ShowTrainLoss(counter);
                 }
 
                 counter++;
                 batchCounter++;
             }
-            Console.WriteLine();
         }
 
         private void SetBatchData()
@@ -163,18 +237,18 @@ namespace MLStudy
             var remain = GetRemainTimeSpan(passed);
             var estimate = DateTime.Now + remain;
 
-            Console.WriteLine($"Time>>cost:{cost.TotalSeconds.ToString("F2")}s  passed:{GetTimeSpanFormat(passed)} remain:{GetTimeSpanFormat(remain)}  ETA:{estimate.ToString("yyyy-MM-dd HH:mm:ss")}");
+            Console.WriteLine($"\nTime>>cost:{cost.TotalSeconds.ToString("F2")}s  passed:{GetTimeSpanFormat(passed)} remain:{GetTimeSpanFormat(remain)}  ETA:{estimate.ToString("yyyy-MM-dd HH:mm:ss")}");
         }
 
-        private void ShowTrainLoss(double trainLoss, double trainAccuracy, int counter)
+        private void ShowTrainLoss(int counter)
         {
 
-            Console.WriteLine($"Epoch:{epochCounter+1}>>Batch:{counter*BatchSize}/{sampleCount}>>Loss:{trainLoss.ToString("F4")}  Accuracy:{trainAccuracy.ToString("F4")}");
+            Console.WriteLine($"Epoch:{epochCounter+1}>>Batch:{counter*BatchSize}/{sampleCount}>>Loss:{LastTrainLoss.ToString("F4")}  Accuracy:{LastTrainAccuracy.ToString("F4")}");
         }
 
-        private void ShowTestLoss(double testLoss, double testAccuracy)
+        private void ShowTestLoss()
         {
-            Console.WriteLine($"Test>>Loss:{testLoss}\tAccuracy:{testAccuracy}");
+            Console.WriteLine($"Test>>Loss:{LastTestLoss}\tAccuracy:{LastTestAccuracy}");
         }
 
         private void ShowCompelteInfo()

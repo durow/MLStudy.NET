@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace MLStudy.Storages.Xml
 {
-    public class XmlOneHotCodecStorage : XmlStorageBase<OneHotCodec>
+    public class XmlNormalizerStorage : XmlStorageBase<ZScoreNorm>
     {
         public override XmlElement Save(XmlDocument doc, object o)
         {
