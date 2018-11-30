@@ -89,6 +89,11 @@ namespace MLStudy
                 TrainEpoch();
                 ShowTime(epochStart);
 
+                var trainYHat = Model.Predict(TrainX);
+                LastTrainLoss = Model.GetLoss(TrainY, trainYHat);
+                LastTrainAccuracy = Model.GetAccuracy(TrainY, trainYHat);
+                ShowTrainLossAll();
+
                 //test the test data when one Epoch complete
                 if (TestX != null && TestY != null)
                 {
@@ -242,13 +247,17 @@ namespace MLStudy
 
         private void ShowTrainLoss(int counter)
         {
+            Console.WriteLine($"Epoch:{epochCounter+1}>>Batch:{counter*BatchSize}/{sampleCount}>>Train>>Loss:{LastTrainLoss.ToString("F4")}  Accuracy:{LastTrainAccuracy.ToString("F4")}");
+        }
 
-            Console.WriteLine($"Epoch:{epochCounter+1}>>Batch:{counter*BatchSize}/{sampleCount}>>Loss:{LastTrainLoss.ToString("F4")}  Accuracy:{LastTrainAccuracy.ToString("F4")}");
+        private void ShowTrainLossAll()
+        {
+            Console.WriteLine($"Epoch:{epochCounter + 1}>>Train>>Loss:{LastTrainLoss.ToString("F4")}\tAccuracy:{LastTrainAccuracy.ToString("F4")}");
         }
 
         private void ShowTestLoss()
         {
-            Console.WriteLine($"Test>>Loss:{LastTestLoss}\tAccuracy:{LastTestAccuracy}");
+            Console.WriteLine($"Epoch:{epochCounter+1}>>Test>>Loss:{LastTestLoss.ToString("F4")}\tAccuracy:{LastTestAccuracy.ToString("F4")}");
         }
 
         private void ShowCompelteInfo()

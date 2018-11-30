@@ -7,15 +7,8 @@ using System.Threading.Tasks;
 
 namespace MNISTDemo
 {
-    public class Probability : INotifyPropertyChanged
+    public class Probability : BindingBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaisePropertyChanged(string propName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        }
-
         public string Category { get; set; }
 
         private string codec;

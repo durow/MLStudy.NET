@@ -24,26 +24,54 @@ namespace MNISTDemo
     {
         ClassificationMachine machine;
         List<Probability> pList;
-        List<Trainer> trainerList;
+        List<TrainerInfo> trainerList;
 
         public MainWindow()
         {
             InitializeComponent();
-            var trainer = Storage.Load<Trainer>("Trainers\\MNIST_Trainer_2018_11_30_16_11_45.xml");
-            machine = trainer.GetClassificationMachine();
+            TrainerGrid.ItemsSource = TrainerInfo.ReadFromDir("Trainers").ToList();
+            InitProbabilityGrid();
         }
 
         private void LoadTrainers()
         { }
 
+        private void InitProbabilityGrid()
+        {
+            pList = new List<Probability>();
+            for (int i = 0; i < 10; i++)
+            {
+                var p = new Probability()
+                {
+                    Category = i.ToString(),
+                    P = "0",
+                };
+                pList.Add(p);
+            }
+            ResultGrid.ItemsSource = pList;
+        }
+
+        //清空
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             WritingBoard.Strokes.Clear();
             PredictText.Text = "";
+            ProbText.Text = "";
+            foreach (var item in pList)
+            {
+                item.P = "0";
+            }
         }
 
+        //识别
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            if(machine == null)
+            {
+                MessageBox.Show("please select a machine first!");
+                return;
+            }
+
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)WritingBoard.ActualWidth, (int)WritingBoard.ActualHeight, 0, 0, PixelFormats.Default);
             bmp.Render(WritingBoard);
 
@@ -64,13 +92,14 @@ namespace MNISTDemo
             var data = new double[buff.Length];
             for (int i = 0; i < buff.Length; i++)
             {
-                data[i] = (255 - buff[i]);
+                data[i] = 255 - buff[i];
             }
 
             var tensor = new Tensor(data, 1, buff.Length);
             var predict = machine.Predict(tensor);
             PredictText.Text = predict[0];
-
+            var predictProb = machine.LastRawResult.Max();
+            ProbText.Text = $"Probability:{predictProb.ToString("F8")}";
             ShowProbability();
         }
 
@@ -121,10 +150,34 @@ namespace MNISTDemo
                 for (int i = 0; i < raw.Length; i++)
                 {
                     var item = ResultGrid.Items[i] as Probability;
-                    item.Codec = codec[i].ToString();
                     item.P = raw[i].ToString("F8");
                 }
             }
+        }
+
+        private void TrainerGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            UseButton_Click(null, null);
+        }
+
+        private void UseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var info = TrainerGrid.SelectedItem as TrainerInfo;
+            if (info == null)
+            {
+                MessageBox.Show("select a Machine first!");
+                return;
+            }
+
+            foreach (TrainerInfo item in TrainerGrid.Items)
+            {
+                item.IsUsing = false;
+            }
+
+            info.IsUsing = true;
+
+            var trainer = Storage.Load<Trainer>(info.FileName);
+            machine = trainer.GetClassificationMachine();
         }
     }
 }

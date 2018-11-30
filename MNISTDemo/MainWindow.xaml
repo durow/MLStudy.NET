@@ -4,30 +4,50 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MNISTDemo" WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d" SizeToContent="Height" ResizeMode="NoResize"
-        Title="MainWindow" Height="280" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
+        mc:Ignorable="d" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Title="MNIST Hand Wrighting Reconize v1.0 ---- by durow" >
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal">
+                <DockPanel>
+                    <InkCanvas x:Name="WritingBoard" Width="280" Height="280" Background="White">
+                        <InkCanvas.DefaultDrawingAttributes>
+                            <DrawingAttributes Width="25" Height="25" Color="Black"/>
+                        </InkCanvas.DefaultDrawingAttributes>
+                    </InkCanvas>
+                </DockPanel>
+                <DataGrid x:Name="ResultGrid" IsReadOnly="True" CanUserAddRows="False" FontSize="16" Width="280" Height="280"
+                      BorderBrush="LightGray" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category}"/>
+                        <DataGridTextColumn Header="Probability" Binding="{Binding P}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DockPanel Width="280" Height="280">
+                    <TextBlock x:Name="ProbText" DockPanel.Dock="Top" Text="Result:" FontSize="20" Margin="5,0,0,0"/>
+                    <TextBlock x:Name="PredictText" TextAlignment="Center" Background="White" VerticalAlignment="Center"  FontSize="180" FontWeight="ExtraBold"/>
+                </DockPanel>
+            </StackPanel>
+        </DockPanel>
+        <Button Content="识别" DockPanel.Dock="Top" Click="Button_Click_1" Height="30"/>
+        <Button Content="清空" DockPanel.Dock="Top" Click="Button_Click" Height="30"/>
         <DockPanel>
-            <Button Content="清空" DockPanel.Dock="Bottom" Click="Button_Click"/>
-            <Button Content="识别" DockPanel.Dock="Bottom" Click="Button_Click_1"/>
-            <InkCanvas x:Name="WritingBoard" Width="280" Height="280" Background="White">
-                <InkCanvas.DefaultDrawingAttributes>
-                    <DrawingAttributes Width="25" Height="25" Color="Black"/>
-                </InkCanvas.DefaultDrawingAttributes>
-            </InkCanvas>
+            <Button x:Name="UseButton" Click="UseButton_Click" DockPanel.Dock="Bottom" Height="50" Content="Use Selected Machine"/>
+            <DataGrid x:Name="TrainerGrid" IsReadOnly="True" AutoGenerateColumns="False" 
+                      HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray"
+                      MouseDoubleClick="TrainerGrid_MouseDoubleClick" Height="250">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Using" Binding="{Binding IsUsing}"/>
+                    <DataGridTextColumn Header="Mission" Binding="{Binding Mission}"/>
+                    <DataGridTextColumn Header="Model" Binding="{Binding Model}"/>
+                    <DataGridTextColumn Header="Normalizer" Binding="{Binding Normalizer}"/>
+                    <DataGridTextColumn Header="LabelCodec" Binding="{Binding LabelCodec}"/>
+                    <DataGridTextColumn Header="TrainLoss" Binding="{Binding TrainLoss}"/>
+                    <DataGridTextColumn Header="TrainAccuracy" Binding="{Binding TrainAccuracy}"/>
+                    <DataGridTextColumn Header="TestLoss" Binding="{Binding TestLoss}"/>
+                    <DataGridTextColumn Header="TestAccuracy" Binding="{Binding TestAccuracy}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </DockPanel>
-        <DockPanel Grid.Column="1">
-            <DataGrid x:Name="ResultGrid" HeadersVisibility="None" IsReadOnly="True" CanUserAddRows="False" BorderBrush="LightGray" />
-        </DockPanel>
-        <DockPanel Grid.Column="2">
-            <TextBlock DockPanel.Dock="Top" Text="识别结果:" Margin="2"/>
-            <!--<Image x:Name="Test" Stretch="Uniform"/>-->
-            <TextBlock x:Name="PredictText" TextAlignment="Center" VerticalAlignment="Center"  FontSize="200" FontWeight="ExtraBold"/>
-        </DockPanel>
-    </Grid>
+    </DockPanel>
 </Window>

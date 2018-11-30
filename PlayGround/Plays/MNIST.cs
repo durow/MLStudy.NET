@@ -18,9 +18,11 @@ namespace PlayGround.Plays
         {
             var trainX = MNISTReader.ReadImagesToMatrix("Data\\train-images.idx3-ubyte", 60000);
             var trainY = MNISTReader.ReadLabelsToMatrix("Data\\train-labels.idx1-ubyte", 60000);
+            var testX = MNISTReader.ReadImagesToMatrix("Data\\t10k-images.idx3-ubyte", 10000);
+            var testY = MNISTReader.ReadLabelsToMatrix("Data\\t10k-labels.idx1-ubyte", 10000);
 
             var nn = new NeuralNetwork()
-                .AddFullLayer(50)
+                .AddFullLayer(300)
                 .AddSigmoid()
                 .AddFullLayer(10)
                 .AddSoftmax()
@@ -37,7 +39,7 @@ namespace PlayGround.Plays
             var codec = new OneHotCodec(cate);
             var norm = new ZScoreNorm(trainX);
 
-            var trainer = new Trainer(nn, 64, 10, true)
+            var trainer = new Trainer(nn, 60, 10, false)
             {
                 LabelCodec = codec,
                 Normalizer = norm,
@@ -46,7 +48,7 @@ namespace PlayGround.Plays
                 SaveTrainerEpochs = 1,
             };
 
-            trainer.StartTrain(trainX, trainY, null, null);
+            trainer.StartTrain(trainX, trainY, testX, testY);
         }
     }
 }
