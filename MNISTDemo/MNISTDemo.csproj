@@ -104,9 +104,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Trainers\MNIST_Trainer_2018_11_30_21_35_59.xml">
+    <None Include="Trainers\MNIST_Trainer_2018_11_30_21_35_59.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
