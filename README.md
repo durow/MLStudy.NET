@@ -2,9 +2,9 @@
 
 This is a project for machine learning study, especially for deep learning.
 
-I love C# so I write it by pure C#,no 3rd part dependency. It is easy to rewrite to Python or other language.
+I love C# so I write it by pure C#, no 3rd part dependency. It is easy to rewrite to Python or other language.
 
-# Sample
+# Description
 
 ```C#
 
@@ -102,4 +102,4 @@ The storage file is xml format:
 
 ```
 
-of cause you can write a xml file directly and use Storage.Load<Trainer>("filename") to load it, as long as you like ;)
+of cause you can write a xml file directly and use Storage.Load<Trainer>("filename") to load it, as long as you like， but personally i don't like this way ;)
