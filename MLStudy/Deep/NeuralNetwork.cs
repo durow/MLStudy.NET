@@ -209,6 +209,13 @@ namespace MLStudy.Deep
             return this;
         }
 
+        public NeuralNetwork AddSoftmaxWithCrossEntropyLoss()
+        {
+            AddLayer(new SoftmaxWithCrossEntropy());
+            UseLossFunction(new CrossEntropyFromSoftmax());
+            return this;
+        }
+
         public NeuralNetwork AddTanh()
         {
             AddLayer(new Tanh());

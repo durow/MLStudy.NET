@@ -9,4 +9,5 @@ namespace MLStudy.Storages
 {
     public class XmlMseStorage : XmlStorageBase<MeanSquareError>{}
     public class XmlCrossEntropyStorage : XmlStorageBase<CrossEntropy>{ }
+    public class XmlCrossEntropyFromSoftmaxStorage : XmlStorageBase<CrossEntropyFromSoftmax>{ }
 }

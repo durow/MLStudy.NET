@@ -606,10 +606,7 @@ namespace MLStudy
             var len = dimensionSize[0];
             var start = index * len;
             var data = new double[len];
-            var newShape = new int[Rank - 1];
-
-            //计算新Tensor的shape
-            Array.Copy(shape, 1, newShape, 0, newShape.Length);
+            var newShape = GetDim1Shape();
             //复制数据到新Tensor
             Array.Copy(values, start, data, 0, len);
 

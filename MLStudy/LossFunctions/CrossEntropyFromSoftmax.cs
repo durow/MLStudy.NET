@@ -12,7 +12,7 @@ namespace MLStudy
     /// <summary>
     /// 创建使用交叉熵的损失函数
     /// </summary>
-    public sealed class CrossEntropy : LossFunction
+    public sealed class CrossEntropyFromSoftmax : LossFunction
     {
         private double[] yBuff;
         private double[] yHatBuff;
@@ -82,8 +82,7 @@ namespace MLStudy
 
         private void ComputeCrossEntropy(Tensor y, Tensor yHat)
         {
-            var forwardoutData = ForwardOutput.GetRawValues();
-            var backwardoutData = BackwardOutput.GetRawValues();
+            var foreoutData = ForwardOutput.GetRawValues();
 
             for (int i = 0; i < sampleNumber; i++)
             {
@@ -91,12 +90,10 @@ namespace MLStudy
                 y.GetByDim1(i, yBuff);
                 yHat.GetByDim1(i, yHatBuff);
                 //计算交叉熵
-                forwardoutData[i] = Functions.CrossEntropy(yBuff, yHatBuff);
-
-                //计算损失函数关于输入的导数
-                Derivatives.CrossEntropy(yBuff, yHatBuff, derBuff);
-                Array.Copy(derBuff, 0, backwardoutData, i * derBuff.Length, derBuff.Length);
+                foreoutData[i] = Functions.CrossEntropy(yBuff, yHatBuff);
             }
+
+            Array.Copy(y.values, 0, BackwardOutput.values, 0, y.ElementCount);
         }
 
         public static double ComputeAccuracy(Tensor y, Tensor yHat)

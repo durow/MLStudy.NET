@@ -12,6 +12,7 @@ namespace MLStudy.Storages
     public class XmlTanhStorage : XmlStorageBase<Tanh> { }
     public class XmlSigmoidStorage : XmlStorageBase<Sigmoid> { }
     public class XmlSoftmaxStorage : XmlStorageBase<Softmax> { }
+    public class XmlSoftmaxWithCrossEntropyStorage : XmlStorageBase<SoftmaxWithCrossEntropy> { }
 
     public class XmlFullLayerStorage : XmlStorageBase<FullLayer>
     {

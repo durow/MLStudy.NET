@@ -163,7 +163,7 @@ namespace MLStudy.Data
                         {
                             for (int k = 0; k < columns; k++)
                             {
-                                result[i, 1, j, k] = br.ReadByte();
+                                result[i, 0, j, k] = br.ReadByte();
                             }
                         }
                     }

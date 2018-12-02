@@ -23,8 +23,8 @@ namespace MLStudy
 
         }
 
-        private static Random rand1 = new Random((int)DateTime.Now.Ticks);
-        private static Random rand2 = new Random((int)DateTime.Now.Ticks);
+        private static Random rand1 = new Random();
+        private static Random rand2 = new Random();
 
         public double Random()
         {

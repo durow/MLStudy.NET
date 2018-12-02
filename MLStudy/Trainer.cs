@@ -173,12 +173,14 @@ namespace MLStudy
                 TestY = testY;
             }
 
-            xBuff = new Tensor(BatchSize, TrainX.shape[1]);
+            var shape = TrainX.Shape;
+            shape[0] = BatchSize;
+            xBuff = new Tensor(shape);
             yBuff = new Tensor(BatchSize, TrainY.shape[1]);
 
             sampleCount = TrainX.shape[0];
-            xWidth = TrainX.shape[1];
-            yWidth = TrainY.shape[1];
+            xWidth = TrainX.ElementCount / TrainX.shape[0];
+            yWidth = TrainY.ElementCount / TrainY.shape[0];
 
             batchPerEpoch = trainX.shape[0] / BatchSize;
             if (trainX.shape[0] % BatchSize != 0)

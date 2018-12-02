@@ -44,6 +44,10 @@ namespace MLStudy
             for (int i = 0; i < x.Length; i++)
             {
                 result[i] = Math.Exp(x[i] - max);
+                if (result[i] < 0.000000001)
+                    result[i] = 0;
+                if (result[i] > 0.999999999)
+                    result[i] = 1;
             }
 
             var sum = result.Sum();
@@ -66,8 +70,10 @@ namespace MLStudy
             {
                 if (y[i] == 0)
                     continue;
-
-                result -= y[i] * Math.Log(yHat[i]);
+                else if (yHat[i] == 0)
+                    result -= y[i] * Math.Log(0.00000001);
+                else
+                    result -= y[i] * Math.Log(yHat[i]);
             }
 
             return result;

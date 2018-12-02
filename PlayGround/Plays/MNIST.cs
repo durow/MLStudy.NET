@@ -16,18 +16,26 @@ namespace PlayGround.Plays
     {
         public void Play()
         {
-            var trainX = MNISTReader.ReadImagesToMatrix("Data\\train-images.idx3-ubyte", 60000);
+            var trainX = MNISTReader.ReadImagesToTensor4("Data\\train-images.idx3-ubyte", 60000);
             var trainY = MNISTReader.ReadLabelsToMatrix("Data\\train-labels.idx1-ubyte", 60000);
-            var testX = MNISTReader.ReadImagesToMatrix("Data\\t10k-images.idx3-ubyte", 10000);
+            var testX = MNISTReader.ReadImagesToTensor4("Data\\t10k-images.idx3-ubyte", 10000);
             var testY = MNISTReader.ReadLabelsToMatrix("Data\\t10k-labels.idx1-ubyte", 10000);
 
             var nn = new NeuralNetwork()
-                .AddFullLayer(300)
+                .AddLayer(new ConvLayer(10, 5, 1))
+                .AddLayer(new MaxPooling(2))
+                .AddReLU()
+                //.AddLayer(new ConvLayer(20, 5, 1))
+                //.AddLayer(new MaxPooling(2))
+                //.AddReLU()
+                .AddLayer(new FlattenLayer())
+                .AddFullLayer(100)
+                .AddSigmoid()
+                .AddFullLayer(50)
                 .AddSigmoid()
                 .AddFullLayer(10)
-                .AddSoftmax()
-                .UseOptimizer(new Adam())
-                .UseCrossEntropyLoss();
+                .AddSoftmaxWithCrossEntropyLoss()
+                .UseAdam();
 
             var cate = trainY
                 .GetRawValues()
@@ -39,13 +47,10 @@ namespace PlayGround.Plays
             var codec = new OneHotCodec(cate);
             var norm = new ZScoreNorm(trainX);
 
-            var trainer = new Trainer(nn, 60, 10, false)
+            var trainer = new Trainer(nn, 64, 10, true)
             {
                 LabelCodec = codec,
                 Normalizer = norm,
-                SaveDir = "Trainers",
-                Mission = "MNIST",
-                SaveTrainerEpochs = 1,
             };
 
             trainer.StartTrain(trainX, trainY, testX, testY);

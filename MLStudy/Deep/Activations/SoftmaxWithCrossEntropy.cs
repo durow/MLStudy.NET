@@ -14,7 +14,7 @@ namespace MLStudy.Deep
     /// <summary>
     /// 使用Softmax函数的激活层
     /// </summary>
-    public sealed class Softmax : Activation
+    public sealed class SoftmaxWithCrossEntropy : Activation
     {
         private double[] sampleBuff;
         private int sampleNumber;
@@ -35,9 +35,6 @@ namespace MLStudy.Deep
             sampleNumber = input.shape[0];
             categoryNumber = input.shape[1];
             sampleBuff = new double[categoryNumber];
-            //向量对向量求导的结果是个矩阵
-            //多个样本下，softmax的导数是一个三阶张量，第一维是样本数量，后面两维是jacob矩阵
-            Derivative = new Tensor(sampleNumber, categoryNumber, categoryNumber);
             return ForwardOutput;
         }
 
@@ -75,17 +72,11 @@ namespace MLStudy.Deep
         /// <summary>
         /// 反向传播或叫向前传播
         /// </summary>
-        /// <param name="error">传回来的误差</param>
+        /// <param name="y">传回来的误差</param>
         /// <returns>传到前面的误差</returns>
-        public override Tensor Backward(Tensor error)
+        public override Tensor Backward(Tensor y)
         {
-            ComputeDerivative();
-            //Parallel.For(0, sampleNumber, (Action<int>)(i =>
-            //{
-            //    //这个方法直接将计算结果写入result，不需要开辟中间内存
-            //    ErrorBP((Tensor)base.ForwardOutput, error, BackwardOutput, i);
-            //}));
-            ErrorBP(error);
+            Tensor.Apply(ForwardOutput, y, BackwardOutput, (a, b) => a - b);
             return BackwardOutput;
         }
 

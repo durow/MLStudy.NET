@@ -339,6 +339,14 @@ namespace MLStudy
             }
         }
 
+        public int[] GetDim1Shape()
+        {
+            var newShape = new int[Rank - 1];
+            //计算新Tensor的shape
+            Array.Copy(shape, 1, newShape, 0, newShape.Length);
+            return newShape;
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
