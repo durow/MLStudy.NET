@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class TensorGeneric<T>
+    public abstract class Tensor<T> where T : struct
     {
         public TensorData<T> Values { get; private set; }
         public int Rank { get { return Values.shape.Length; } }
@@ -20,43 +20,48 @@ namespace MLStudy
         }
         public int Count { get { return Values.Count; } }
 
-        public TensorGeneric(params int[] shape)
+        public Tensor(params int[] shape)
         {
             Values = new TensorData<T>(shape);
         }
 
-        public TensorGeneric<T> GetTensor(params int[] index)
+        public Tensor(TensorData<T> data)
         {
-            var data = Values.GetData(index);
-            return new TensorGeneric<T>
-            {
-                Values = data
-            };
+            Values = data;
         }
+
+        public abstract Tensor<T> GetTensor(params int[] index);
 
         public void SetTensor(T value, params int[] index)
         {
             Values.SetData(value, index);
         }
 
-        public virtual TensorGeneric<T> GetSameShape()
+        public void SetValue(T value)
         {
-            return new TensorGeneric<T>(shape);
+
         }
 
-        public virtual void AddLocal(T a)
+        public virtual Tensor<T> GetSameShape()
         {
-            TensorGeneric.Add(this, a, this);
+            return Tensor.Create<T>(shape);
         }
 
-        public virtual TensorGeneric<T> Add(T a)
-        {
-            return TensorGeneric.Add(this, a);
-        }
+        public abstract void AddLocal(T a);
 
-        public static TensorGeneric<T> operator +(TensorGeneric<T> a, T b)
+        public abstract Tensor<T> Add(T a);
+
+        public abstract void MinusLocal(T a);
+
+        public abstract Tensor<T> Minus(T a);
+
+        public abstract void MunusByLocal(T a);
+
+        public abstract Tensor<T> MunusBy(T a);
+
+        public static Tensor<T> operator +(Tensor<T> a, T b)
         {
-            return TensorGeneric.Add<T>(a, b);
+            return Tensor.Add<T>(a, b);
         }
     }
 }

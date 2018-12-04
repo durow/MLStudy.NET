@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public class TensorData<T>
+    public class TensorData<T> where T : struct
     {
         internal T[] rawValues;
         internal int[] shape;
@@ -23,12 +23,22 @@ namespace MLStudy
                 SetValue(value, index);
             }
         }
-        
+
+        private TensorData() { }
+
         public TensorData(params int[] shape)
         {
             InitShapeInfo(shape);
             Count = GetTotalLength(shape);
             rawValues = new T[Count];
+        }
+
+        public TensorData(T[] data)
+        {
+            var shape = new int[] { 1, data.Length };
+            InitShapeInfo(shape);
+            Count = GetTotalLength(shape);
+            rawValues = data;
         }
 
         public T GetValue(params int[] index)
@@ -64,13 +74,34 @@ namespace MLStudy
 
         public void SetData(T value, params int[] index)
         {
-            var offset = GetOffset(index) + startIndex;
-            var len = dimensionSize[index.Length - 1];
+            var offset = GetOffset(index);
+            var len = GetDimensionSize(index);
 
             for (int i = 0; i < len; i++)
             {
-                rawValues[startIndex + offset + i] = value;
+                rawValues[offset + i] = value;
             }
+        }
+
+        public void SetAll(T value)
+        {
+            for (int i = 0; i < rawValues.Length; i++)
+            {
+                rawValues[i] = value;
+            }
+        }
+
+        internal TensorData<T> ReShape(params int[] shape)
+        {
+            var result = new TensorData<T>
+            {
+                rawValues = rawValues,
+                startIndex = startIndex,
+                shape = shape,
+                Count = Count,
+                dimensionSize = ComputeDimSize(shape)
+            };
+            return result;
         }
 
         internal int GetOffset(params int[] index)
@@ -107,7 +138,12 @@ namespace MLStudy
 
         private void SetDimensionSize()
         {
-            dimensionSize = new int[shape.Length];
+            dimensionSize = ComputeDimSize(shape);
+        }
+
+        private int[] ComputeDimSize(int[] shape)
+        {
+            var result = new int[shape.Length];
             for (int i = 0; i < dimensionSize.Length; i++)
             {
                 var temp = 1;
@@ -115,8 +151,17 @@ namespace MLStudy
                 {
                     temp *= shape[j];
                 }
-                dimensionSize[i] = temp;
+                result[i] = temp;
             }
+            return result;
+        }
+
+        private int GetDimensionSize(params int[] index)
+        {
+            if (index.Length == 0)
+                return Count;
+
+            return dimensionSize[index.Length - 1];
         }
 
         private static int GetTotalLength(int[] shape)
