@@ -53,6 +53,16 @@ namespace MLStudy
             rawValues[offset] = value;
         }
 
+        public T GetValueByOffset(int offset)
+        {
+            return rawValues[startIndex + offset];
+        }
+
+        public void SetValueByOffset(T value, int offset)
+        {
+            rawValues[startIndex + offset] = value;
+        }
+
         public TensorData<T> GetData(params int[] index)
         {
             var offset = GetOffset(index);
@@ -87,8 +97,16 @@ namespace MLStudy
         {
             for (int i = 0; i < rawValues.Length; i++)
             {
+
                 rawValues[i] = value;
             }
+        }
+
+        public T[] GetValues()
+        {
+            var result = new T[Count];
+            Array.Copy(rawValues, startIndex, result, 0, Count);
+            return result;
         }
 
         internal TensorData<T> ReShape(params int[] shape)
@@ -144,7 +162,7 @@ namespace MLStudy
         private int[] ComputeDimSize(int[] shape)
         {
             var result = new int[shape.Length];
-            for (int i = 0; i < dimensionSize.Length; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 var temp = 1;
                 for (int j = i + 1; j < shape.Length; j++)

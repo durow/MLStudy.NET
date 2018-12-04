@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NumSharp;
-using MLStudy.Playground;
 
 namespace PlayGround.Plays
 {
@@ -29,10 +28,6 @@ namespace PlayGround.Plays
                     a2[j, i] = rand.NextDouble();
                 }
             }
-
-            var tt1 = new TensorTest(data, 500, 400);
-            var tt2 = new TensorTest(data, 400, 500);
-            var ttResult = new TensorTest(new double[250000], 500, 500);
 
 
             var np = new NumSharp.Core.NumPy<double>();
@@ -67,33 +62,6 @@ namespace PlayGround.Plays
                     result[i, j] = sum;
                 }
             }
-            var ts1 = DateTime.Now - start1;
-            Console.WriteLine($"Array Time:{ts1.TotalMilliseconds} ms");
-
-            var raw1 = tt1.GetRawValues();
-            var raw2 = tt2.GetRawValues();
-            var i1 = 0;
-            var i2 = 0;
-            var start2 = DateTime.Now;
-            for (int i = 0; i < 500; i++)
-            {
-                for (int j = 0; j < 500; j++)
-                {
-                    sum = 0d;
-                    for (int k = 0; k < 400; k++)
-                    {
-                        //i1 = tt1.GetRawOffset(i, k);
-                        //i2 = tt2.GetRawOffset(k, j);
-                        //sum += raw1[i1] * raw2[i2];
-                        sum = tt1.GetValue(i, k) + tt2.GetValue(k, j);
-                    }
-                    ttResult.SetValue(sum, i, j);
-                }
-            }
-            //Tensor.Multiple(t1, t2, tResult);
-            var ts2 = DateTime.Now - start2;
-            Console.WriteLine($"TensorTest Time:{ts2.TotalMilliseconds} ms");
-
 
             var start3 = DateTime.Now;
             for (int i = 0; i < 500; i++)
