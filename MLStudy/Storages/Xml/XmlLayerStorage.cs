@@ -40,11 +40,11 @@ namespace MLStudy.Storages
             var unitCount = XmlStorage.GetIntValue(node, "UnitCount");
             var result = (FullLayer)Activator.CreateInstance(typeof(FullLayer), unitCount);
 
-            var weights = XmlStorage.GetObjectValue<Tensor>(node, "Weights");
+            var weights = XmlStorage.GetObjectValue<TensorOld>(node, "Weights");
             if (weights != null)
                 result.SetWeights(weights);
 
-            var bias = XmlStorage.GetObjectValue<Tensor>(node, "Bias");
+            var bias = XmlStorage.GetObjectValue<TensorOld>(node, "Bias");
             if (bias != null)
                 result.SetBias(bias);
 
@@ -122,11 +122,11 @@ namespace MLStudy.Storages
             var result = (ConvLayer)Activator.CreateInstance(typeof(ConvLayer), count, rows, columns, rowStride, columnStride, rowPadding, columnPadding);
             result.PaddingValue = paddingValue;
 
-            var filters = XmlStorage.GetObjectValue<Tensor>(node, "Filters");
+            var filters = XmlStorage.GetObjectValue<TensorOld>(node, "Filters");
             if (filters != null)
                 result.SetFilters(filters);
 
-            var bias = XmlStorage.GetObjectValue<Tensor>(node, "Bias");
+            var bias = XmlStorage.GetObjectValue<TensorOld>(node, "Bias");
             if (bias != null)
                 result.SetBias(bias);
 

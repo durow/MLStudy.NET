@@ -24,31 +24,31 @@ namespace MLStudy.Deep
         /// <summary>
         /// 输入的引用
         /// </summary>
-        public Tensor ForwardInput { get; private set; } //对之前输入的引用，为了方便计算权重的梯度，不需要初始化
+        public TensorOld ForwardInput { get; private set; } //对之前输入的引用，为了方便计算权重的梯度，不需要初始化
         /// <summary>
         /// 最后一次正向传播的输出
         /// </summary>
-        public Tensor ForwardOutput { get; private set; }
+        public TensorOld ForwardOutput { get; private set; }
         /// <summary>
         /// 最后一次反向传播的输出
         /// </summary>
-        public Tensor BackwardOutput { get; private set; }
+        public TensorOld BackwardOutput { get; private set; }
         /// <summary>
         /// 权重，每列代表一个Unit
         /// </summary>
-        public Tensor Weights { get; private set; }
+        public TensorOld Weights { get; private set; }
         /// <summary>
         /// 偏置，Shape为1*N，每一个对应一个Unit
         /// </summary>
-        public Tensor Bias { get; private set; }
+        public TensorOld Bias { get; private set; }
         /// <summary>
         /// 反向传播计算出的权重的梯度
         /// </summary>
-        public Tensor WeightsGradient { get; private set; }
+        public TensorOld WeightsGradient { get; private set; }
         /// <summary>
         /// 反向传播计算出的偏置的梯度
         /// </summary>
-        public Tensor BiasGradient { get; private set; }
+        public TensorOld BiasGradient { get; private set; }
         /// <summary>
         /// 单元个数
         /// </summary>
@@ -73,17 +73,17 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入，主要使用结构信息</param>
         /// <returns></returns>
-        public Tensor PrepareTrain(Tensor input)
+        public TensorOld PrepareTrain(TensorOld input)
         {
             if (input.Rank != 2)
                 throw new TensorShapeException("input tensor must have Rank=2");
 
-            ForwardOutput = new Tensor(input.shape[0], UnitCount);
+            ForwardOutput = new TensorOld(input.shape[0], UnitCount);
             BackwardOutput = input.GetSameShape();
 
             if(Weights == null)
             {
-                SetWeights(Tensor.RandGaussian(input.shape[1], UnitCount));
+                SetWeights(TensorOld.RandGaussian(input.shape[1], UnitCount));
                 WeightsGradient = Weights.GetSameShape();
             }
             else
@@ -94,7 +94,7 @@ namespace MLStudy.Deep
 
             if (Bias == null)
             {
-                SetBias(Tensor.Zeros(1, UnitCount));
+                SetBias(TensorOld.Zeros(1, UnitCount));
                 BiasGradient = Bias.GetSameShape();
             }
 
@@ -114,12 +114,12 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Tensor PreparePredict(Tensor input)
+        public TensorOld PreparePredict(TensorOld input)
         {
             if (input.Rank != 2)
                 throw new TensorShapeException("input tensor must have Rank=2");
 
-            ForwardOutput = new Tensor(input.shape[0], UnitCount);
+            ForwardOutput = new TensorOld(input.shape[0], UnitCount);
             return ForwardOutput;
         }
 
@@ -128,11 +128,11 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入</param>
         /// <returns>输出</returns>
-        public Tensor Forward(Tensor input)
+        public TensorOld Forward(TensorOld input)
         {
             //保存input用于Backward中计算Weights和Bias的梯度
             ForwardInput = input;
-            Tensor.Multiple(input, Weights, ForwardOutput);
+            TensorOld.Multiple(input, Weights, ForwardOutput);
             AddBias();
             return ForwardOutput;
         }
@@ -142,7 +142,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="error">输入</param>
         /// <returns>输出</returns>
-        public Tensor Backward(Tensor error)
+        public TensorOld Backward(TensorOld error)
         {
             //计算Weights和Bias的梯度
             ComputeGradient(error);
@@ -185,7 +185,7 @@ namespace MLStudy.Deep
         /// 手动设置权重
         /// </summary>
         /// <param name="weights"></param>
-        public void SetWeights(Tensor weights)
+        public void SetWeights(TensorOld weights)
         {
             if(Weights == null)
             {
@@ -194,7 +194,7 @@ namespace MLStudy.Deep
                     item.Weights = weights;
                 }
             }
-            Tensor.CheckShape(weights, Weights);
+            TensorOld.CheckShape(weights, Weights);
             Array.Copy(weights.GetRawValues(), 0, Weights.GetRawValues(), 0, Weights.ElementCount);
         }
 
@@ -202,7 +202,7 @@ namespace MLStudy.Deep
         /// 手动设置偏置
         /// </summary>
         /// <param name="bias"></param>
-        public void SetBias(Tensor bias)
+        public void SetBias(TensorOld bias)
         {
             if (Bias == null)
             {
@@ -211,7 +211,7 @@ namespace MLStudy.Deep
                     item.Bias = bias;
                 }
             }
-            Tensor.CheckShape(Bias, bias);
+            TensorOld.CheckShape(Bias, bias);
             Array.Copy(bias.GetRawValues(), 0, Bias.GetRawValues(), 0, Bias.ElementCount);
         }
 
@@ -253,7 +253,7 @@ namespace MLStudy.Deep
         }
 
         //计算Weights和Bias的梯度
-        private void ComputeGradient(Tensor error)
+        private void ComputeGradient(TensorOld error)
         {
             var inputData = ForwardInput.GetRawValues();
             var errorData = error.GetRawValues();

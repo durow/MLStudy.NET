@@ -17,13 +17,13 @@ namespace MLStudy.Deep
         public int RowPadding { get; private set; }
         public int ColumnPadding { get; private set; }
         public double PaddingValue { get; set; } = 0;
-        public Tensor Filters { get; private set; }
-        public Tensor Bias { get; private set; }
-        public Tensor ForwardOutput { get; private set; }
-        public Tensor BackwardOutput { get; private set; }
-        public Tensor FiltersGradient { get; private set; }
-        public Tensor BiasGradient { get; private set; }
-        public Tensor PaddingInput { get; private set; }
+        public TensorOld Filters { get; private set; }
+        public TensorOld Bias { get; private set; }
+        public TensorOld ForwardOutput { get; private set; }
+        public TensorOld BackwardOutput { get; private set; }
+        public TensorOld FiltersGradient { get; private set; }
+        public TensorOld BiasGradient { get; private set; }
+        public TensorOld PaddingInput { get; private set; }
 
         private List<ConvLayer2> mirrorList = new List<ConvLayer2>();
         private int samples;
@@ -51,7 +51,7 @@ namespace MLStudy.Deep
             mirrorList.Add(this);
         }
 
-        public Tensor PrepareTrain(Tensor input)
+        public TensorOld PrepareTrain(TensorOld input)
         {
             PreparePredict(input);
             BackwardOutput = input.GetSameShape();
@@ -60,7 +60,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public Tensor PreparePredict(Tensor input)
+        public TensorOld PreparePredict(TensorOld input)
         {
             if (input.Rank != 4)
                 throw new Exception("Convolutional layer input rank must be 4!");
@@ -72,16 +72,16 @@ namespace MLStudy.Deep
             filterRowLength = FilterColumns * channels;
             outRows = (inputRows + 2 * RowPadding - FilterRows) / RowStride + 1;
             outColumns = (inputColumns + 2 * ColumnPadding - FilterColumns) / ColumnStride + 1;
-            ForwardOutput = new Tensor(samples, outRows, outColumns, FilterCount);
+            ForwardOutput = new TensorOld(samples, outRows, outColumns, FilterCount);
             if (Filters == null)
-                SetFilters(Tensor.RandGaussian(FilterCount, channels, FilterRows, FilterColumns));
+                SetFilters(TensorOld.RandGaussian(FilterCount, channels, FilterRows, FilterColumns));
             if (Bias == null)
-                SetBias(Tensor.Zeros(FilterCount));
-            PaddingInput = Tensor.Values(PaddingValue, samples, inputRows + 2 * RowPadding, inputColumns + 2 * ColumnPadding, channels);
+                SetBias(TensorOld.Zeros(FilterCount));
+            PaddingInput = TensorOld.Values(PaddingValue, samples, inputRows + 2 * RowPadding, inputColumns + 2 * ColumnPadding, channels);
             return ForwardOutput;
         }
 
-        public Tensor Forward(Tensor input)
+        public TensorOld Forward(TensorOld input)
         {
             SetPaddingInput(input);
 
@@ -95,7 +95,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public Tensor Backward(Tensor error)
+        public TensorOld Backward(TensorOld error)
         {
             ErrorBackward(error);
             ComputeGradient(error);
@@ -129,7 +129,7 @@ namespace MLStudy.Deep
             return new ConvLayer(FilterCount, FilterRows, FilterColumns, RowStride, ColumnStride, RowPadding, ColumnPadding);
         }
 
-        public void SetFilters(Tensor filters)
+        public void SetFilters(TensorOld filters)
         {
             if (Filters == null)
             {
@@ -138,11 +138,11 @@ namespace MLStudy.Deep
                     item.Filters = filters;
                 }
             }
-            Tensor.CheckShape(filters, Filters);
+            TensorOld.CheckShape(filters, Filters);
             Array.Copy(filters.values, 0, Filters.values, 0, Filters.ElementCount);
         }
 
-        public void SetBias(Tensor bias)
+        public void SetBias(TensorOld bias)
         {
             if (Bias == null)
             {
@@ -151,11 +151,11 @@ namespace MLStudy.Deep
                     item.Bias = bias;
                 }
             }
-            Tensor.CheckShape(Bias, bias);
+            TensorOld.CheckShape(Bias, bias);
             Array.Copy(bias.GetRawValues(), 0, Bias.GetRawValues(), 0, Bias.ElementCount);
         }
 
-        private void Forward(Tensor input, int sampleIndex, int filterIndex)
+        private void Forward(TensorOld input, int sampleIndex, int filterIndex)
         {
             var filterOff = Filters.GetRawOffset(filterIndex, 0, 0, 0);
             Parallel.For(0, outRows, row =>
@@ -180,7 +180,7 @@ namespace MLStudy.Deep
             });
         }
 
-        private void ErrorBackward(Tensor error)
+        private void ErrorBackward(TensorOld error)
         {
             BackwardOutput.Clear();
 
@@ -193,7 +193,7 @@ namespace MLStudy.Deep
             });
         }
 
-        private void ErrorBackward(Tensor error, int sampleIndex, int filterIndex)
+        private void ErrorBackward(TensorOld error, int sampleIndex, int filterIndex)
         {
             for (int row = 0; row < outRows; row++)
             {
@@ -228,7 +228,7 @@ namespace MLStudy.Deep
             }
         }
 
-        private void ComputeGradient(Tensor error)
+        private void ComputeGradient(TensorOld error)
         {
             FiltersGradient.Clear();
 
@@ -241,7 +241,7 @@ namespace MLStudy.Deep
             });
         }
 
-        private void ComputeGradient(Tensor error, int sampleIndex, int filterIndex)
+        private void ComputeGradient(TensorOld error, int sampleIndex, int filterIndex)
         {
             var bias = 0d;
             for (int row = 0; row < outRows; row++)
@@ -271,7 +271,7 @@ namespace MLStudy.Deep
             BiasGradient[filterIndex] = bias;
         }
 
-        private double GetInputValue(Tensor input, int sample, int channel, int row, int col)
+        private double GetInputValue(TensorOld input, int sample, int channel, int row, int col)
         {
             if (row < RowPadding || col < ColumnPadding)
                 return PaddingValue;
@@ -285,7 +285,7 @@ namespace MLStudy.Deep
             return input[sample, channel, row, col];
         }
 
-        private void SetPaddingInput(Tensor input)
+        private void SetPaddingInput(TensorOld input)
         {
             var inputData = input.GetRawValues();
             var paddingData = PaddingInput.GetRawValues();

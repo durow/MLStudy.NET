@@ -33,9 +33,9 @@ namespace MLStudy
         /// </summary>
         /// <param name="target">优化的目标</param>
         /// <param name="graident">目标的梯度</param>
-        public void Optimize(Tensor target, Tensor graident)
+        public void Optimize(TensorOld target, TensorOld graident)
         {
-            Tensor.Apply(target, graident, target, (a, b) => a - LearningRate * b);
+            TensorOld.Apply(target, graident, target, (a, b) => a - LearningRate * b);
         }
     }
 }

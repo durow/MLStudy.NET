@@ -11,9 +11,9 @@ namespace MLStudy.Tests.PreProcessing
         [Fact]
         public void MinMaxTest()
         {
-            var data = new Tensor(new double[] { 1, 2, 3, 4, 3, 2, 3, 4, 5, 7 });
+            var data = new TensorOld(new double[] { 1, 2, 3, 4, 3, 2, 3, 4, 5, 7 });
             var norm = new MinMaxNorm(data);
-            var test = new Tensor(new double[] { 1, 7, 3, 4 });
+            var test = new TensorOld(new double[] { 1, 7, 3, 4 });
             var result = norm.Normalize(test);
 
             Assert.Equal(1, norm.Min);
@@ -27,9 +27,9 @@ namespace MLStudy.Tests.PreProcessing
         [Fact]
         public void ZScoreTest()
         {
-            var data = new Tensor(new double[] { 1, 2, 3 });
+            var data = new TensorOld(new double[] { 1, 2, 3 });
             var norm = new ZScoreNorm(data);
-            var test = new Tensor(new double[] { 1.5, 2.5 });
+            var test = new TensorOld(new double[] { 1.5, 2.5 });
             var result = norm.Normalize(test);
 
             Assert.Equal(2, norm.Mean);

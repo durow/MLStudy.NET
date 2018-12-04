@@ -2,14 +2,14 @@
 
 namespace MLStudy
 {
-    public partial class Tensor
+    public partial class TensorOld
     {
         /// <summary>
         /// 当前Tensor乘上d，结果保存在当前Tensor
         /// </summary>
         /// <param name="d">要乘上的值</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Multiple(double d)
+        public TensorOld Multiple(double d)
         {
             Apply(a => a * d);
             return this;
@@ -20,7 +20,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="t">乘上的Tensor</param>
         /// <returns>当前Tensor</returns>
-        public Tensor MultipleElementWise(Tensor t)
+        public TensorOld MultipleElementWise(TensorOld t)
         {
             if (t.ElementCount == 1)
                 return Multiple(t.GetValue());
@@ -37,7 +37,7 @@ namespace MLStudy
         /// <param name="t">Tensor</param>
         /// <param name="d">数字d</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor Multiple(Tensor t, double d)
+        public static TensorOld Multiple(TensorOld t, double d)
         {
             var result = t.GetSameShape();
             Multiple(t, d, result);
@@ -51,7 +51,7 @@ namespace MLStudy
         /// <param name="a">Tensor1</param>
         /// <param name="b">Tensor2</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor Multiple(Tensor a, Tensor b)
+        public static TensorOld Multiple(TensorOld a, TensorOld b)
         {
             if (a.ElementCount == 1)
                 return Multiple(b, a.GetValue());
@@ -64,7 +64,7 @@ namespace MLStudy
                 b = b.Reshape(b.ElementCount, 1);
 
             CheckMultipleShape(a, b);
-            var result = new Tensor(a.shape[0], b.shape[1]);
+            var result = new TensorOld(a.shape[0], b.shape[1]);
             Multiple(a, b, result);
 
             return result;
@@ -76,7 +76,7 @@ namespace MLStudy
         /// <param name="a">Tensor1</param>
         /// <param name="b">Tensor2</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor MultipleElementWise(Tensor a, Tensor b)
+        public static TensorOld MultipleElementWise(TensorOld a, TensorOld b)
         {
             if (a.ElementCount == 1)
                 return Multiple(b, a.GetValue());
@@ -94,12 +94,12 @@ namespace MLStudy
         /// <param name="t">Tensor乘数</param>
         /// <param name="d">标量乘数</param>
         /// <param name="result">结果</param>
-        public static void Multiple(Tensor t, double d, Tensor result)
+        public static void Multiple(TensorOld t, double d, TensorOld result)
         {
             Apply(t, result, a => a * d);
         }
 
-        public static void Multiple(Tensor a, Tensor b, Tensor result)
+        public static void Multiple(TensorOld a, TensorOld b, TensorOld result)
         {
             var rows = a.shape[0];
             var cols = b.shape[1];
@@ -130,22 +130,22 @@ namespace MLStudy
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <param name="result"></param>
-        public static void MultipleElementWise(Tensor a, Tensor b, Tensor result)
+        public static void MultipleElementWise(TensorOld a, TensorOld b, TensorOld result)
         {
             Apply(a, b, result, (x, y) => x * y);
         }
 
-        public static Tensor operator *(Tensor t, double d)
+        public static TensorOld operator *(TensorOld t, double d)
         {
             return Multiple(t, d);
         }
 
-        public static Tensor operator *(double d, Tensor t)
+        public static TensorOld operator *(double d, TensorOld t)
         {
             return Multiple(t, d);
         }
 
-        public static Tensor operator *(Tensor a, Tensor b)
+        public static TensorOld operator *(TensorOld a, TensorOld b)
         {
             return Multiple(a, b);
         }

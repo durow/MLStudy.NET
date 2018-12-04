@@ -13,9 +13,9 @@ namespace PlayGround.Plays
         {
             var data = DataEmulator.Instance.RandomArray(200000);
 
-            var t1 = new Tensor(data, 500, 400);
-            var t2 = new Tensor(data, 400, 500);
-            var tResult = new Tensor(new double[250000], 500, 500);
+            var t1 = new TensorOld(data, 500, 400);
+            var t2 = new TensorOld(data, 400, 500);
+            var tResult = new TensorOld(new double[250000], 500, 500);
 
             var a1 = new double[500, 400];
             var a2 = new double[400, 500];
@@ -124,7 +124,7 @@ namespace PlayGround.Plays
             //        tResult.SetValueFast(sum, i, j);
             //    }
             //}
-            Tensor.Multiple(t1, t2, tResult);
+            TensorOld.Multiple(t1, t2, tResult);
             var ts4 = DateTime.Now - start4;
             Console.WriteLine($"Tensor Time:{ts4.TotalMilliseconds} ms");
 

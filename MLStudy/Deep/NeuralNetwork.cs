@@ -54,7 +54,7 @@ namespace MLStudy.Deep
             PredictLayers = new List<ILayer>();
         }
 
-        public Tensor Predict(Tensor X)
+        public TensorOld Predict(TensorOld X)
         {
             CheckPredictShape(X);
 
@@ -65,7 +65,7 @@ namespace MLStudy.Deep
             return X;
         }
 
-        public void Step(Tensor X, Tensor y)
+        public void Step(TensorOld X, TensorOld y)
         {
             CheckTrainShape(X, y);
 
@@ -81,7 +81,7 @@ namespace MLStudy.Deep
             Optimize();
         }
 
-        public void PrepareTrain(Tensor X, Tensor y)
+        public void PrepareTrain(TensorOld X, TensorOld y)
         {
             trainInputShape = X.shape;
             trainYShape = y.shape;
@@ -94,7 +94,7 @@ namespace MLStudy.Deep
             LossFunction.PrepareTrain(X, y);
         }
 
-        public void PreparePredict(Tensor X)
+        public void PreparePredict(TensorOld X)
         {
             predictInputShape = X.shape;
 
@@ -109,7 +109,7 @@ namespace MLStudy.Deep
             return LossFunction.GetLoss();
         }
 
-        public double GetLoss(Tensor y, Tensor yHat)
+        public double GetLoss(TensorOld y, TensorOld yHat)
         {
             return LossFunction.GetLoss(y, yHat);
         }
@@ -119,12 +119,12 @@ namespace MLStudy.Deep
             return LossFunction.GetAccuracy();
         }
 
-        public double GetAccuracy(Tensor y, Tensor yHat)
+        public double GetAccuracy(TensorOld y, TensorOld yHat)
         {
             return LossFunction.GetAccuracy(y, yHat);
         }
 
-        public Tensor Forward(Tensor input)
+        public TensorOld Forward(TensorOld input)
         {
             for (int i = 0; i < TrainingLayers.Count; i++)
             {
@@ -133,7 +133,7 @@ namespace MLStudy.Deep
             return input;
         }
 
-        public Tensor Backward(Tensor error)
+        public TensorOld Backward(TensorOld error)
         {
             var layers = TrainingLayers.Count - 1;
             for (int i = layers; i > -1; i--)
@@ -292,7 +292,7 @@ namespace MLStudy.Deep
             return this;
         }
 
-        private void CheckTrainShape(Tensor input, Tensor y)
+        private void CheckTrainShape(TensorOld input, TensorOld y)
         {
             if (CheckShape(input.shape, trainInputShape) &&
                 CheckShape(y.shape, trainYShape))
@@ -301,7 +301,7 @@ namespace MLStudy.Deep
             PrepareTrain(input, y);
         }
 
-        private void CheckPredictShape(Tensor input)
+        private void CheckPredictShape(TensorOld input)
         {
             if (CheckShape(input.shape, predictInputShape))
                 return;

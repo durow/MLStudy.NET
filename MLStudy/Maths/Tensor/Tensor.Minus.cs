@@ -4,14 +4,14 @@ using System.Text;
 
 namespace MLStudy
 {
-    public partial class Tensor
+    public partial class TensorOld
     {
         /// <summary>
         /// 当前Tensor的每个元素减去d，结果保存在当前Tensor中
         /// </summary>
         /// <param name="d">要减去的数值</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Minus(double d)
+        public TensorOld Minus(double d)
         {
             Apply(a => a - d);
             return this;
@@ -22,7 +22,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="d">被减数</param>
         /// <returns>当前Tensor</returns>
-        public Tensor MinusBy(double d)
+        public TensorOld MinusBy(double d)
         {
             Apply(a => d - a);
             return this;
@@ -33,7 +33,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="t">被减去的Tensor</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Minus(Tensor t)
+        public TensorOld Minus(TensorOld t)
         {
             if (t.ElementCount == 1)
                 return Minus(t.GetValue());
@@ -50,7 +50,7 @@ namespace MLStudy
         /// <param name="t">被减数</param>
         /// <param name="d">减数</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor Minus(Tensor t, double d)
+        public static TensorOld Minus(TensorOld t, double d)
         {
             var result = t.GetSameShape();
             Minus(t, d, result);
@@ -63,7 +63,7 @@ namespace MLStudy
         /// <param name="d">被减数</param>
         /// <param name="t">减数</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor Minus(double d, Tensor t)
+        public static TensorOld Minus(double d, TensorOld t)
         {
             return t.Clone().MinusBy(d);
         }
@@ -74,7 +74,7 @@ namespace MLStudy
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Tensor Minus(Tensor a, Tensor b)
+        public static TensorOld Minus(TensorOld a, TensorOld b)
         {
             if (a.ElementCount == 1)
                 return Minus(a.GetValue(), b);
@@ -93,7 +93,7 @@ namespace MLStudy
         /// <param name="t">被减数</param>
         /// <param name="d">减数</param>
         /// <param name="result">结果</param>
-        public static void Minus(Tensor t, double d, Tensor result)
+        public static void Minus(TensorOld t, double d, TensorOld result)
         {
             Apply(t, result, a => a - d);
         }
@@ -105,22 +105,22 @@ namespace MLStudy
         /// <param name="a">被减数</param>
         /// <param name="b">减数</param>
         /// <param name="result">结果</param>
-        public static void Minus(Tensor a, Tensor b, Tensor result)
+        public static void Minus(TensorOld a, TensorOld b, TensorOld result)
         {
             Apply(a, b, result, (x, y) => x - y);
         }
 
-        public static Tensor operator -(Tensor t, double d)
+        public static TensorOld operator -(TensorOld t, double d)
         {
             return Minus(t, d);
         }
 
-        public static Tensor operator -(double d, Tensor t)
+        public static TensorOld operator -(double d, TensorOld t)
         {
             return Minus(d, t);
         }
 
-        public static Tensor operator -(Tensor a, Tensor b)
+        public static TensorOld operator -(TensorOld a, TensorOld b)
         {
             return Minus(a, b);
         }

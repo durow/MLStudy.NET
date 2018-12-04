@@ -46,10 +46,10 @@ namespace MLStudy.Data
          *   The labels values are 0 to 9.
          */
 
-        public static Tensor ReadLabelsToMatrix(string filename, int number = 0)
+        public static TensorOld ReadLabelsToMatrix(string filename, int number = 0)
         {
             var data = ReadLabels(filename, number);
-            return new Tensor(data, data.Length, 1);
+            return new TensorOld(data, data.Length, 1);
         }
 
         public static double[] ReadLabels(string filename, int number = 0)
@@ -106,7 +106,7 @@ namespace MLStudy.Data
         /// </summary>
         /// <param name="filename">filename</param>
         /// <returns></returns>
-        public static Tensor ReadImagesToMatrix(string filename, int number = 0)
+        public static TensorOld ReadImagesToMatrix(string filename, int number = 0)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -120,7 +120,7 @@ namespace MLStudy.Data
                     if (number > 0)
                         count = number;
 
-                    var result = new Tensor(count,length);
+                    var result = new TensorOld(count,length);
 
                     for (int i = 0; i < count; i++)
                     {
@@ -139,7 +139,7 @@ namespace MLStudy.Data
         /// </summary>
         /// <param name="filename">filename</param>
         /// <returns>result</returns>
-        public static Tensor ReadImagesToTensor4(string filename, int number=0)
+        public static TensorOld ReadImagesToTensor4(string filename, int number=0)
         {
             using (var fs = new FileStream(filename, FileMode.Open))
             {
@@ -152,7 +152,7 @@ namespace MLStudy.Data
                     if (number > 0)
                         count = number;
 
-                    var result = new Tensor(count, 1, rows, columns);
+                    var result = new TensorOld(count, 1, rows, columns);
 
                     for (int i = 0; i < count; i++)
                     {

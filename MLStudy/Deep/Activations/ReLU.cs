@@ -18,7 +18,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入Tensor</param>
         /// <returns></returns>
-        public override Tensor PrepareTrain(Tensor input)
+        public override TensorOld PrepareTrain(TensorOld input)
         {
             ForwardOutput = input.GetSameShape();
             BackwardOutput = input.GetSameShape();
@@ -26,7 +26,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public override Tensor PreparePredict(Tensor input)
+        public override TensorOld PreparePredict(TensorOld input)
         {
             ForwardOutput = input.GetSameShape();
             return ForwardOutput;
@@ -37,9 +37,9 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入的数值</param>
         /// <returns>输出的数值</returns>
-        public override Tensor Forward(Tensor input)
+        public override TensorOld Forward(TensorOld input)
         {
-            Tensor.Apply(input, ForwardOutput, Functions.ReLU);
+            TensorOld.Apply(input, ForwardOutput, Functions.ReLU);
             return ForwardOutput;
         }
 
@@ -48,10 +48,10 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="error">传回来的误差</param>
         /// <returns>传到前面的误差</returns>
-        public override Tensor Backward(Tensor error)
+        public override TensorOld Backward(TensorOld error)
         {
-            Tensor.Apply(ForwardOutput, Derivative, Derivatives.ReLU);
-            Tensor.MultipleElementWise(Derivative, error, BackwardOutput);
+            TensorOld.Apply(ForwardOutput, Derivative, Derivatives.ReLU);
+            TensorOld.MultipleElementWise(Derivative, error, BackwardOutput);
             return BackwardOutput;
         }
 

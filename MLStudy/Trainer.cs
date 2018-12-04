@@ -25,10 +25,10 @@ namespace MLStudy
         public int SaveLogSteps { get; set; } = 0;
         public int SaveTrainerEpochs { get; set; } = 0;
 
-        public Tensor TrainX { get; private set; }
-        public Tensor TrainY { get; private set; }
-        public Tensor TestX { get; private set; }
-        public Tensor TestY { get; private set; }
+        public TensorOld TrainX { get; private set; }
+        public TensorOld TrainY { get; private set; }
+        public TensorOld TestX { get; private set; }
+        public TensorOld TestY { get; private set; }
 
         public double LastTrainLoss { get; internal set; }
         public double LastTrainAccuracy { get; internal set; }
@@ -36,8 +36,8 @@ namespace MLStudy
         public double LastTestAccuracy { get; internal set; }
         public TrainLog Log { get; private set; }
 
-        private Tensor xBuff;
-        private Tensor yBuff;
+        private TensorOld xBuff;
+        private TensorOld yBuff;
         private int pointer = 0;
         private int batchPerEpoch;
         private int sampleCount;
@@ -70,7 +70,7 @@ namespace MLStudy
                 PreProcessor.PreProcessY(testY));
         }
 
-        public void StartTrain(Tensor trainX, Tensor trainY, Tensor testX, Tensor testY)
+        public void StartTrain(TensorOld trainX, TensorOld trainY, TensorOld testX, TensorOld testY)
         {
             Console.WriteLine("Preparing data...");
             SetTrainingData(trainX, trainY, testX, testY);
@@ -148,7 +148,7 @@ namespace MLStudy
             Storage.Save(this, filename);
         }
 
-        private void SetTrainingData(Tensor trainX, Tensor trainY, Tensor testX, Tensor testY)
+        private void SetTrainingData(TensorOld trainX, TensorOld trainY, TensorOld testX, TensorOld testY)
         {
             if (Normalizer != null)
             {
@@ -175,8 +175,8 @@ namespace MLStudy
 
             var shape = TrainX.Shape;
             shape[0] = BatchSize;
-            xBuff = new Tensor(shape);
-            yBuff = new Tensor(BatchSize, TrainY.shape[1]);
+            xBuff = new TensorOld(shape);
+            yBuff = new TensorOld(BatchSize, TrainY.shape[1]);
 
             sampleCount = TrainX.shape[0];
             xWidth = TrainX.ElementCount / TrainX.shape[0];

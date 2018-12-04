@@ -25,7 +25,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入Tensor</param>
         /// <returns></returns>
-        public override Tensor PrepareTrain(Tensor input)
+        public override TensorOld PrepareTrain(TensorOld input)
         {
             if (input.Rank != 2)
                 throw new TensorShapeException("input.Rank must be 2");
@@ -38,7 +38,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public override Tensor PreparePredict(Tensor input)
+        public override TensorOld PreparePredict(TensorOld input)
         {
             if (input.Rank != 2)
                 throw new TensorShapeException("input.Rank must be 2");
@@ -55,7 +55,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入的数值</param>
         /// <returns>输出的数值</returns>
-        public override Tensor Forward(Tensor input)
+        public override TensorOld Forward(TensorOld input)
         {
             int startIndex;
 
@@ -74,9 +74,9 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="y">传回来的误差</param>
         /// <returns>传到前面的误差</returns>
-        public override Tensor Backward(Tensor y)
+        public override TensorOld Backward(TensorOld y)
         {
-            Tensor.Apply(ForwardOutput, y, BackwardOutput, (a, b) => a - b);
+            TensorOld.Apply(ForwardOutput, y, BackwardOutput, (a, b) => a - b);
             return BackwardOutput;
         }
 
@@ -97,7 +97,7 @@ namespace MLStudy.Deep
         //    }
         //}
 
-        private void ErrorBP(Tensor error)
+        private void ErrorBP(TensorOld error)
         {
             var derData = Derivative.GetRawValues();
             var errorData = error.GetRawValues();

@@ -24,12 +24,12 @@ namespace MLStudy.Abstraction
         {
         }
 
-        public Tensor Encode(IEnumerable<double> data)
+        public TensorOld Encode(IEnumerable<double> data)
         {
             return Encode(data.Select(a => a.ToString()));
         }
 
-        public abstract Tensor Encode(IEnumerable<string> data);
-        public abstract List<string> Decode(Tensor t);
+        public abstract TensorOld Encode(IEnumerable<string> data);
+        public abstract List<string> Decode(TensorOld t);
     }
 }

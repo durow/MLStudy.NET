@@ -56,7 +56,7 @@ namespace MLStudy
 
         public static TensorGeneric<T> operator +(TensorGeneric<T> a, T b)
         {
-            return a.Add(b);
+            return TensorGeneric.Add<T>(a, b);
         }
     }
 }

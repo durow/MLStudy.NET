@@ -10,22 +10,22 @@ namespace MLStudy.PreProcessing
         public double Max { get; private set; }
         public double Denom { get; private set; }
 
-        public LogNorm(Tensor tensor)
+        public LogNorm(TensorOld tensor)
         {
             Max = tensor.Max();
             Denom = Math.Log10(Max);
         }
 
-        public Tensor Normalize(Tensor input)
+        public TensorOld Normalize(TensorOld input)
         {
             var result = input.GetSameShape();
             Normalize(input, result);
             return result;
         }
 
-        public void Normalize(Tensor input, Tensor output)
+        public void Normalize(TensorOld input, TensorOld output)
         {
-            Tensor.Apply(input, output, a => Math.Log10(a) / Denom);
+            TensorOld.Apply(input, output, a => Math.Log10(a) / Denom);
         }
     }
 }

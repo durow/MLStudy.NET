@@ -12,8 +12,8 @@ namespace MLStudy.Tests.Deep
         public void FlattenTest()
         {
             var fl = new FlattenLayer();
-            var input = new Tensor(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 2, 1, 2, 2);
-            var expected = new Tensor(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, }, 2, 4);
+            var input = new TensorOld(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 2, 1, 2, 2);
+            var expected = new TensorOld(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, }, 2, 4);
             var actual = fl.Forward(input);
             Assert.Equal(expected, actual);
 

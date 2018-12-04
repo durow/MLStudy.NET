@@ -10,7 +10,7 @@ namespace MLStudy.Deep
         public string Name { get; set; }
         private int[] lastInputShape;
 
-        public Tensor Backward(Tensor error)
+        public TensorOld Backward(TensorOld error)
         {
             return GetUnFlatten(error);
         }
@@ -20,29 +20,29 @@ namespace MLStudy.Deep
             return new FlattenLayer();
         }
 
-        public Tensor Forward(Tensor input)
+        public TensorOld Forward(TensorOld input)
         {
             lastInputShape = input.shape;
             return GetFlatten(input);
         }
 
-        public Tensor PreparePredict(Tensor input)
+        public TensorOld PreparePredict(TensorOld input)
         {
             return GetFlatten(input);
         }
 
-        public Tensor PrepareTrain(Tensor input)
+        public TensorOld PrepareTrain(TensorOld input)
         {
             return GetFlatten(input);
         }
 
-        private Tensor GetFlatten(Tensor input)
+        private TensorOld GetFlatten(TensorOld input)
         {
             var d1 = input.shape[0];
             return input.Reshape(d1, input.ElementCount / d1);
         }
 
-        private Tensor GetUnFlatten(Tensor error)
+        private TensorOld GetUnFlatten(TensorOld error)
         {
             return error.Reshape(lastInputShape);
         }

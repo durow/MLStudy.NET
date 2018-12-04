@@ -47,7 +47,7 @@ namespace PlayGround.Plays
                 Console.Write("input Petal.Width:");
                 var a4 = double.Parse(Console.ReadLine());
 
-                var input = new Tensor(new double[] { a1, a2, a3, a4 }, 1, 4);
+                var input = new TensorOld(new double[] { a1, a2, a3, a4 }, 1, 4);
                 Console.WriteLine($"you input is {machine.Predict(input).First()},  Codec:{machine.LastCodecResult},  Raw:{machine.LastRawResult}");
             }
         }

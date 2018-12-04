@@ -21,7 +21,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="probability">概率</param>
         /// <returns>编码</returns>
-        public static Tensor ProbabilityToCode(Tensor probability)
+        public static TensorOld ProbabilityToCode(TensorOld probability)
         {
             var code = probability.GetSameShape();
             ProbabilityToCode(probability, code);
@@ -34,7 +34,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="probability">概率</param>
         /// <param name="code">编码</param>
-        public static void ProbabilityToCode(Tensor probability, Tensor code)
+        public static void ProbabilityToCode(TensorOld probability, TensorOld code)
         {
             if (probability.Rank == 1)
                 probability = probability.Reshape(1, probability.ElementCount);
@@ -43,7 +43,7 @@ namespace MLStudy
                 throw new Exception("to do codec, Rank must be 2");
 
             if (probability.shape[1] == 1)
-                Tensor.Apply(probability, code, a => a > 0.5 ? 1 : 0);
+                TensorOld.Apply(probability, code, a => a > 0.5 ? 1 : 0);
             else
             {
                 var buff = new double[probability.shape[1]];

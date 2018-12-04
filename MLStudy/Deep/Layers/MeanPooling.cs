@@ -26,14 +26,14 @@ namespace MLStudy.Deep
             ColumnStride = columnStride;
         }
 
-        public override Tensor PrepareTrain(Tensor input)
+        public override TensorOld PrepareTrain(TensorOld input)
         {
             PreparePredict(input);
             BackwardOutput = input.GetSameShape();
             return ForwardOutput;
         }
 
-        public override Tensor PreparePredict(Tensor input)
+        public override TensorOld PreparePredict(TensorOld input)
         {
             if (input.Rank != 4)
                 throw new Exception("MaxPooling layer input rank must be 4!");
@@ -43,12 +43,12 @@ namespace MLStudy.Deep
             samples = input.shape[0];
             channels = input.shape[1];
             poolElements = outRows * outColumns;
-            ForwardOutput = new Tensor(samples, channels, outRows, outColumns);
+            ForwardOutput = new TensorOld(samples, channels, outRows, outColumns);
 
             return ForwardOutput;
         }
 
-        public override Tensor Forward(Tensor input)
+        public override TensorOld Forward(TensorOld input)
         {
             Parallel.For(0, ForwardOutput.shape[0], sampleIndex =>
             {
@@ -60,7 +60,7 @@ namespace MLStudy.Deep
             return ForwardOutput;
         }
 
-        public override Tensor Backward(Tensor error)
+        public override TensorOld Backward(TensorOld error)
         {
             BackwardOutput.Clear();
 
@@ -79,7 +79,7 @@ namespace MLStudy.Deep
             return new MeanPooling(Rows, Columns, RowStride, ColumnStride);
         }
 
-        private void PoolingChannel(Tensor input, int sample, int channel)
+        private void PoolingChannel(TensorOld input, int sample, int channel)
         {
             for (int row = 0; row < outRows; row++)
             {
@@ -102,7 +102,7 @@ namespace MLStudy.Deep
             }
         }
 
-        private void ErrorBP(Tensor error, int sample, int channel)
+        private void ErrorBP(TensorOld error, int sample, int channel)
         {
             for (int row = 0; row < outRows; row++)
             {

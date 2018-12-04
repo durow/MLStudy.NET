@@ -28,7 +28,7 @@ namespace MLStudy.Tests.PreProcessing
             Assert.Equal(6, oh.Length);
 
             var test = new List<string> { "a", "c", "d", "a" };
-            var expected = new Tensor(new double[,]
+            var expected = new TensorOld(new double[,]
             { { 1,0,0,0,0,0},
             { 0,0,1,0,0,0},
             { 0,0,0,1,0,0},
@@ -47,7 +47,7 @@ namespace MLStudy.Tests.PreProcessing
             Assert.Equal(5, dm.Length);
 
             var test = new List<string> { "a", "c", "d", "f" };
-            var expected = new Tensor(new double[,]
+            var expected = new TensorOld(new double[,]
             { { 1,0,0,0,0},
             { 0,0,1,0,0},
             { 0,0,0,1,0},
@@ -66,7 +66,7 @@ namespace MLStudy.Tests.PreProcessing
             oh.MapStart = 10;
             oh.MapStep = 5;
             var test = new List<string> { "a", "c", "d", "f" };
-            var expected = new Tensor(new double[] { 10, 20, 25, 35 }, 4, 1);
+            var expected = new TensorOld(new double[] { 10, 20, 25, 35 }, 4, 1);
             var encode = oh.Encode(test);
             Assert.Equal(expected, encode);
 

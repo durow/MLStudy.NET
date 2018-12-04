@@ -13,7 +13,7 @@ using System.Text;
 
 namespace MLStudy
 {
-    public partial class Tensor
+    public partial class TensorOld
     {
         public double this[int d1]
         {
@@ -588,7 +588,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public Tensor GetTensorByDim1(int index)
+        public TensorOld GetTensorByDim1(int index)
         {
             if (Rank == 0)
                 throw new TensorShapeException("this tensor is a scalar, don't have any dimension!");
@@ -598,7 +598,7 @@ namespace MLStudy
 
             if (Rank == 1)
             {
-                var result = new Tensor();
+                var result = new TensorOld();
                 result.SetValue(this[index]);
                 return result;
             }
@@ -610,7 +610,7 @@ namespace MLStudy
             //复制数据到新Tensor
             Array.Copy(values, start, data, 0, len);
 
-            return new Tensor(data, newShape);
+            return new TensorOld(data, newShape);
         }
 
         public void GetByDim1(int index, double[] result)

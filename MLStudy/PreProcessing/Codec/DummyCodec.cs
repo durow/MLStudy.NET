@@ -22,10 +22,10 @@ namespace MLStudy.PreProcessing
         /// </summary>
         /// <param name="list">要编码的数据</param>
         /// <returns>编码结果</returns>
-        public override Tensor Encode(IEnumerable<string> data)
+        public override TensorOld Encode(IEnumerable<string> data)
         {
             var list = data.ToList();
-            var result = new Tensor(list.Count, Length);
+            var result = new TensorOld(list.Count, Length);
 
             for (int i = 0; i < list.Count; i++)
             {
@@ -45,7 +45,7 @@ namespace MLStudy.PreProcessing
         /// </summary>
         /// <param name="t">要解码的数据</param>
         /// <returns>解码结果</returns>
-        public override List<string> Decode(Tensor t)
+        public override List<string> Decode(TensorOld t)
         {
             if (t.Rank != 2)
                 throw new TensorShapeException("one hot decode tensor.Rank must be 2!");

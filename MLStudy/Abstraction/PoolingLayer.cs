@@ -11,22 +11,22 @@ namespace MLStudy.Abstraction
         public int Columns { get; protected set; }
         public int RowStride { get; protected set; }
         public int ColumnStride { get; protected set; }
-        public Tensor ForwardOutput { get; protected set; }
-        public Tensor BackwardOutput { get; protected set; }
+        public TensorOld ForwardOutput { get; protected set; }
+        public TensorOld BackwardOutput { get; protected set; }
 
         protected int samples;
         protected int channels;
         protected int outRows;
         protected int outColumns;
 
-        public abstract Tensor Backward(Tensor error);
+        public abstract TensorOld Backward(TensorOld error);
 
         public abstract ILayer CreateSame();
 
-        public abstract Tensor Forward(Tensor input);
+        public abstract TensorOld Forward(TensorOld input);
 
-        public abstract Tensor PreparePredict(Tensor input);
+        public abstract TensorOld PreparePredict(TensorOld input);
 
-        public abstract Tensor PrepareTrain(Tensor input);
+        public abstract TensorOld PrepareTrain(TensorOld input);
     }
 }

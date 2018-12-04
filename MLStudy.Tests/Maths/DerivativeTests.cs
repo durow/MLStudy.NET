@@ -7,9 +7,9 @@ namespace MLStudy.Tests.Maths
         [Fact]
         public void ReLUTests()
         {
-            var output = new Tensor(new double[] { 1, 2, 0, 5, 0, 7, 4, 6, 8, 0, 4, 1 }, 3, 4);
-            var expected = new Tensor(new double[] { 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1 }, 3, 4);
-            var actual = Tensor.Apply(output, Derivatives.ReLU);
+            var output = new TensorOld(new double[] { 1, 2, 0, 5, 0, 7, 4, 6, 8, 0, 4, 1 }, 3, 4);
+            var expected = new TensorOld(new double[] { 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1 }, 3, 4);
+            var actual = TensorOld.Apply(output, Derivatives.ReLU);
             Assert.Equal(expected, actual);
         }
 
@@ -129,8 +129,8 @@ namespace MLStudy.Tests.Maths
         [Fact]
         public void MeanSquareErrorTest()
         {
-            var y = new Tensor(new double[] { 1, 3, 2, 4, 5, 6 });
-            var yHat = new Tensor(new double[] { 1.5, 2.6, 2.1, 3.9, 5.3, 6.7 });
+            var y = new TensorOld(new double[] { 1, 3, 2, 4, 5, 6 });
+            var yHat = new TensorOld(new double[] { 1.5, 2.6, 2.1, 3.9, 5.3, 6.7 });
             var loss = Functions.MeanSquareError(y, yHat);
             var gradient = Derivatives.MeanSquareError(y, yHat);
             var delta = 0.00001;

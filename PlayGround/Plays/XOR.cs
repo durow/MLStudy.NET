@@ -43,14 +43,14 @@ namespace PlayGround
                 var a1 = double.Parse(str1);
                 var a2 = double.Parse(str2);
 
-                var output = machine.PredictValue(new Tensor(new double[] { a1, a2 }, 1, 2));
+                var output = machine.PredictValue(new TensorOld(new double[] { a1, a2 }, 1, 2));
                 var result = output[0];
                 var p = machine.LastRawResult.GetValue();
                 Console.WriteLine($"result is {result} with probability:{result * p + (1 - result) * (1 - p)}");
             }
         }
 
-        public void Print(Tensor x, Tensor y)
+        public void Print(TensorOld x, TensorOld y)
         {
             for (int i = 0; i < x.Shape[0]; i++)
             {
@@ -58,11 +58,11 @@ namespace PlayGround
             }
         }
 
-        public (Tensor, Tensor) GetXorData(int count)
+        public (TensorOld, TensorOld) GetXorData(int count)
         {
             var xbuff = DataEmulator.Instance.RandomArray(count, 2);
-            var x = new Tensor(xbuff);
-            var y = new Tensor(count, 1);
+            var x = new TensorOld(xbuff);
+            var y = new TensorOld(count, 1);
             x.Apply(a => a * 12 - 6);
             for (int i = 0; i < count; i++)
             {

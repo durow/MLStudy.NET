@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace MLStudy.Storages
 {
-    public class XmlTensorStorage : XmlStorageBase<Tensor>
+    public class XmlTensorStorage : XmlStorageBase<TensorOld>
     {
         public override XmlElement Save(XmlDocument doc, object o)
         {
@@ -15,7 +15,7 @@ namespace MLStudy.Storages
             if (o == null)
                 return el;
 
-            if (!(o is Tensor tensor))
+            if (!(o is TensorOld tensor))
                 throw new Exception("layer must be Tensor!");
 
             XmlStorage.AddArrayChild(el, "Shape", tensor.shape);
@@ -35,7 +35,7 @@ namespace MLStudy.Storages
             var shape = XmlStorage.GetIntArray(node, "Shape");
             var values = XmlStorage.GetDoubleArray(node, "Values");
 
-            return Activator.CreateInstance(typeof(Tensor), values, shape);
+            return Activator.CreateInstance(typeof(TensorOld), values, shape);
         }
     }
 }

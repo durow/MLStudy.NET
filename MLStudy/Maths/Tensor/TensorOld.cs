@@ -17,7 +17,7 @@ namespace MLStudy
     /// <summary>
     /// 张量
     /// </summary>
-    public sealed partial class Tensor
+    public sealed partial class TensorOld
     {
         internal double[] values; //存放底层数据
         internal int[] shape; //Tensor结构信息
@@ -54,7 +54,7 @@ namespace MLStudy
         /// 从data数组创建同样结构的Tensor
         /// </summary>
         /// <param name="data">数组，需要类型为double</param>
-        public Tensor(Array data)
+        public TensorOld(Array data)
         {
             var shape = new int[data.Rank];
             for (int i = 0; i < shape.Length; i++)
@@ -74,7 +74,7 @@ namespace MLStudy
         /// 创建一个由shape指定结构的Tensor，shape为空则创建Rank为0的标量
         /// </summary>
         /// <param name="shape">Tensor的结构</param>
-        public Tensor(params int[] shape)
+        public TensorOld(params int[] shape)
         {
             InitTensorShapeInfo(shape);
             values = new double[GetTotalLength(shape)];
@@ -85,7 +85,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="data">一维数组</param>
         /// <param name="shape">Tensor的结构，省略则按照一维Tensor(也就是Vector)处理</param>
-        public Tensor(double[] data, params int[] shape)
+        public TensorOld(double[] data, params int[] shape)
         {
             if (shape.Length == 0)
                 shape = new int[] { data.Length };
@@ -104,25 +104,25 @@ namespace MLStudy
         /// </summary>
         /// <param name="shape">要转换的新的结构</param>
         /// <returns>转换后的Tensor</returns>
-        public Tensor Reshape(params int[] shape)
+        public TensorOld Reshape(params int[] shape)
         {
             if (shape.Length == 0)
-                return new Tensor(values);
+                return new TensorOld(values);
 
             var len = GetTotalLength(shape);
             if (len != ElementCount)
                 throw new TensorShapeException($"can't reshape {this.shape.ToString()} to {shape.ToString()}");
 
-            return new Tensor(values, shape);
+            return new TensorOld(values, shape);
         }
 
         /// <summary>
         /// 把当前Tensor转置，转置后返回的是一个新的Tensor
         /// </summary>
         /// <returns>转置后的Tensor</returns>
-        public Tensor Transpose()
+        public TensorOld Transpose()
         {
-            var result = new Tensor(shape.Reverse().ToArray());
+            var result = new TensorOld(shape.Reverse().ToArray());
             for (int i = 0; i < ElementCount; i++)
             {
                 var index = GetIndex(i);
@@ -181,16 +181,16 @@ namespace MLStudy
         /// 创建一个新的Tensor并与现有Tensor结构相同
         /// </summary>
         /// <returns>新的Tensor</returns>
-        public Tensor GetSameShape()
+        public TensorOld GetSameShape()
         {
-            return new Tensor(shape);
+            return new TensorOld(shape);
         }
 
         /// <summary>
         /// 复制当前Tensor，包括结构和数据
         /// </summary>
         /// <returns></returns>
-        public Tensor Clone()
+        public TensorOld Clone()
         {
             var result = GetSameShape();
             Array.Copy(values, 0, result.values, 0, ElementCount);
@@ -202,7 +202,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="function">要应用的function</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Apply(Func<double, double> function)
+        public TensorOld Apply(Func<double, double> function)
         {
             Parallel.ForEach(Partitioner.Create(0, values.Length),
                 arg =>
@@ -215,7 +215,7 @@ namespace MLStudy
             return this;
         }
 
-        public Tensor Apply(Tensor a, Func<double, double, double> function)
+        public TensorOld Apply(TensorOld a, Func<double, double, double> function)
         {
             Parallel.ForEach(Partitioner.Create(0, values.Length),
                 arg =>
@@ -234,14 +234,14 @@ namespace MLStudy
         /// <param name="tensor">应用function的Tensor</param>
         /// <param name="function">引用的function</param>
         /// <returns>结果返回为新的Tensor</returns>
-        public static Tensor Apply(Tensor tensor, Func<double, double> function)
+        public static TensorOld Apply(TensorOld tensor, Func<double, double> function)
         {
             var result = tensor.GetSameShape();
             Apply(tensor, result, function);
             return result;
         }
 
-        public static Tensor Apply(Tensor a, Tensor b, Func<double, double, double> function)
+        public static TensorOld Apply(TensorOld a, TensorOld b, Func<double, double, double> function)
         {
             var result = a.GetSameShape();
             Apply(a, b, result, function);
@@ -255,7 +255,7 @@ namespace MLStudy
         /// <param name="input">输入的Tensor</param>
         /// <param name="result">写入结果的Tensor</param>
         /// <param name="function">应用的运算</param>
-        public static void Apply(Tensor input, Tensor result, Func<double, double> function)
+        public static void Apply(TensorOld input, TensorOld result, Func<double, double> function)
         {
             //这个方法中不进行Tensor结构一致性的检查
             //所有的Tensor结构的问题都放到Prepare过程中
@@ -279,7 +279,7 @@ namespace MLStudy
         /// <param name="b"></param>
         /// <param name="result"></param>
         /// <param name="function"></param>
-        public static void Apply(Tensor a, Tensor b, Tensor result, Func<double, double, double> function)
+        public static void Apply(TensorOld a, TensorOld b, TensorOld result, Func<double, double, double> function)
         {
             //这个方法中不进行Tensor结构一致性的检查
             //所有的Tensor结构的问题都放到Prepare过程中
@@ -299,7 +299,7 @@ namespace MLStudy
 
         public override bool Equals(object o)
         {
-            if (!(o is Tensor tensor))
+            if (!(o is TensorOld tensor))
                 return false;
 
             if (Rank != tensor.Rank)
@@ -447,12 +447,12 @@ namespace MLStudy
             }
         }
 
-        public static void CheckShape(Tensor t1, Tensor t2)
+        public static void CheckShape(TensorOld t1, TensorOld t2)
         {
             CheckShape(t1.shape, t2.shape);
         }
 
-        public static bool CheckShapeBool(Tensor t1, Tensor t2)
+        public static bool CheckShapeBool(TensorOld t1, TensorOld t2)
         {
             if (t1.shape.Length != t2.shape.Length)
                 return false;
@@ -465,7 +465,7 @@ namespace MLStudy
             return true;
         }
 
-        public static void CheckMultipleShape(Tensor a, Tensor b)
+        public static void CheckMultipleShape(TensorOld a, TensorOld b)
         {
             if (a.Rank != 2 || b.Rank != 2)
                 throw new NotImplementedException("only suport multiple between scalar, vector and matrix!");

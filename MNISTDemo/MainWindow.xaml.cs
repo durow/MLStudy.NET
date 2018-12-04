@@ -95,7 +95,7 @@ namespace MNISTDemo
                 data[i] = 255 - buff[i];
             }
 
-            var tensor = new Tensor(data, 1, buff.Length);
+            var tensor = new TensorOld(data, 1, buff.Length);
             var predict = machine.Predict(tensor);
             PredictText.Text = predict[0];
             var predictProb = machine.LastRawResult.Max();

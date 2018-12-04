@@ -12,9 +12,9 @@ namespace MLStudy.Optimization
         public double Alpha { get; set; } = 0.001;
 
         private readonly double E = 0.00000001;
-        private Dictionary<Tensor, AdamCache> dict = new Dictionary<Tensor, AdamCache>();
+        private Dictionary<TensorOld, AdamCache> dict = new Dictionary<TensorOld, AdamCache>();
 
-        public void Optimize(Tensor target, Tensor gradient)
+        public void Optimize(TensorOld target, TensorOld gradient)
         {
             if(!dict.ContainsKey(gradient))
             {
@@ -23,24 +23,24 @@ namespace MLStudy.Optimization
 
             var c = dict[gradient];
 
-            Tensor.Apply(c.M, gradient, c.M, (m, g) => Beta1 * m + (1 - Beta1) * g);
-            Tensor.Apply(c.V, gradient, c.V, (v, g) => Beta2 * v + (1 - Beta2) * g * g);
-            Tensor.Apply(c.M, c.V, c.T, (m, v) => Alpha * m / (Math.Sqrt(v) + E));
+            TensorOld.Apply(c.M, gradient, c.M, (m, g) => Beta1 * m + (1 - Beta1) * g);
+            TensorOld.Apply(c.V, gradient, c.V, (v, g) => Beta2 * v + (1 - Beta2) * g * g);
+            TensorOld.Apply(c.M, c.V, c.T, (m, v) => Alpha * m / (Math.Sqrt(v) + E));
             target.Minus(c.T);
         }
     }
 
     class AdamCache
     {
-        public Tensor M { get; set; }
-        public Tensor V { get; set; }
-        public Tensor T { get; set; }
+        public TensorOld M { get; set; }
+        public TensorOld V { get; set; }
+        public TensorOld T { get; set; }
 
         public AdamCache(int[] shape)
         {
-            M = new Tensor(shape);
-            V = new Tensor(shape);
-            T = new Tensor(shape);
+            M = new TensorOld(shape);
+            V = new TensorOld(shape);
+            T = new TensorOld(shape);
         }
     }
 }

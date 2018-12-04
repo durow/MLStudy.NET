@@ -11,9 +11,9 @@ namespace MLStudy.Tests.Maths
         [Fact]
         public void ReLUTests()
         {
-            var input = new Tensor(new double[] { 1, 2, -3, 5, -2, 7, 4, 6, 8, -5, 4, 1 }, 3, 4);
-            var expected = new Tensor(new double[] { 1, 2, 0, 5, 0, 7, 4, 6, 8, 0, 4, 1 }, 3, 4);
-            var actual = Tensor.Apply(input, Functions.ReLU);
+            var input = new TensorOld(new double[] { 1, 2, -3, 5, -2, 7, 4, 6, 8, -5, 4, 1 }, 3, 4);
+            var expected = new TensorOld(new double[] { 1, 2, 0, 5, 0, 7, 4, 6, 8, 0, 4, 1 }, 3, 4);
+            var actual = TensorOld.Apply(input, Functions.ReLU);
             Assert.Equal(expected, actual);
         }
 
@@ -38,7 +38,7 @@ namespace MLStudy.Tests.Maths
         public void SoftmaxTest()
         {
             var data = new double[] { 10, 8, -4, 9, -2, 5, 3, 6 };
-            var tensor = new Tensor(data);
+            var tensor = new TensorOld(data);
             var output = Functions.Softmax(data);
 
             Assert.True(output.Sum() > 0.9999);
@@ -80,8 +80,8 @@ namespace MLStudy.Tests.Maths
         [Fact]
         public void MeanSquareErrorTest()
         {
-            var y = new Tensor(new double[] { 1, 3, 2, 4, 5, 6 });
-            var yHat = new Tensor(new double[] { 1.5, 2.6, 2.1, 3.9, 5.3, 6.7 });
+            var y = new TensorOld(new double[] { 1, 3, 2, 4, 5, 6 });
+            var yHat = new TensorOld(new double[] { 1.5, 2.6, 2.1, 3.9, 5.3, 6.7 });
             var error = Functions.MeanSquareError(y, yHat);
             var expected = 0.16833333333333333;
             MyAssert.ApproximatelyEqual(expected, error);

@@ -4,14 +4,14 @@ using System.Text;
 
 namespace MLStudy
 {
-    public partial class Tensor
+    public partial class TensorOld
     {
         /// <summary>
         /// 当前Tensor的每个元素除以d，结果保存在当前Tensor
         /// </summary>
         /// <param name="d">除数</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Divide(double d)
+        public TensorOld Divide(double d)
         {
             Apply(a => a / d);
             return this;
@@ -22,7 +22,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="d">被除数</param>
         /// <returns>当前Tensor</returns>
-        public Tensor DivideBy(double d)
+        public TensorOld DivideBy(double d)
         {
             Apply(a => d / a);
             return this;
@@ -34,7 +34,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="t">除数</param>
         /// <returns>当前Tensor</returns>
-        public Tensor DivideElementWise(Tensor t)
+        public TensorOld DivideElementWise(TensorOld t)
         {
             DivideElementWise(this, t, this);
             return this;
@@ -46,7 +46,7 @@ namespace MLStudy
         /// <param name="t">被除数</param>
         /// <param name="d">除数</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor Divide(Tensor t, double d)
+        public static TensorOld Divide(TensorOld t, double d)
         {
             var result = t.GetSameShape();
             Apply(t, result, a => a / d);
@@ -59,7 +59,7 @@ namespace MLStudy
         /// <param name="d">被除数</param>
         /// <param name="t">除数</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor Divide(double d, Tensor t)
+        public static TensorOld Divide(double d, TensorOld t)
         {
             var result = t.GetSameShape();
             Apply(t, result, a => d / a);
@@ -72,7 +72,7 @@ namespace MLStudy
         /// <param name="a">被除数</param>
         /// <param name="b">除数</param>
         /// <returns>包含结果的新的Tensor</returns>
-        public static Tensor DivideElementWise(Tensor a, Tensor b)
+        public static TensorOld DivideElementWise(TensorOld a, TensorOld b)
         {
             var result = a.GetSameShape();
             DivideElementWise(a, b, result);
@@ -86,17 +86,17 @@ namespace MLStudy
         /// <param name="a">被除数</param>
         /// <param name="b">除数</param>
         /// <param name="result">结果</param>
-        public static void DivideElementWise(Tensor a, Tensor b, Tensor result)
+        public static void DivideElementWise(TensorOld a, TensorOld b, TensorOld result)
         {
             Apply(a, b, result, (x, y) => x / y);
         }
 
-        public static Tensor operator /(Tensor t, double d)
+        public static TensorOld operator /(TensorOld t, double d)
         {
             return Divide(t, d);
         }
 
-        public static Tensor operator /(double d, Tensor t)
+        public static TensorOld operator /(double d, TensorOld t)
         {
             return Divide(d, t);
         }

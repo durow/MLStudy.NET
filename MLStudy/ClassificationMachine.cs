@@ -10,13 +10,13 @@ namespace MLStudy
     public class ClassificationMachine : Machine
     {
         public DiscreteCodec LabelCodec { get; set; }
-        public Tensor LastCodecResult { get; protected set; }
+        public TensorOld LastCodecResult { get; protected set; }
 
         public ClassificationMachine(IModel model)
             : base(model)
         { }
 
-        public List<string> Predict(Tensor X)
+        public List<string> Predict(TensorOld X)
         {
             X = Normalize(X);
             LastRawResult = Model.Predict(X);
@@ -30,7 +30,7 @@ namespace MLStudy
             return LastRawResult.GetRawValues().Select(a => a.ToString()).ToList();
         }
 
-        public List<double> PredictValue(Tensor X)
+        public List<double> PredictValue(TensorOld X)
         {
             X = Normalize(X);
             LastRawResult = Model.Predict(X);

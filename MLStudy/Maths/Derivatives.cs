@@ -101,19 +101,19 @@ namespace MLStudy
             }
         }
 
-        public static Tensor MeanSquareError(Tensor y, Tensor yHat)
+        public static TensorOld MeanSquareError(TensorOld y, TensorOld yHat)
         {
-            Tensor.CheckShape(y, yHat);
+            TensorOld.CheckShape(y, yHat);
 
             var result = y.GetSameShape();
             MeanSquareError(y, yHat, result);
             return result;
         }
 
-        public static void MeanSquareError(Tensor y, Tensor yHat, Tensor result)
+        public static void MeanSquareError(TensorOld y, TensorOld yHat, TensorOld result)
         {
             //因为存在learning rate，所以梯度前面的系数不那么重要，但最好和损失函数一致，
-            Tensor.Minus(yHat, y, result);
+            TensorOld.Minus(yHat, y, result);
             result.Multiple(2d / y.ElementCount);
         }
     }

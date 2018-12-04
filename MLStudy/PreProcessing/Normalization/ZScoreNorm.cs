@@ -16,7 +16,7 @@ namespace MLStudy.PreProcessing
             Delta = delta;
         }
 
-        public ZScoreNorm(Tensor tensor)
+        public ZScoreNorm(TensorOld tensor)
         {
             Mean = tensor.Mean();
             var temp = tensor - Mean;
@@ -24,16 +24,16 @@ namespace MLStudy.PreProcessing
             Delta = Math.Sqrt(temp.Mean());
         }
 
-        public Tensor Normalize(Tensor input)
+        public TensorOld Normalize(TensorOld input)
         {
             var result = input.GetSameShape();
             Normalize(input, result);
             return result;
         }
 
-        public void Normalize(Tensor input, Tensor output)
+        public void Normalize(TensorOld input, TensorOld output)
         {
-            Tensor.Apply(input, output, a => (a - Mean) / Delta);
+            TensorOld.Apply(input, output, a => (a - Mean) / Delta);
         }
     }
 }

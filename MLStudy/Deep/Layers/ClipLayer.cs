@@ -17,7 +17,7 @@ namespace MLStudy.Deep
             Max = max;
         }
 
-        public Tensor Backward(Tensor error)
+        public TensorOld Backward(TensorOld error)
         {
             return error;
         }
@@ -27,7 +27,7 @@ namespace MLStudy.Deep
             return new ClipLayer(Min, Max);
         }
 
-        public Tensor Forward(Tensor input)
+        public TensorOld Forward(TensorOld input)
         {
             input.Apply(a =>
             {
@@ -40,12 +40,12 @@ namespace MLStudy.Deep
             return input;
         }
 
-        public Tensor PreparePredict(Tensor input)
+        public TensorOld PreparePredict(TensorOld input)
         {
             return input;
         }
 
-        public Tensor PrepareTrain(Tensor input)
+        public TensorOld PrepareTrain(TensorOld input)
         {
             return input;
         }

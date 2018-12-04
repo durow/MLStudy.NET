@@ -6,8 +6,8 @@ namespace MLStudy.Validation
 {
     public class BinaryEvaluation
     {
-        public Tensor Y { get; private set; }
-        public Tensor YHat { get; private set; }
+        public TensorOld Y { get; private set; }
+        public TensorOld YHat { get; private set; }
 
         public double GetMeanSquareError()
         {

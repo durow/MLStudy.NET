@@ -8,10 +8,10 @@ namespace MLStudy.Abstraction
     {
         string Name { get; set; }
 
-        Tensor PrepareTrain(Tensor input);
-        Tensor PreparePredict(Tensor input);
-        Tensor Forward(Tensor input);
-        Tensor Backward(Tensor error);
+        TensorOld PrepareTrain(TensorOld input);
+        TensorOld PreparePredict(TensorOld input);
+        TensorOld Forward(TensorOld input);
+        TensorOld Backward(TensorOld error);
         ILayer CreateSame();
     }
 }

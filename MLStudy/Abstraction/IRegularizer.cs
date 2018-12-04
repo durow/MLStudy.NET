@@ -6,6 +6,6 @@ namespace MLStudy.Abstraction
 {
     public interface IRegularizer
     {
-        void Regularize(Tensor parameters, Tensor gradient);
+        void Regularize(TensorOld parameters, TensorOld gradient);
     }
 }

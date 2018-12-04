@@ -11,8 +11,8 @@ namespace PlayGround
             //IPlay play = new MNIST();
             //play.Play();
 
-            var a = new FloatTensor(2, 3);
-            var b = a + 0.5f;
+            var np = new NumSharp.Core.NumPy<float>();
+            var a = np.array(new float[] { 1,2,3,4,5,6}).reshape(2, 3);
             Console.ReadKey();
         }
     }

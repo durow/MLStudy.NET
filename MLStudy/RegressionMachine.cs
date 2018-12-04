@@ -13,7 +13,7 @@ namespace MLStudy
             : base(model)
         { }
 
-        public List<double> Predict(Tensor X)
+        public List<double> Predict(TensorOld X)
         {
             X = Normalize(X);
             LastRawResult = Model.Predict(X);

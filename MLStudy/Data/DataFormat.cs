@@ -7,21 +7,21 @@ namespace MLStudy.Data
 {
     public class DataFormat
     {
-        public static Tensor DataTableToTensor(DataTable table, params int[] columns)
+        public static TensorOld DataTableToTensor(DataTable table, params int[] columns)
         {
-            var result = new Tensor(table.Rows.Count, columns.Length);
+            var result = new TensorOld(table.Rows.Count, columns.Length);
             DataTableToTensor(table, result, columns);
             return result;
         }
 
-        public static Tensor DataTableToTensor(DataTable table, params string[] columns)
+        public static TensorOld DataTableToTensor(DataTable table, params string[] columns)
         {
-            var result = new Tensor(table.Rows.Count, columns.Length);
+            var result = new TensorOld(table.Rows.Count, columns.Length);
             DataTableToTensor(table, result, columns);
             return result;
         }
 
-        public static void DataTableToTensor(DataTable table, Tensor result, params int[] columns)
+        public static void DataTableToTensor(DataTable table, TensorOld result, params int[] columns)
         {
             for (int i = 0; i < table.Rows.Count; i++)
             {
@@ -32,7 +32,7 @@ namespace MLStudy.Data
             }
         }
 
-        public static void DataTableToTensor(DataTable table, Tensor result, params string[] columns)
+        public static void DataTableToTensor(DataTable table, TensorOld result, params string[] columns)
         {
             for (int i = 0; i < table.Rows.Count; i++)
             {

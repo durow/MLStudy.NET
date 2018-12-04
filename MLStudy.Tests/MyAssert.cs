@@ -30,9 +30,9 @@ namespace MLStudy.Tests
             }
         }
 
-        public static void ApproximatelyEqual(Tensor a, Tensor b, double allowError = 0.00001)
+        public static void ApproximatelyEqual(TensorOld a, TensorOld b, double allowError = 0.00001)
         {
-            Assert.True(Tensor.CheckShapeBool(a, b));
+            Assert.True(TensorOld.CheckShapeBool(a, b));
 
             var dataA = a.GetRawValues();
             var dataB = b.GetRawValues();

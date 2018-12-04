@@ -11,7 +11,7 @@ namespace PlayGround.Plays
         public void Play()
         {
             var data = DataEmulator.Instance.RandomArray(100000);
-            var tensor = new Tensor(data, 500, 200);
+            var tensor = new TensorOld(data, 500, 200);
             var full = new FullLayer(100);
             full.PrepareTrain(tensor);
             var start1 = DateTime.Now;

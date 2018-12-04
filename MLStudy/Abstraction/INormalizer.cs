@@ -6,7 +6,7 @@ namespace MLStudy.Abstraction
 {
     public interface INormalizer
     {
-        Tensor Normalize(Tensor input);
-        void Normalize(Tensor input, Tensor output);
+        TensorOld Normalize(TensorOld input);
+        void Normalize(TensorOld input, TensorOld output);
     }
 }

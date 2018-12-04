@@ -18,7 +18,7 @@ namespace MLStudy.PreProcessing
         public double Max { get; private set; }
         public double Denom { get; private set; }
 
-        public MinMaxNorm(Tensor tensor)
+        public MinMaxNorm(TensorOld tensor)
         {
             Min = tensor.Min();
             Max = tensor.Max();
@@ -38,16 +38,16 @@ namespace MLStudy.PreProcessing
             Denom = Max - Min;
         }
 
-        public Tensor Normalize(Tensor input)
+        public TensorOld Normalize(TensorOld input)
         {
             var result = input.GetSameShape();
             Normalize(input, result);
             return result;
         }
 
-        public void Normalize(Tensor input, Tensor output)
+        public void Normalize(TensorOld input, TensorOld output)
         {
-            Tensor.Apply(input, output, a => (a - Min) / Denom);
+            TensorOld.Apply(input, output, a => (a - Min) / Denom);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MLStudy.Tests.Deep
         [Fact]
         public void ForwardBackwardTest()
         {
-            var input = new Tensor(new double[]
+            var input = new TensorOld(new double[]
             {
                 4,6,1,4,
                 8,4,5,1,
@@ -20,7 +20,7 @@ namespace MLStudy.Tests.Deep
             }, 1, 1, 4, 4);
 
             var conv = new ConvLayer(4, 2, 1, 1);
-            conv.SetFilters(new Tensor(new double[]
+            conv.SetFilters(new TensorOld(new double[]
             {
                 1,1,0,0,
                 0,0,1,1,
@@ -28,7 +28,7 @@ namespace MLStudy.Tests.Deep
                 0,1,0,1,
             }, 4, 1, 2, 2));
 
-            var expected = new Tensor(new double[]
+            var expected = new TensorOld(new double[]
             {
                 0,0,0,0,0,
                 4,10,7,5,4,

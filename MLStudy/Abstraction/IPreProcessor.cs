@@ -7,7 +7,7 @@ namespace MLStudy.Abstraction
 {
     public interface IPreProcessor
     {
-        Tensor PreProcessX(DataTable data);
-        Tensor PreProcessY(DataTable data);
+        TensorOld PreProcessX(DataTable data);
+        TensorOld PreProcessY(DataTable data);
     }
 }

@@ -12,8 +12,8 @@ namespace MLStudy.Tests
         [Fact]
         public void ProbToCodeTest()
         {
-            var tensor = new Tensor(new double[] { 0.001, 0.02, 0.98 });
-            var expected = new Tensor(new double[] { 0, 0, 1 });
+            var tensor = new TensorOld(new double[] { 0.001, 0.02, 0.98 });
+            var expected = new TensorOld(new double[] { 0, 0, 1 });
             var actual = Utilities.ProbabilityToCode(tensor);
             Assert.Equal(expected, actual);
         }

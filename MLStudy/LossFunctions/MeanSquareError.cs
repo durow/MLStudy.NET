@@ -19,9 +19,9 @@ namespace MLStudy
         /// </summary>
         /// <param name="y">样本标签</param>
         /// <param name="yHat">输出标签</param>
-        public override void PrepareTrain(Tensor y, Tensor yHat)
+        public override void PrepareTrain(TensorOld y, TensorOld yHat)
         {
-            Tensor.CheckShape(y, yHat);
+            TensorOld.CheckShape(y, yHat);
 
             ForwardOutput = y.GetSameShape();
             BackwardOutput = y.GetSameShape();
@@ -32,7 +32,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="y"></param>
         /// <param name="yHat"></param>
-        public override void Compute(Tensor y, Tensor yHat)
+        public override void Compute(TensorOld y, TensorOld yHat)
         {
             //只记录了平方误差，使用GetLoss可获取均方误差
             Functions.SquareError(y, yHat, ForwardOutput);
@@ -45,7 +45,7 @@ namespace MLStudy
         /// <param name="y">真实值</param>
         /// <param name="yHat">预测值</param>
         /// <returns>Loss</returns>
-        public override double GetLoss(Tensor y, Tensor yHat)
+        public override double GetLoss(TensorOld y, TensorOld yHat)
         {
             return Functions.MeanSquareError(y, yHat);
         }
@@ -55,7 +55,7 @@ namespace MLStudy
             return Math.Sqrt(ForwardOutput.Mean());
         }
 
-        public override double GetAccuracy(Tensor y, Tensor yHat)
+        public override double GetAccuracy(TensorOld y, TensorOld yHat)
         {
             var mse = Functions.MeanSquareError(y, yHat);
             return Math.Sqrt(mse);

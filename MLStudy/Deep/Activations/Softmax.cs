@@ -25,7 +25,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入Tensor</param>
         /// <returns></returns>
-        public override Tensor PrepareTrain(Tensor input)
+        public override TensorOld PrepareTrain(TensorOld input)
         {
             if (input.Rank != 2)
                 throw new TensorShapeException("input.Rank must be 2");
@@ -37,11 +37,11 @@ namespace MLStudy.Deep
             sampleBuff = new double[categoryNumber];
             //向量对向量求导的结果是个矩阵
             //多个样本下，softmax的导数是一个三阶张量，第一维是样本数量，后面两维是jacob矩阵
-            Derivative = new Tensor(sampleNumber, categoryNumber, categoryNumber);
+            Derivative = new TensorOld(sampleNumber, categoryNumber, categoryNumber);
             return ForwardOutput;
         }
 
-        public override Tensor PreparePredict(Tensor input)
+        public override TensorOld PreparePredict(TensorOld input)
         {
             if (input.Rank != 2)
                 throw new TensorShapeException("input.Rank must be 2");
@@ -58,7 +58,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="input">输入的数值</param>
         /// <returns>输出的数值</returns>
-        public override Tensor Forward(Tensor input)
+        public override TensorOld Forward(TensorOld input)
         {
             int startIndex;
 
@@ -77,7 +77,7 @@ namespace MLStudy.Deep
         /// </summary>
         /// <param name="error">传回来的误差</param>
         /// <returns>传到前面的误差</returns>
-        public override Tensor Backward(Tensor error)
+        public override TensorOld Backward(TensorOld error)
         {
             ComputeDerivative();
             //Parallel.For(0, sampleNumber, (Action<int>)(i =>
@@ -106,7 +106,7 @@ namespace MLStudy.Deep
         //    }
         //}
 
-        private void ErrorBP(Tensor error)
+        private void ErrorBP(TensorOld error)
         {
             var derData = Derivative.GetRawValues();
             var errorData = error.GetRawValues();

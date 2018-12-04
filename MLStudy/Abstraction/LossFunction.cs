@@ -12,12 +12,12 @@ namespace MLStudy.Abstraction
         /// 输出的损失，一阶张量（向量），每个分量对应着一个样本的Loss。
         /// 使用GetLoss()方法输出这些样本的平均Loss
         /// </summary>
-        public Tensor ForwardOutput { get; protected set; }
+        public TensorOld ForwardOutput { get; protected set; }
 
         /// <summary>
         /// 反向传播的Loss的导数或叫梯度
         /// </summary>
-        public Tensor BackwardOutput { get; protected set; }
+        public TensorOld BackwardOutput { get; protected set; }
 
         /// <summary>
         /// 获取最近一次Forward的所有样本Loss的平均值。
@@ -37,22 +37,22 @@ namespace MLStudy.Abstraction
         /// <param name="y">真实值</param>
         /// <param name="yHat">预测值</param>
         /// <returns>Loss</returns>
-        public abstract double GetLoss(Tensor y, Tensor yHat);
+        public abstract double GetLoss(TensorOld y, TensorOld yHat);
 
-        public abstract double GetAccuracy(Tensor y, Tensor yHat);
+        public abstract double GetAccuracy(TensorOld y, TensorOld yHat);
 
         /// <summary>
         /// 训练前的准备工作，检查并确定所需Tensor的结构并分配好内存
         /// </summary>
         /// <param name="y">样本标签</param>
         /// <param name="yHat">输出标签</param>
-        public abstract void PrepareTrain(Tensor y, Tensor yHat);
+        public abstract void PrepareTrain(TensorOld y, TensorOld yHat);
 
         /// <summary>
         /// 计算Loss和Loss对yHat的导数（梯度）
         /// </summary>
         /// <param name="y"></param>
         /// <param name="yHat"></param>
-        public abstract void Compute(Tensor y, Tensor yHat);
+        public abstract void Compute(TensorOld y, TensorOld yHat);
     }
 }

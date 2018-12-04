@@ -38,18 +38,18 @@ namespace MLStudy.Tests.Storages
         [Fact]
         public void TensorStorageTest()
         {
-            var tensor = new Tensor(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 1, 1, 2, 4);
+            var tensor = new TensorOld(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 1, 1, 2, 4);
             var xml = new XmlDocument();
             var el = XmlStorage.SaveToEl(xml, tensor);
-            var test = XmlStorage.LoadFromNode<Tensor>(el);
+            var test = XmlStorage.LoadFromNode<TensorOld>(el);
             Assert.Equal(tensor, test);
         }
 
         [Fact]
         public void FullLayerStorageTest()
         {
-            var weights = new Tensor(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 4, 2);
-            var bias = new Tensor(new double[] { 3, 4 }, 1, 2);
+            var weights = new TensorOld(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 4, 2);
+            var bias = new TensorOld(new double[] { 3, 4 }, 1, 2);
             var xml = new XmlDocument();
 
             var layer = new FullLayer(2);
@@ -101,9 +101,9 @@ namespace MLStudy.Tests.Storages
         {
             var doc = new XmlDocument();
             var layer = new ConvLayer(3, 2,1,1);
-            layer.SetFilters(new Tensor(
+            layer.SetFilters(new TensorOld(
                 new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, 3, 1, 2, 2));
-            layer.SetBias(new Tensor(new double[] { 1, 2, 3 }));
+            layer.SetBias(new TensorOld(new double[] { 1, 2, 3 }));
             var el = XmlStorage.SaveToEl(doc, layer);
             var test = XmlStorage.LoadFromNode<ConvLayer>(el);
 

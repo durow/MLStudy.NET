@@ -12,7 +12,7 @@ namespace MLStudy
         public INormalizer Normalizer { get; set; }
         public IModel Model { get; set; }
         public IPreProcessor PreProcessor { get; set; }
-        public Tensor LastRawResult { get; protected set; }
+        public TensorOld LastRawResult { get; protected set; }
 
         public Machine(IModel model)
         {
@@ -21,7 +21,7 @@ namespace MLStudy
 
 
 
-        protected Tensor Normalize(Tensor input)
+        protected TensorOld Normalize(TensorOld input)
         {
             if (Normalizer == null)
                 return input;

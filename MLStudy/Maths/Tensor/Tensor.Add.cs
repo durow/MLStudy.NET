@@ -4,14 +4,14 @@ using System.Text;
 
 namespace MLStudy
 {
-    public partial class Tensor
+    public partial class TensorOld
     {
         /// <summary>
         /// 把d加到当前Tensor的每个元素上
         /// </summary>
         /// <param name="d">要加的值</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Add(double d)
+        public TensorOld Add(double d)
         {
             Apply(a => a + d);
             return this;
@@ -22,7 +22,7 @@ namespace MLStudy
         /// </summary>
         /// <param name="t">要加的Tensor</param>
         /// <returns>当前Tensor</returns>
-        public Tensor Add(Tensor t)
+        public TensorOld Add(TensorOld t)
         {
             if (t.ElementCount == 1)
                 return Add(t.GetValue());
@@ -39,14 +39,14 @@ namespace MLStudy
         /// <param name="t">Tensor</param>
         /// <param name="d">要加上的值</param>
         /// <returns></returns>
-        public static Tensor Add(Tensor t, double d)
+        public static TensorOld Add(TensorOld t, double d)
         {
             var result = t.GetSameShape();
             Add(t, d, result);
             return result;
         }
 
-        public static void Add(Tensor t, double d, Tensor result)
+        public static void Add(TensorOld t, double d, TensorOld result)
         {
             Apply(t, result, a => a + d);
         }
@@ -57,7 +57,7 @@ namespace MLStudy
         /// <param name="a">Tensor</param>
         /// <param name="b">Tensor</param>
         /// <returns>相加后的结果</returns>
-        public static Tensor Add(Tensor a, Tensor b)
+        public static TensorOld Add(TensorOld a, TensorOld b)
         {
             if (a.ElementCount == 1)
                 return Add(b, a.GetValue());
@@ -77,24 +77,24 @@ namespace MLStudy
         /// <param name="a">加数1</param>
         /// <param name="b">加数2</param>
         /// <param name="result">结果</param>
-        public static void Add(Tensor a, Tensor b, Tensor result)
+        public static void Add(TensorOld a, TensorOld b, TensorOld result)
         {
             //放弃Tensor结构的检查
 
             Apply(a, b, result, (x, y) => x + y);
         }
 
-        public static Tensor operator +(Tensor t, double d)
+        public static TensorOld operator +(TensorOld t, double d)
         {
             return Add(t, d);
         }
 
-        public static Tensor operator +(double d, Tensor t)
+        public static TensorOld operator +(double d, TensorOld t)
         {
             return Add(t, d);
         }
 
-        public static Tensor operator +(Tensor a, Tensor b)
+        public static TensorOld operator +(TensorOld a, TensorOld b)
         {
             return Add(a, b);
         }

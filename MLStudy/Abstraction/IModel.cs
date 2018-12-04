@@ -6,11 +6,11 @@ namespace MLStudy.Abstraction
 {
     public interface IModel
     {
-        Tensor Predict(Tensor input);
-        void Step(Tensor X, Tensor y);
+        TensorOld Predict(TensorOld input);
+        void Step(TensorOld X, TensorOld y);
         double GetTrainLoss();
-        double GetLoss(Tensor y, Tensor yHat);
+        double GetLoss(TensorOld y, TensorOld yHat);
         double GetTrainAccuracy();
-        double GetAccuracy(Tensor y, Tensor yHat);
+        double GetAccuracy(TensorOld y, TensorOld yHat);
     }
 }

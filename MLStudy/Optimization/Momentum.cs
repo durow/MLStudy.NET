@@ -18,7 +18,7 @@ namespace MLStudy.Optimization
         public double LearningRate { get; private set; }
         public double Moment { get; private set; }
 
-        private Dictionary<Tensor, Tensor> last = new Dictionary<Tensor, Tensor>();
+        private Dictionary<TensorOld, TensorOld> last = new Dictionary<TensorOld, TensorOld>();
 
         public Momentum(double learningRate, double momentum = 0.9)
         {
@@ -26,18 +26,18 @@ namespace MLStudy.Optimization
             Moment = momentum;
         }
 
-        public void Optimize(Tensor target, Tensor gradient)
+        public void Optimize(TensorOld target, TensorOld gradient)
         {
             if (!last.ContainsKey(gradient))
             {
                 last[gradient] = gradient.GetSameShape();
-                Tensor.Apply(gradient, last[gradient], g => LearningRate * g);
+                TensorOld.Apply(gradient, last[gradient], g => LearningRate * g);
                 target.Minus(last[gradient]);
                 return;
             }
 
             var prev = last[gradient];
-            Tensor.Apply(prev, gradient, prev, (p, g) => g * LearningRate - p * Moment);
+            TensorOld.Apply(prev, gradient, prev, (p, g) => g * LearningRate - p * Moment);
             target.Minus(prev);
         }
     }

@@ -15,7 +15,7 @@ namespace MLStudy.Regularizations
             Strength = strength;
         }
 
-        public void Regularize(Tensor parameters, Tensor gradient)
+        public void Regularize(TensorOld parameters, TensorOld gradient)
         {
             gradient.Add(Strength);
         }
