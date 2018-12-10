@@ -7,6 +7,24 @@ namespace MLStudy
 {
     public static class Functions
     {
+        public static double Entropy(IEnumerable<double> dist)
+        {
+            var e = 0.00000001;
+            var sum = 0d;
+
+            foreach (var item in dist)
+            {
+                if (item == 0)
+                    continue;
+
+                var p = item;
+                if (p == 1)
+                    p -= e;
+                sum += -p * Math.Log(p);
+            }
+            return sum;
+        }
+
         public static double Indicator(double d)
         {
             return d >= 0 ? 1 : 0;
