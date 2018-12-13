@@ -4,10 +4,7 @@ using System.Text;
 
 namespace MLStudy.Tree
 {
-    public enum TreeAlgorithm
+    public class CART
     {
-        ID3,
-        C45,
-        Gini
     }
 }
