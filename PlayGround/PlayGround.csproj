@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MLStudy.Num\MLStudy.Num.csproj" />
     <ProjectReference Include="..\MLStudy\MLStudy.csproj" />
   </ItemGroup>
 

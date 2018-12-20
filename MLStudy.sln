@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayGround", "PlayGround\Pl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MNISTDemo", "MNISTDemo\MNISTDemo.csproj", "{3FDC9CA5-793B-4785-BDC7-4C6799BC368D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLStudy.Num", "MLStudy.Num\MLStudy.Num.csproj", "{5B4D70D3-B976-4025-B868-C0E3304595BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3FDC9CA5-793B-4785-BDC7-4C6799BC368D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FDC9CA5-793B-4785-BDC7-4C6799BC368D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FDC9CA5-793B-4785-BDC7-4C6799BC368D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4D70D3-B976-4025-B868-C0E3304595BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4D70D3-B976-4025-B868-C0E3304595BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4D70D3-B976-4025-B868-C0E3304595BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4D70D3-B976-4025-B868-C0E3304595BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
