@@ -4,7 +4,9 @@ using System.Text;
 
 namespace MLStudy.Num
 {
+    //Add
     public partial class FloatTensor
     {
+        
     }
 }

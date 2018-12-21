@@ -6,38 +6,29 @@ namespace MLStudy.Num
 {
     public static partial class Tensor
     {
-        public static Tensor<T> Create<T>(TensorData<T> data)
-            where T : struct
-        {
-            throw new NotImplementedException($"not implenment type {typeof(T).Name} yet!");
-        }
-
-        public static Tensor<T> Create<T>(T[] values)
-            where T : struct
-        {
-            var data = new TensorData<T>(values);
-            return Create(data);
-        }
-
-        public static Tensor<T> Create<T>(T[] values, params int[] shape)
-            where T : struct
-        {
-            var data = new TensorData<T>(values, shape);
-            return Create(data);
-        }
-
         public static Tensor<T> Empty<T>(params int[] shape)
             where T : struct
         {
-            var data = new TensorData<T>(shape);
-            return Create(data);
-        }
+            var type = typeof(T).Name;
 
-        public static Tensor<T> Fill<T>(T fillValue, params int[] shape)
-            where T : struct
-        {
-            var data = new TensorData<T>(fillValue, shape);
-            return Create(data);
+            switch (type)
+            {
+                case SupportTypes.Float:
+                    var fData = new TensorData<float>(shape);
+                    var fTensor = new FloatTensor(fData);
+                    return (Tensor<T>)(object)fTensor;
+                case SupportTypes.Double:
+                    var dData = new TensorData<double>(shape);
+                    var dTensor = new DoubleTensor(dData);
+                    return (Tensor<T>)(object)dTensor;
+                case SupportTypes.Int:
+                    var iData = new TensorData<int>(shape);
+                    var iTensor = new IntTensor(iData);
+                    return (Tensor<T>)(object)iTensor;
+                default:
+                    break;
+            }
+            throw new NotImplementedException($"type {type} not implemented!");
         }
     }
 }
