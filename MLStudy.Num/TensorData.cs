@@ -45,6 +45,9 @@ namespace MLStudy.Num
 
         public TensorData(T fillValue, int[] shape)
         {
+            if (shape.Length == 0)
+                throw new Exception("shape can't be empty!");
+
             this.shape = new TensorShape(shape);
             values = new T[this.shape.TotalLength];
             mem = values.AsMemory();

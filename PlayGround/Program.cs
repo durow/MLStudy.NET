@@ -10,11 +10,8 @@ namespace PlayGround
         {
             //IPlay play = new MNIST();
             //play.Play();
-
-            var test = MLStudy.Num.Tensor.Empty(2, 3);
-            var test2 = test.ReShape(3, 2);
-            Console.WriteLine(test);
-            Console.WriteLine(test2);
+            var test = MLStudy.Num.Tensor.Ones(3, 4);
+            Console.WriteLine(test.DataType);
 
             Console.ReadKey();
         }

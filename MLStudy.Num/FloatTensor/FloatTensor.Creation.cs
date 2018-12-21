@@ -23,6 +23,16 @@ namespace MLStudy.Num
             return Create(data);
         }
 
+        public static Tensor<float> Ones(params int[] shape)
+        {
+            return Fill(1f, shape);
+        }
+
+        public static Tensor<float> Zeros(params int[] shape)
+        {
+            return Fill(0f, shape);
+        }
+
         public static Tensor<float> Fill(float fillValue, params int[] shape)
         {
             var data = new TensorData<float>(fillValue, shape);

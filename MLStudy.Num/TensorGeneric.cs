@@ -5,6 +5,7 @@ namespace MLStudy.Num
 {
     public abstract class Tensor<T> where T : struct
     {
+        public Type DataType { get;}
         public TensorData<T> Values { get; }
         public Span<T> RawValues => Values.RawValues;
         public TensorShape Shape => Values.shape;
@@ -21,6 +22,7 @@ namespace MLStudy.Num
         public Tensor(TensorData<T> data)
         {
             Values = data;
+            DataType = typeof(T);
         }
 
         public void Fill(T value)

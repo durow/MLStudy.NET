@@ -4,38 +4,38 @@ using System.Text;
 
 namespace MLStudy.Num
 {
-    public partial class FloatTensor
+    public partial class DoubleTensor
     {
-        public override void DivideLocal(float a)
+        public override void DivideLocal(double a)
         {
             TensorOperations.Instance.ApplyLocal(this, p => p / a);
         }
 
-        public override Tensor<float> Divide(float a)
+        public override Tensor<double> Divide(double a)
         {
             var result = CreateSameShape();
             TensorOperations.Instance.Apply(this, ref result, p => p / a);
             return result;
         }
 
-        public override void DivideByLocal(float a)
+        public override void DivideByLocal(double a)
         {
             TensorOperations.Instance.ApplyLocal(this, p => a / p);
         }
 
-        public override Tensor<float> DivideBy(float a)
+        public override Tensor<double> DivideBy(double a)
         {
             var result = CreateSameShape();
             TensorOperations.Instance.Apply(this, ref result, p => a / p);
             return result;
         }
 
-        public override void DivideElementWiseLocal(Tensor<float> a)
+        public override void DivideElementWiseLocal(Tensor<double> a)
         {
             TensorOperations.Instance.ApplyLocal(this, a, (m, n) => m / n);
         }
 
-        public override Tensor<float> DivideElementWise(Tensor<float> a)
+        public override Tensor<double> DivideElementWise(Tensor<double> a)
         {
             var result = a.CreateSameShape();
             TensorOperations.Instance.Apply(this, a, ref result, (m, n) => m / n);
