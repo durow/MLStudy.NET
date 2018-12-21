@@ -7,7 +7,11 @@ namespace MLStudy.Num
     public partial class IntTensor : Tensor<int>
     {
         public IntTensor(TensorData<int> data) : base(data)
+        {}
+
+        public override Tensor<To> AsType<To>()
         {
+            return TensorTypes.Exchange<To>(this);
         }
 
         public override Tensor<int> GetSubTensor(int[] index)

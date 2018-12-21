@@ -16,4 +16,8 @@
     <ProjectReference Include="..\MLStudy\MLStudy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Num\" />
+  </ItemGroup>
+
 </Project>

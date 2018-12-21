@@ -31,13 +31,26 @@ namespace MLStudy.Num
             TotalLength = ComputeTotalLength(shape);
         }
 
-        public int GetOffset(int[] index)
+        public int IndexToOffset(int[] index)
         {
             var result = 0;
             for (int i = 0; i < index.Length; i++)
             {
                 result += dimSize[i] * index[i];
             }
+            return result;
+        }
+
+        public int[] OffsetToIndex(int offset)
+        {
+            var rest = offset;
+            var result = new int[Rank];
+            for (int i = 0; i < dimSize.Length; i++)
+            {
+                result[i] = rest / dimSize[i];
+                rest = rest % dimSize[i];
+            }
+
             return result;
         }
 
@@ -86,6 +99,16 @@ namespace MLStudy.Num
             for (int i = 0; i < shape.Length; i++)
             {
                 result *= shape[i];
+            }
+            return result;
+        }
+
+        public static int[] GetShapeFromArray(Array array)
+        {
+            var result = new int[array.Rank];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = array.GetLength(i);
             }
             return result;
         }

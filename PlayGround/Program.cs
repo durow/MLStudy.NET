@@ -1,6 +1,6 @@
-﻿using MLStudy;
-using PlayGround.Plays;
+﻿using PlayGround.Plays;
 using System;
+using System.Data;
 
 namespace PlayGround
 {
@@ -10,9 +10,11 @@ namespace PlayGround
         {
             //IPlay play = new MNIST();
             //play.Play();
-            var test = MLStudy.Num.Tensor.Ones(3, 4);
-            Console.WriteLine(test.DataType);
 
+            var a = MLStudy.Num.Tensor.Values(new int[,] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } }).AsType<double>();
+            Console.WriteLine(a);
+            Console.WriteLine(a.DataType);
+            Console.WriteLine(a + 100);
             Console.ReadKey();
         }
     }

@@ -9,7 +9,12 @@ namespace MLStudy.Num
         public DoubleTensor(TensorData<double> data) : base(data)
         {
         }
-        
+
+        public override Tensor<To> AsType<To>()
+        {
+            return TensorTypes.Exchange<To>(this);
+        }
+
         public override Tensor<double> GetSubTensor(int[] index)
         {
             var subData = Values.GetSubData(index);

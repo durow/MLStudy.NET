@@ -17,6 +17,31 @@ namespace MLStudy.Num
             return Create(data);
         }
 
+        public static Tensor<double> Create(double[] values, params int[] shape)
+        {
+            var data = new TensorData<double>(values, shape);
+            return Create(data);
+        }
+
+        public static Tensor<double> Values(double[,] array)
+        {
+            return Values<double>(array);
+        }
+        public static Tensor<double> Values(double[,,] array)
+        {
+            return Values<double>(array);
+        }
+
+        public static Tensor<double> Values(double[,,,] array)
+        {
+            return Values<double>(array);
+        }
+
+        public static Tensor<double> Values(double[,,,,] array)
+        {
+            return Values<double>(array);
+        }
+
         public static Tensor<double> Fill(double fillValue, params int[] shape)
         {
             var data = new TensorData<double>(fillValue, shape);

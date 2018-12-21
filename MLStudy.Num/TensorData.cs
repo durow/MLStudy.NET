@@ -37,11 +37,16 @@ namespace MLStudy.Num
         }
 
         public TensorData(params int[] shape)
+            : this(new TensorShape(shape))
+        { }
+
+        public TensorData(TensorShape shape)
         {
-            this.shape = new TensorShape(shape);
+            this.shape = shape;
             values = new T[this.shape.TotalLength];
             mem = values.AsMemory();
         }
+
 
         public TensorData(T fillValue, int[] shape)
         {
@@ -63,13 +68,13 @@ namespace MLStudy.Num
 
         public T GetValue(int[] index)
         {
-            var offset = shape.GetOffset(index);
+            var offset = shape.IndexToOffset(index);
             return RawValues[offset];
         }
 
         public void SetValue(T value, int[] index)
         {
-            var offset = shape.GetOffset(index);
+            var offset = shape.IndexToOffset(index);
             RawValues[offset] = value;
         }
 
@@ -80,14 +85,14 @@ namespace MLStudy.Num
 
         public TensorData<T> GetSubData(int[] index)
         {
-            var offset = shape.GetOffset(index);
+            var offset = shape.IndexToOffset(index);
             var subShape = shape.GetSubShape(index);
             return new TensorData<T>(values, subShape, offset, subShape.TotalLength);
         }
 
         public Span<T> GetSubValues(int[] index)
         {
-            var offset = shape.GetOffset(index);
+            var offset = shape.IndexToOffset(index);
             var len = shape.GetSubLength(index);
             return mem.Span.Slice(offset, len);
         }

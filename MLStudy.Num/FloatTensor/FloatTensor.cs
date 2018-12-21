@@ -7,7 +7,11 @@ namespace MLStudy.Num
     public partial class FloatTensor : Tensor<float>
     {
         public FloatTensor(TensorData<float> data) : base(data)
+        {}
+
+        public override Tensor<To> AsType<To>()
         {
+            return TensorTypes.Exchange<To>(this);
         }
 
         public override Tensor<float> GetSubTensor(int[] index)

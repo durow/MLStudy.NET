@@ -5,7 +5,7 @@ namespace MLStudy.Num
 {
     public abstract class Tensor<T> where T : struct
     {
-        public Type DataType { get;}
+        public Type DataType { get; }
         public TensorData<T> Values { get; }
         public Span<T> RawValues => Values.RawValues;
         public TensorShape Shape => Values.shape;
@@ -45,6 +45,11 @@ namespace MLStudy.Num
             return ReShape(newShape);
         }
 
+        public Tensor<T> ReSize(params int[] newSize)
+        {
+            return ReShape(newSize);
+        }
+
         public override string ToString()
         {
             if (Rank == 1)
@@ -70,7 +75,10 @@ namespace MLStudy.Num
         }
 
         public abstract Tensor<T> ReShape(params int[] newShape);
+
         public abstract Tensor<T> GetSubTensor(int[] index);
+
+        public abstract Tensor<To> AsType<To>() where To : struct;
 
         public abstract void AddLocal(T a);
 

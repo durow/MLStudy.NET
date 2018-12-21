@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Others\" />
-    <Folder Include="Tensor\DoubleTensor\" />
-    <Folder Include="Tensor\IntTensor\" />
   </ItemGroup>
 
 </Project>
