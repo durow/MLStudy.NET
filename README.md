@@ -103,3 +103,7 @@ The storage file is xml format:
 ```
 
 of cause you can write a xml file directly and use Storage.Load<Trainer>("filename") to load it, as long as you like， but personally i don't like this way ;)
+
+# Demo
+
+https://github.com/durow/MLStudy.NET/tree/master/MNISTDemo
