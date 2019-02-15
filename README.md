@@ -106,4 +106,6 @@ of cause you can write a xml file directly and use Storage.Load<Trainer>("filena
 
 # Demo
 
+I trained a handwriting network use MNIST dataset, and save the machine to a xml file, then write a WPF desktop application and load the network to recognize the new handwriting digit from user. 
+
 https://github.com/durow/MLStudy.NET/tree/master/MNISTDemo
